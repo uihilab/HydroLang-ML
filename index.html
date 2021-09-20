@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link
+    rel="stylesheet"
+    href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+  />
+    <title>Hydrolang</title>
+    <script
+      type="module"
+      onload="initHydrolang()"
+      src="./hydrolang/hydro.js"
+    ></script>
+  </head>
+
+  <body>
+    <script>
+      function initHydrolang() {
+        // configure hydrolang - this is optional,
+        // if user does not provide a config,
+        // we'll just use the default values
+        const config = {
+          metricSystem: "si",
+          mapType: "osm",
+        };
+
+        hydro1 = new Hydrolang();
+        hydro1.setConfig(config);
+      }
+    </script>
+    <p class="h4">Hydrolang loader</p>
+    <p class="h7">Hydrolang is onloaded on the HTML file for usage on console. Once onloaded, all the functionalities of the 
+      framework can be used. Tables, maps and charts are rendered on screen; results from specific functions are prompted to console.
+    </p>
+    <script
+    src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+  ></script>
+  <script
+    src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+  ></script>
+  <script
+    src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"
+  ></script>
+  </body>
+</html>

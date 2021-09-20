@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <hydrolang-web module = "analyze" component="stats" func="sum" saveob = "name">
+        <span slot="data">2,4,4,5,6,1,3</span>
+    </hydrolang-web>
+
+    <hydrolang-web module = "analyze" component="stats" func="basicstats" saveob = "name2">
+        <span slot="data">2,4,4,5,6,1,3</span>
+    </hydrolang-web>
+    
+    <script type="module" src = "./letstry2.js"></script>
+    
+</body>
+</html>

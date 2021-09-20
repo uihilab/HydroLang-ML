@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <template id=DATA-MOD>
+        <style>
+            :host { display: inline-block; border: 2px solid red;}
+            ::slotted(parameter) {background: magenta}
+            div {border:3px dashed rebeccapurple}
+        </style>
+        <div><slot name=parameter></slot></div>
+        <slot></slot>
+    </template>
+
+    <data-mod func="retrieve" saveob = "name">
+        <parameter>this is a parameter</parameter>
+        <parameter>this is another parameter</parameter>
+    </data-mod>
+    
+    <script type="module" src = "./datacomp.js"></script>
+    
+</body>
+</html>
