@@ -1,4 +1,4 @@
-import Hydrolang from './hydro'
+import Hydrolang from './hydro.js'
 
 //convert this guy into a global variable using window element
 const hydro = new Hydrolang()
@@ -19,12 +19,6 @@ template.innerHTML =
 </div>
 
 `;
-
-const template2 = document.createElement('template');
-
-template2.innerHTML = 
-`
-`
 
 
 
@@ -62,31 +56,49 @@ class datamod extends HTMLElement {
         }
         return props
     }
+
+    constructor() {
+        super()
+        let shadow = this.attachShadow({mode: 'open'})
+        shadow.append(document.getElementById(this.nodeName).content.cloneNode(true))
+
+        let names = []
+        let props = []
+
+        this.shadowRoot.addEventListener("slotchange", (ev) => {
+            if (ev.target.appendChild =="") {
+                [...ev.target.assignedElements()]
+                .filter(el => el.nodeName == 'func-parameter')
+                .map(el => el.slot = 'func-parameters')
+            } else 
+            {
+                var r = ev.target.assignedElements()
+                for (var i =0; i < r.length; i++) {
+                    names.push(r[i].getAttributeNames())
+                    props.push(r[i].getAttribute(names[0][i]))
+                    for (var j = 0; j < names.length; j++) {
+                        console.log(names[i][j])
+                    }
+                }
+                console.log(`SLOT: ${ev.target.name} got`, ev.target.assignedElements())
+        }
+        })
+        console.log(names, props)
+    }
     
+}
+
+class parameters extends HTMLElement {
+    //Solution to remove the name slot element from the parameters
+    //And potentially implement for creating child elements.
+
     connectedCallback(parent = this.closest("data-mod")) {
         if (this.parentNode != parent) {
             if (parent) parent.append(this)
             else console.error(this.innerHTML, "NEEDS A PARENT ELEMENT!")
         }
     }
-}
-
-class parameters extends HTMLElement {
-    //Solution to remove the name slot element from the parameters
-    constructor() {
-        super()
-        let shadow = this.attachShadow({mode: 'open'})
-        shadow.append(document.getElementById(this.nodeName).content.cloneNode(true))
-
-        this.shadowRoot.addEventListener("slotchange", (ev) => {
-            if (ev.target.appendChild =="") {
-                [...ev.target.assignedElements()]
-                .filter(el => el.nodeName == 'parameter')
-                .map(el => el.slot = "parameters");
-            } else console.log(`SLOT: ${ev.target.name} got`, ev.target.assignedNodes())
-        })}
-    
     };
 
 window.customElements.define('data-mod', datamod)
-window.customElements.define('parameter', parameters)
+window.customElements.define('func-parameter', parameters)
