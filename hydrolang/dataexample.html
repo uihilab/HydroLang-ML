@@ -9,18 +9,16 @@
 <body>
     <template id=DATA-MOD>
         <style>
-            /* :host { display: inline-block; border: 2px solid red;}
-            ::slotted(parameter) {background: magenta}
-            div {border:3px dashed rebeccapurple} */
         </style>
-        <div><slot name=func-parameter></slot></div>
+        <div><slot name=func-parameters></slot></div>
         <slot></slot>
     </template>
 
     <data-mod func="retrieve" saveob = "name">
         <func-parameter parm1="myattr1" param2="myattr2"></func-parameter>
-        <func-parameter2 may="1attr" may2="anotherat">this is another parameter</func-parameter2>
+        <func-parameter2 may="1attr" may2="anotherat"></func-parameter2>
         <func-parameter2 may1="1attr" may3="anotherat" may4="somestuff">this is another parameter</func-parameter2>
+        <module-data id="sensordata" data="1234558"></module-data>
     </data-mod>
     
     <script type="module" src = "./datamod.js"></script>

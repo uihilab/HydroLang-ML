@@ -42,7 +42,7 @@ class datamod extends HTMLElement {
         return Object.keys(datamod.properties)
     }
 
-    //Reusable property maker. Returns the names and values of the attributes passed.
+    //Specifically done for parameters that have 
     makePropertiesFromParameters(elem){
 
         let attr=[]
@@ -65,7 +65,6 @@ class datamod extends HTMLElement {
         super()
         let shadow = this.attachShadow({mode: 'open'})
         shadow.append(document.getElementById(this.nodeName).content.cloneNode(true))
-        var props = []
 
         this.shadowRoot.addEventListener("slotchange", (ev) => {
             if (ev.target.appendChild =="") {
@@ -74,14 +73,19 @@ class datamod extends HTMLElement {
                 .map(el => el.slot = 'func-parameters')
             } else 
             {
+                var ar
                 var r = ev.target.assignedElements()
-                props = this.makePropertiesFromParameters(r)
+                ar= this.makePropertiesFromParameters(r)
+
+                for (var i = 0; i < ar.length; i++) {
+                        db[i] = ar[i]
+                }
                 console.log(`SLOT: ${ev.target.name} got`, r)
         }
-        })
-        console.log(props)
+        console.log(db)
+        }
+        )
     }
-
     async connectedCallback(){
     }
     
