@@ -43,27 +43,29 @@ class datamod extends HTMLElement {
     }
 
     //Reusable property maker. Returns the names and values of the attributes passed.
-    makePropertiesFromAttributes(elem){
-        let ElemClass = customElements.get(elem);
-        let attr = ElemClass.observedAttributes;
-        if (!attr) return null;
-            var props = {}
+    makePropertiesFromParameters(elem){
 
-        for(var i = 0; i < attr.length; i++){
-            var prop = attr[i]
-            props[prop] = this.getAttribute(attr[i])
-            console.log(props[prop])
+        let attr=[]
+        var names = []
+        
+        for (var i =0; i < elem.length; i++) {
+            
+            var props = {}
+            names.push(elem[i].getAttributeNames())
+            for (var j=0; j < names[i].length; j++) {
+                var prop = names[i][j]
+                props[prop] = elem[i].getAttribute(prop)
+            }
+            attr.push(props)
         }
-        return props
+        return attr
     }
 
     constructor() {
         super()
         let shadow = this.attachShadow({mode: 'open'})
         shadow.append(document.getElementById(this.nodeName).content.cloneNode(true))
-
-        let names = []
-        let props = []
+        var props = []
 
         this.shadowRoot.addEventListener("slotchange", (ev) => {
             if (ev.target.appendChild =="") {
@@ -73,17 +75,14 @@ class datamod extends HTMLElement {
             } else 
             {
                 var r = ev.target.assignedElements()
-                for (var i =0; i < r.length; i++) {
-                    names.push(r[i].getAttributeNames())
-                    props.push(r[i].getAttribute(names[0][i]))
-                    for (var j = 0; j < names.length; j++) {
-                        console.log(names[i][j])
-                    }
-                }
-                console.log(`SLOT: ${ev.target.name} got`, ev.target.assignedElements())
+                props = this.makePropertiesFromParameters(r)
+                console.log(`SLOT: ${ev.target.name} got`, r)
         }
         })
-        console.log(names, props)
+        console.log(props)
+    }
+
+    async connectedCallback(){
     }
     
 }
