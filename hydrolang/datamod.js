@@ -1,26 +1,19 @@
 import Hydrolang from './hydro.js'
 
 //convert this guy into a global variable using window element
-const hydro = new Hydrolang()
-
-var db = {}
-
+window.hydro = new Hydrolang()
+window.db = {}
+window.results = {}
 
 const template = document.createElement('template');
+template.id = 'DATA-MOD'
 template.innerHTML = 
 `
 <style>
-    h3 {
-        color: coral;
-    }
 </style>
-<div class="hydrolang-web">
-    <h3></h3>
-</div>
-
+<div><slot name=func-parameters></slot></div>
+<slot></slot>
 `;
-
-
 
 class datamod extends HTMLElement {
     static get properties () {
@@ -44,7 +37,6 @@ class datamod extends HTMLElement {
 
     //Specifically done for parameters that have 
     makePropertiesFromParameters(elem){
-
         let attr=[]
         var names = []
         
@@ -61,10 +53,21 @@ class datamod extends HTMLElement {
         return attr
     }
 
+    async waitforproperties(){
+        await db
+        return Promise.resolve(db)
+       }
+
+    //this behavior can be changed depending on the type of data
+    handlewaterdata(data) {
+        console.log(data);
+    }
+
     constructor() {
         super()
         let shadow = this.attachShadow({mode: 'open'})
-        shadow.append(document.getElementById(this.nodeName).content.cloneNode(true))
+        shadow.append(template.content.cloneNode(true))
+
 
         this.shadowRoot.addEventListener("slotchange", (ev) => {
             if (ev.target.appendChild =="") {
@@ -73,20 +76,29 @@ class datamod extends HTMLElement {
                 .map(el => el.slot = 'func-parameters')
             } else 
             {
-                var ar
                 var r = ev.target.assignedElements()
-                ar= this.makePropertiesFromParameters(r)
+                var ar= this.makePropertiesFromParameters(r)
 
                 for (var i = 0; i < ar.length; i++) {
-                        db[i] = ar[i]
+                    window.db[i] = {[r[i].localName]: ar[i]}
                 }
-                console.log(`SLOT: ${ev.target.name} got`, r)
+                console.log(`SLOT: ${ev.target.name} got`, ev.target.assignedElements())
         }
-        console.log(db)
         }
         )
     }
-    async connectedCallback(){
+    async connectedCallback(){           
+       
+       var x = setTimeout(() => {
+           var ob = {...window.db[0]}
+           var x = Object.assign(ob.parameters, db[1])
+           var y = Object.assign(ob, db[2])
+            return y
+       }, 20);
+
+
+
+       await window.hydro.data.retrieve(x, this.handlewaterdata)
     }
     
 }

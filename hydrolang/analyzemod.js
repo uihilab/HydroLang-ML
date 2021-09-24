@@ -99,5 +99,7 @@ class hydroweb extends HTMLElement {
     }
 }
 
+console.log(db)
+
 
 window.customElements.define('hydrolang-web', hydroweb)
