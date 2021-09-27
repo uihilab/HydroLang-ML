@@ -14,7 +14,7 @@ import stats from "../analyze/core/stats.js";
 function retrieve(params, callback) {
   //obtain data from parameters set by user.
   var source = params["source"];
-  var dataType = params["dataType"];
+  var dataType = params["datatype"];
   var args = params["arguments"];
   var type = params["type"];
 

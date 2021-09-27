@@ -3,7 +3,7 @@ import Hydrolang from "./hydro.js";
 //convert this guy into a global variable using window element
 const hydro = new Hydrolang()
 
-var db = {}
+window.db = {}
 
 
 
@@ -90,9 +90,9 @@ class hydroweb extends HTMLElement {
         
         `
 
-        Object.assign(db, {[props.saveob]: res})
+        Object.assign(window.db, {[props.saveob]: res})
 
-        console.log(db)
+        console.log(window.db)
     }
 
     connectedCallback(){

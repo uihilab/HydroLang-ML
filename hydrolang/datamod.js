@@ -18,6 +18,12 @@ template.innerHTML =
 class datamod extends HTMLElement {
     static get properties () {
         return {
+
+            "id": {
+                type: String,
+                userDefined: true
+            },
+
             "func": {
                 type: String,
                 userDefined: true
@@ -53,20 +59,25 @@ class datamod extends HTMLElement {
         return attr
     }
 
-    async waitforproperties(){
-        await db
-        return Promise.resolve(db)
-       }
+    makePropertiesFromAttributes(elem){
+        let ElemClass = customElements.get(elem);
+        let attr = ElemClass.observedAttributes;
+        if (!attr) return null;
+        var props = {}
 
-    //this behavior can be changed depending on the type of data
-    handlewaterdata(data) {
-        console.log(data);
+        for(var i = 0; i < attr.length; i++){
+            var prop = attr[i]
+            props[prop] = this.getAttribute(attr[i])
+            console.log(props[prop])
+        }
+        return props
     }
 
     constructor() {
         super()
         let shadow = this.attachShadow({mode: 'open'})
         shadow.append(template.content.cloneNode(true))
+        let web = document.querySelector('data-mod')
 
 
         this.shadowRoot.addEventListener("slotchange", (ev) => {
@@ -76,7 +87,10 @@ class datamod extends HTMLElement {
                 .map(el => el.slot = 'func-parameters')
             } else 
             {
+                var datamodprop = this.makePropertiesFromAttributes('data-mod')
+                console.log(datamodprop)
                 var r = ev.target.assignedElements()
+                console.log(r)
                 var ar= this.makePropertiesFromParameters(r)
 
                 for (var i = 0; i < ar.length; i++) {
@@ -87,20 +101,31 @@ class datamod extends HTMLElement {
         }
         )
     }
-    async connectedCallback(){           
-       
-       var x = setTimeout(() => {
-           var ob = {...window.db[0]}
-           var x = Object.assign(ob.parameters, db[1])
-           var y = Object.assign(ob, db[2])
-            return y
-       }, 20);
-
-
-
-       await window.hydro.data.retrieve(x, this.handlewaterdata)
+    async connectedCallback(){
+        
+            //this behavior can be changed depending on the type of data
+    function handlewaterdata(data) {
+        var x = data
+        console.log(data);
+        return x
     }
-    
+
+    //make function iterable
+        function callDatabase() {       
+            return new Promise(resolve => {
+                setTimeout(() => {
+                    var ob = {...window.db[0]}
+                    var ne = Object.assign(ob.parameters, db[1])
+                    var y = Object.assign(ne, db[2])
+                    resolve(y)
+                }, 50);
+            })
+        }
+
+        var asa = await callDatabase()    
+        var results = await window.hydro.data.retrieve(asa, handlewaterdata)
+        
+    }
 }
 
 class parameters extends HTMLElement {

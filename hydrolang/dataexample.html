@@ -8,10 +8,15 @@
 </head>
 <body>
     
-    <data-mod func="retrieve" saveob = "name">
-        <parameters source="usgs" dataType="instant-values"></parameters>
-        <arguments site="USGS:02056000" format="json" startDt="2020-08-30" endDt="2020-09-02"></arguments>
-        <proxy proxyurl="https://cors-anywhere.herokuapp.com/"></proxy>
+    <data-mod id=1 func="retrieve" saveob = "name">
+        <parameters source="usgs" dataType="instant-values" proxyurl="https://cors-anywhere.herokuapp.com/"></parameters>
+        <arguments site="USGS:02056000" format="json" startDt="2020-08-30" endDt="2020-09-02" parameterCd="00060"></arguments>
+        <!-- <proxy proxyurl="https://cors-anywhere.herokuapp.com/"></proxy> -->
+    </data-mod>
+
+    <data-mod id=2 func="retrieve" saveob = "name2">
+        <parameters source="fema" dataType="disaster-declarations"></parameters>
+        <arguments state="CA"></arguments>
     </data-mod>
     
     <script type="module" src = "./datamod.js"></script>
