@@ -6,10 +6,10 @@ const hydro = new Hydrolang()
 window.db = {}
 
 
-
+//Example for using the analyze module. Still on development
 const template = document.createElement('template');
-template.innerHTML = 
-`
+template.innerHTML =
+    `
 <style>
     h3 {
         color: coral;
@@ -24,7 +24,7 @@ template.innerHTML =
 class hydroweb extends HTMLElement {
 
     //properties defined per element
-    static get properties(){
+    static get properties() {
         return {
             "module": {
                 type: String,
@@ -49,18 +49,18 @@ class hydroweb extends HTMLElement {
     }
 
     //observer of keys for each property of the HTML element
-    static get observedAttributes(){
+    static get observedAttributes() {
         return Object.keys(hydroweb.properties)
     }
 
     //Reusable property maker. Returns the names and values of the attributes passed.
-    makePropertiesFromAttributes(elem){
+    makePropertiesFromAttributes(elem) {
         let ElemClass = customElements.get(elem);
         let attr = ElemClass.observedAttributes;
         if (!attr) return null;
         var props = {}
 
-        for(var i = 0; i < attr.length; i++){
+        for (var i = 0; i < attr.length; i++) {
             var prop = attr[i]
             props[prop] = this.getAttribute(attr[i])
             console.log(props[prop])
@@ -69,34 +69,37 @@ class hydroweb extends HTMLElement {
     }
 
     //this constructor creates a shadow root and appends it to DOM. This can be done as a separate element.   
-    constructor () {
+    constructor() {
         super();
-        let shadow = this.attachShadow({ mode : 'open' });
+        let shadow = this.attachShadow({
+            mode: 'open'
+        });
         shadow.appendChild(template.content.cloneNode(true));
         let web = document.querySelector('hydrolang-web')
 
         //the data is read in the screen from the span element
-        let data  = web.querySelector('hydrolang-web span')
-        var values = data.textContent.split(",").map(x=>parseInt(x))
+        let data = web.querySelector('hydrolang-web span')
+        var values = data.textContent.split(",").map(x => parseInt(x))
 
         var props = this.makePropertiesFromAttributes('hydrolang-web')
         console.log(props)
 
         let res = hydro[props.module][props.component][props.func](values)
 
-        template.innerHTML = 
-        `
+        template.innerHTML =
+            `
         <h3>The result of your calculation is: ${res} </h3>
         
         `
 
-        Object.assign(window.db, {[props.saveob]: res})
+        Object.assign(window.db, {
+            [props.saveob]: res
+        })
 
         console.log(window.db)
     }
 
-    connectedCallback(){
-    }
+    connectedCallback() {}
 }
 
 console.log(db)
