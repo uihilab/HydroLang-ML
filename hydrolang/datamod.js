@@ -123,6 +123,7 @@ class datamod extends HTMLElement {
         function callDatabase() {
             return new Promise(resolve => {
                 setTimeout(() => {
+                    //This will be modified to be doing the appending iteratively
                     var ob = {
                         ...window.db[0]
                     }
