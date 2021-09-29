@@ -4,6 +4,7 @@ import Hydrolang from './hydro.js'
 window.hydro = new Hydrolang()
 window.db = {}
 window.results = {}
+window.instancecounter = 0
 
 //Template attached to the module
 const template = document.createElement('template');
@@ -113,11 +114,11 @@ class datamod extends HTMLElement {
         return new Promise(resolve => {
         setTimeout(() => {
             var x = Object.keys(obj)
+            window.instancecounter++
             resolve(x)
         }, 1)
     })
     }
-
 
     
     //this behavior can be changed depending on the type of data
@@ -125,6 +126,18 @@ class datamod extends HTMLElement {
         var x = data
         console.log(data);
         return x
+    }
+
+    //Item called from the database
+    callDatabase(item) {
+        return new Promise(resolve => {
+            setTimeout(() => {
+                var ob = {
+                    ...window.db[item]
+                }
+                resolve(ob)
+            }, 50);
+        })
     }
 
     //main class to handle the inputs from the user.
@@ -159,27 +172,29 @@ class datamod extends HTMLElement {
     }
 
     //asynchronous callback to call the data module and potentially the map module.
-    async connectedCallback() {
+    async connectedCallback() { 
         var keyvalues = await this.grabKeyList(window.db)
-        console.log(keyvalues)
 
-        //Need to create indexes for each of the parameters to append them to the dictionaries
-        function callDatabase() {
-            return new Promise(resolve => {
-                setTimeout(() => {
-                    //This will be modified to be doing the appending iteratively
-                    var ob = {
-                        ...window.db
-                    }
-                    resolve(ob)
-                }, 50);
-            })
+        var x = await window.instancecounter
+
+        var res = await this.callDatabase(x)
+
+        var ob = await {...res[0]}
+        var nw = await {...res[1]}
+        var vf  ={}
+        vf = await Object.assign(ob.parameters, nw)
+        
+        results = await window.hydro.data.retrieve(vf, this.handlewaterdata)
+
+        if(window.instancecounter > keyvalues.length) {
+            window.instancecounter = keyvalues.length
+        } else {
+            window.instancecounter
         }
-
-        var asa = await callDatabase()
-        console.log(asa)
     }
-    // var results = await window.hydro.data.retrieve(asa, this.handlewaterdata)
+
+    async disconnectedCallback() {
+    }
 }
 
 //class for handling parameters
