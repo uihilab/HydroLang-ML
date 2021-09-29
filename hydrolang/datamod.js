@@ -112,15 +112,15 @@ class datamod extends HTMLElement {
 
     grabKeyList(obj) {
         return new Promise(resolve => {
-        setTimeout(() => {
-            var x = Object.keys(obj)
-            window.instancecounter++
-            resolve(x)
-        }, 1)
-    })
+            setTimeout(() => {
+                var x = Object.keys(obj)
+                window.instancecounter++
+                resolve(x)
+            }, 1)
+        })
     }
 
-    
+
     //this behavior can be changed depending on the type of data
     handlewaterdata(data) {
         var x = data
@@ -172,29 +172,32 @@ class datamod extends HTMLElement {
     }
 
     //asynchronous callback to call the data module and potentially the map module.
-    async connectedCallback() { 
+    async connectedCallback() {
         var keyvalues = await this.grabKeyList(window.db)
 
         var x = await window.instancecounter
 
         var res = await this.callDatabase(x)
 
-        var ob = await {...res[0]}
-        var nw = await {...res[1]}
-        var vf  ={}
+        var ob = await {
+            ...res[0]
+        }
+        var nw = await {
+            ...res[1]
+        }
+        var vf = {}
         vf = await Object.assign(ob.parameters, nw)
-        
+
         results = await window.hydro.data.retrieve(vf, this.handlewaterdata)
 
-        if(window.instancecounter > keyvalues.length) {
+        if (window.instancecounter > keyvalues.length) {
             window.instancecounter = keyvalues.length
         } else {
             window.instancecounter
         }
     }
 
-    async disconnectedCallback() {
-    }
+    async disconnectedCallback() {}
 }
 
 //class for handling parameters
