@@ -114,7 +114,12 @@ class datamod extends HTMLElement {
         return new Promise(resolve => {
             setTimeout(() => {
                 var x = Object.keys(obj)
-                window.instancecounter++
+                if (window.instancecounter < x.length) {
+                    window.instancecounter++
+            } if (window.instancecounter = x.length) {
+                //NOT WORKING!!! fix
+                window.instancecounter = 0
+            }
                 resolve(x)
             }, 1)
         })
@@ -172,9 +177,10 @@ class datamod extends HTMLElement {
     }
 
     //asynchronous callback to call the data module and potentially the map module.
-    async connectedCallback() {
+    async connectedCallback(parent = this.closest("hydrolang-ml")) {
         var keyvalues = await this.grabKeyList(window.db)
 
+        if (parent) {
         var x = await window.instancecounter
 
         var res = await this.callDatabase(x)
@@ -195,9 +201,9 @@ class datamod extends HTMLElement {
         } else {
             window.instancecounter
         }
+        parent.append(this)
     }
-
-    async disconnectedCallback() {}
+    }
 }
 
 //class for handling parameters
