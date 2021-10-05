@@ -21,25 +21,24 @@
 
     <hydrolang-ml>
         <data-mod id=2 func="retrieve" saveob="name2">
-            <parameters source="fema" dataType="disaster-declarations"></parameters>
-            <arguments state="CA"></arguments>
+            <parameters source="noaa" dataType="prec-15min" type="json" token="wOYszxFhCctvvmijQbDUaiVgNMmwFNQE"></parameters>
+            <arguments stationid="COOP:018673" units="metric" startdate="2014-01-01" enddate="2014-12-31" datatype="QGAG"></arguments>
         </data-mod>
     </hydrolang-ml>
 
     <hydrolang-ml>
-        <data-mod id=3 func="retrieve" saveob="name2">
+        <data-mod id=3 func="retrieve" saveob="name3">
             <parameters source="fema" dataType="disaster-declarations"></parameters>
             <arguments state="AR"></arguments>
         </data-mod>
     </hydrolang-ml>
 
     <hydrolang-ml>
-        <data-mod id=4 func="retrieve" saveob="name2">
-            <parameters source="fema" dataType="disaster-declarations"></parameters>
-            <arguments state="IA"></arguments>
+        <data-mod id=4 func="retrieve" saveob="name4">
+            <parameters source="eauk" dataType="list-stations"></parameters>
+            <arguments parameter="rainfall" search="Northumberland"></arguments>
         </data-mod>
     </hydrolang-ml>
-
 
     <script type="module" src="./datamod.js"></script>
 

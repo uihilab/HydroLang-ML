@@ -1,4 +1,4 @@
-class basebuilder extends HTMLElement {
+export default class basebuilder extends HTMLElement {
     static get prop() {
         return {
             name: {
@@ -6,21 +6,37 @@ class basebuilder extends HTMLElement {
                 userDefined: false
             }
         }
-    }
+    };
 
-    static createFragement(node) {
-        let frag = document.createDocumentFragment();
-        for (let i=0; i < node.childNodes.length; i++) {
-            frag.append(node.childNodes[i].cloneNode(true))
+    static makePropertiesFromParameters(elem) {
+        let attr = []
+        var names = []
+
+        for (var i = 0; i < elem.length; i++) {
+
+            var props = {}
+            names.push(elem[i].getAttributeNames())
+            for (var j = 0; j < names[i].length; j++) {
+                var prop = names[i][j]
+                props[prop] = elem[i].getAttribute(prop)
+            }
+            attr.push(props)
         }
-        return frag
-    }
+        return attr
+    };
 
-    static createNodeHolder(o) {
-        let node = o.cloneNode(false);
-        node.innerFragment = basebuilder.createFragement(o)
-        return node
-    }
+    static makePropertiesFromAttributes(elem) {
+        let ElemClass = customElements.get(elem);
+        let attr = ElemClass.observedAttributes;
+        if (!attr) return null;
+        var props = {}
+
+        for (var i = 0; i < attr.length; i++) {
+            var prop = attr[i]
+            props[prop] = this.getAttribute(attr[i])
+        }
+        return props
+    };
 
     static registerElement(name, elem) {
         if (!customElements.get(name)) {
@@ -32,59 +48,11 @@ class basebuilder extends HTMLElement {
 
     constructor() {
         super();
-        this._props = this.makePropertiesFromAttributes();
-    }
-
-    makePropertiesFromAttributes(){
-        let ElemClass = customElements.get(this.tagName.toLowerCase());
-        let attr = ElemClass.observedAttributes;
-        if (!attr) return null;
-        let props = {}
-
-        for(let i = 0; i < attr.length; i++){
-            props[prop] = attr[i]
-
-            if(typeof this[prop] != 'undefined') {
-                continue;
-            } else {
-                Object.defineProperty(this, prop, {
-                    get: () => {
-                        let result = this.getAttributes(attr[i]);
-                        if (result === 'true') { return true; }
-                        else if (result === 'false') {return false;}
-                        else { return result}
-                    },
-                    set: (value) => {
-                        this.setAttribute(attr[i], value)
-                    }
-                })
-            }
-        }
-        return props
-    }
-
-    getAttributes() {
-        let result = {}
-        let attributes = Object.keys(this.constructor.properties);
-        for (let i=0; i< attributes.length; i++) {
-            if (!this.constructor.properties[attributes[i]].userDefined) {
-                continue;
-            } if((typeof this.getAttribute(attributes[i] !== 'undefined') && (this.getAttribute(attributes[i] !== 'undefined')))) {
-                if (this.constructor.properties[attributes[i]].value == this.getAttribute(attributes[i])) {
-                    result[attributes[i]] = this.getAttribute(attributes[i])
-                }
-            }
-        }
-        return result
     }
 }
 
-if(!customElements.get('basebuilder')) {
+if(!customElements.get('base-builder')) {
     window.hydronames = window.hydronames || [];
-    window.hydronames.push('BASEBUILDER');
-    customElements.define('basebuilder', basebuilder);
-}
-
-class analyze extends basebuilder {
-
+    window.hydronames.push('BASE-BUILDER');
+    customElements.define('base-builder', basebuilder);
 }

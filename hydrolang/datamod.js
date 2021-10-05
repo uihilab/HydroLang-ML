@@ -1,6 +1,8 @@
 import Hydrolang from './hydro.js'
+import basebuilder from './functions.js'
 
 //Declare global dictionaries for handling parameters, results and HydroLang instance
+
 window.hydro = new Hydrolang()
 window.db = {}
 window.results = {}
@@ -17,35 +19,24 @@ template.innerHTML =
 <slot></slot>
 `;
 
-//Template attached to the module
-const template2 = document.createElement('template');
-template.id = 'HYDROLANG-ML'
-template.innerHTML =
-    `
-<style>
-</style>
-<div><slot name=data-mod></slot></div>
-<slot></slot>
-`;
-
 class hydrolangml extends HTMLElement {
     constructor() {
         super()
-        let shadow = this.attachShadow({
+        this.attachShadow({
             mode: 'open'
         })
-        shadow.append(template2.content.cloneNode(true))
 
-        //The events of slots changes are dealth with here. Create 
-        //object parameters and append them to the global dictionaries
-        this.shadowRoot.addEventListener("slotchange", (ev) => {
-            if (ev.target.appendChild == "") {
-                [...ev.target.assignedElements()]
-                .filter(el => el.nodeName == 'data-mod')
-                    .map(el => el.slot = 'data-mod')
-            } else {
-                console.log(`SLOT: ${ev.target.name} got`, ev.target.assignedElements())
-            }
+        this.shadowRoot.innerHTML =     `
+        <slot></slot>
+        `
+
+        const slot = this.shadowRoot.querySelector('slot')
+
+        slot.addEventListener('slotchange', (ev) => {
+            const children = ev.target.assignedElements()
+            children.forEach(child => {
+                child.shout()
+            })
         })
     }
 }
@@ -114,23 +105,20 @@ class datamod extends HTMLElement {
         return new Promise(resolve => {
             setTimeout(() => {
                 var x = Object.keys(obj)
-                if (window.instancecounter < x.length) {
-                    window.instancecounter++
-            } if (window.instancecounter = x.length) {
-                //NOT WORKING!!! fix
-                window.instancecounter = 0
-            }
                 resolve(x)
             }, 1)
         })
     }
 
+    counter(){
+       window.instancecounter ++
+       return window.instancecounter
+    }
+
 
     //this behavior can be changed depending on the type of data
     handlewaterdata(data) {
-        var x = data
-        console.log(data);
-        return x
+        console.log(data)
     }
 
     //Item called from the database
@@ -141,7 +129,7 @@ class datamod extends HTMLElement {
                     ...window.db[item]
                 }
                 resolve(ob)
-            }, 50);
+            }, 10);
         })
     }
 
@@ -153,17 +141,15 @@ class datamod extends HTMLElement {
         })
         shadow.append(template.content.cloneNode(true))
 
-        //The events of slots changes are dealth with here. Create 
+        //The events of slots changes are dealth with here. Create
         //object parameters and append them to the global dictionaries
         this.shadowRoot.addEventListener("slotchange", (ev) => {
-            if (ev.target.appendChild == "") {
-                [...ev.target.assignedElements()]
-                .filter(el => el.nodeName == 'func-parameter')
-                    .map(el => el.slot = 'func-parameters')
-            } else {
+
                 var r = ev.target.assignedElements()
-                var datamodprop = this.makePropertiesFromAttributes('data-mod')
-                var ar = this.makePropertiesFromParameters(r)
+                // var datamodprop = this.makePropertiesFromAttributes('data-mod')
+                var datamodprop = basebuilder.makePropertiesFromAttributes('data-mod')
+                // var ar = this.makePropertiesFromParameters(r)
+                var ar = basebuilder.makePropertiesFromParameters(r)
                 var newdb = {}
                 for (var i = 0; i < ar.length; i++) {
                     newdb[i] = {
@@ -172,16 +158,13 @@ class datamod extends HTMLElement {
                 }
                 window.db[datamodprop.id] = newdb
                 console.log(`SLOT: ${ev.target.name} got`, ev.target.assignedElements())
-            }
         })
     }
 
     //asynchronous callback to call the data module and potentially the map module.
-    async connectedCallback(parent = this.closest("hydrolang-ml")) {
-        var keyvalues = await this.grabKeyList(window.db)
+    async connectedCallback() {
 
-        if (parent) {
-        var x = await window.instancecounter
+        var x = await this.counter()
 
         var res = await this.callDatabase(x)
 
@@ -191,18 +174,16 @@ class datamod extends HTMLElement {
         var nw = await {
             ...res[1]
         }
+
         var vf = {}
         vf = await Object.assign(ob.parameters, nw)
 
-        results = await window.hydro.data.retrieve(vf, this.handlewaterdata)
+        await window.hydro.data.retrieve(vf, this.handlewaterdata)
 
-        if (window.instancecounter > keyvalues.length) {
-            window.instancecounter = keyvalues.length
-        } else {
-            window.instancecounter
-        }
-        parent.append(this)
     }
+
+    shout() {
+        console.log("I'm I ALIVE in HYDROLANG!!!")
     }
 }
 
@@ -211,7 +192,7 @@ class parameters extends HTMLElement {
     //Solution to remove the name slot element from the parameters
     //And potentially implement for creating child elements.
 
-    connectedCallback(parent = this.closest("data-mod")) {
+    connectedCallback(parent = this.closest('data-mod')) {
         if (this.parentNode != parent) {
             if (parent) parent.append(this)
             else console.error(this.innerHTML, "NEEDS A PARENT ELEMENT!")
@@ -220,6 +201,6 @@ class parameters extends HTMLElement {
 };
 
 //Defining the web components into the DOM
-window.customElements.define('data-mod', datamod)
+basebuilder.registerElement('data-mod', datamod)
 window.customElements.define('func-parameter', parameters)
 window.customElements.define('hydrolang-ml', hydrolangml)
