@@ -1,5 +1,6 @@
 import Hydrolang from './hydro.js'
 import basebuilder from './functions.js'
+import h from './globals.js'
 
 //Declare global dictionaries for handling parameters, results and HydroLang instance
 
@@ -19,31 +20,8 @@ template.innerHTML =
 <slot></slot>
 `;
 
-class hydrolangml extends HTMLElement {
-    constructor() {
-        super()
-        this.attachShadow({
-            mode: 'open'
-        })
-
-        this.shadowRoot.innerHTML =     `
-        <slot></slot>
-        `
-
-        const slot = this.shadowRoot.querySelector('slot')
-
-        slot.addEventListener('slotchange', (ev) => {
-            const children = ev.target.assignedElements()
-            children.forEach(child => {
-                child.shout()
-            })
-        })
-    }
-}
-
-
 //Web component for handling data module.
-class datamod extends HTMLElement {
+export default class datamod extends HTMLElement {
     static get properties() {
         return {
 
@@ -69,7 +47,6 @@ class datamod extends HTMLElement {
         return Object.keys(datamod.properties)
     }
 
-    //Create properties from passed parameters
     makePropertiesFromParameters(elem) {
         let attr = []
         var names = []
@@ -133,6 +110,10 @@ class datamod extends HTMLElement {
         })
     }
 
+    modproperties(){
+        return basebuilder.makePropertiesFromAttributes('data-mod')
+    }
+
     //main class to handle the inputs from the user.
     constructor() {
         super()
@@ -146,8 +127,8 @@ class datamod extends HTMLElement {
         this.shadowRoot.addEventListener("slotchange", (ev) => {
 
                 var r = ev.target.assignedElements()
-                // var datamodprop = this.makePropertiesFromAttributes('data-mod')
-                var datamodprop = basebuilder.makePropertiesFromAttributes('data-mod')
+                var datamodprop = this.makePropertiesFromAttributes('data-mod')
+                //var datamodprop = basebuilder.makePropertiesFromAttributes('data-mod')
                 // var ar = this.makePropertiesFromParameters(r)
                 var ar = basebuilder.makePropertiesFromParameters(r)
                 var newdb = {}
@@ -183,24 +164,9 @@ class datamod extends HTMLElement {
     }
 
     shout() {
-        console.log("I'm I ALIVE in HYDROLANG!!!")
+        console.log("Attached")
     }
 }
 
-//class for handling parameters
-class parameters extends HTMLElement {
-    //Solution to remove the name slot element from the parameters
-    //And potentially implement for creating child elements.
-
-    connectedCallback(parent = this.closest('data-mod')) {
-        if (this.parentNode != parent) {
-            if (parent) parent.append(this)
-            else console.error(this.innerHTML, "NEEDS A PARENT ELEMENT!")
-        }
-    }
-};
-
 //Defining the web components into the DOM
 basebuilder.registerElement('data-mod', datamod)
-window.customElements.define('func-parameter', parameters)
-window.customElements.define('hydrolang-ml', hydrolangml)
