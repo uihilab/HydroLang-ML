@@ -7,16 +7,14 @@ export default class hydrolangml extends HTMLElement {
             mode: 'open'
         })
 
-        this.shadowRoot.innerHTML =     `
-        <slot></slot>
-        `
+        this.shadowRoot.innerHTML ='<slot></slot>'
         const slot = this.shadowRoot.querySelector('slot')
 
         slot.addEventListener('slotchange', (ev) => {
             const children = ev.target.assignedElements()
-            children.forEach(child => {
-                child.shout()
-            })
+            // children.forEach(child => {
+            //     child.shout()
+            // })
         })
     }
 }

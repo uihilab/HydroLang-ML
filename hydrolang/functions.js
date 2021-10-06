@@ -26,6 +26,20 @@ export default class basebuilder extends HTMLElement {
         return attr
     };
 
+    //Create properties from attributes
+    static makePropertiesFromAttributes(elem) {
+        let ElemClass = customElements.get(elem);
+        let attr = ElemClass.observedAttributes;
+        if (!attr) return null;
+        var props = {}
+
+        for (var i = 0; i < attr.length; i++) {
+            var prop = attr[i]
+            props[prop] = this.getAttribute(attr[i])
+        }
+        return props
+    }
+
     static registerElement(name, elem) {
         if (!customElements.get(name)) {
             window.hydronames = window.hydronames || [];

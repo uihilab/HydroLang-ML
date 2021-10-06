@@ -1,9 +1,8 @@
+import basebuilder from "./functions.js";
 import Hydrolang from "./hydro.js";
 
 //convert this guy into a global variable using window element
 const hydro = new Hydrolang()
-
-window.db = {}
 
 
 //Example for using the analyze module. Still on development
@@ -21,16 +20,11 @@ template.innerHTML =
 
 `;
 
-class hydroweb extends HTMLElement {
+class analyzemod extends HTMLElement {
 
     //properties defined per element
     static get properties() {
         return {
-            "module": {
-                type: String,
-                userDefined: true
-            },
-
             "component": {
                 type: String,
                 userDefined: true
@@ -74,14 +68,15 @@ class hydroweb extends HTMLElement {
         let shadow = this.attachShadow({
             mode: 'open'
         });
+
         shadow.appendChild(template.content.cloneNode(true));
-        let web = document.querySelector('hydrolang-web')
+        let web = document.querySelector('analyze-mod')
 
         //the data is read in the screen from the span element
-        let data = web.querySelector('hydrolang-web span')
+        let data = web.querySelector('analyze-mod span')
         var values = data.textContent.split(",").map(x => parseInt(x))
 
-        var props = this.makePropertiesFromAttributes('hydrolang-web')
+        var props = this.makePropertiesFromAttributes('analyze-mod')
         console.log(props)
 
         let res = hydro[props.module][props.component][props.func](values)
@@ -100,9 +95,10 @@ class hydroweb extends HTMLElement {
     }
 
     connectedCallback() {}
+
+    shout () {
+        console.log("I'm allive!!")
+    }
 }
 
-console.log(db)
-
-
-window.customElements.define('hydrolang-web', hydroweb)
+basebuilder.registerElement('analyze-mod', analyzemod)

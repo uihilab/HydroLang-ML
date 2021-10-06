@@ -1,10 +1,8 @@
 import Hydrolang from "./hydro.js";
-
-var h = {
+var hlins = {
     hydro: function() {
-        var hydro = new Hydrolang();
-        return hydro
+        return new Hydrolang();
     }
-}
+};
 
-export default {h} 
+export default {hlins}

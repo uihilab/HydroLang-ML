@@ -1,15 +1,14 @@
 import basebuilder from './functions.js'
 import Hydrolang from './hydro.js'
 
+//BOILERPLATE! Will be updated afterwards.
+
 //Declare global dictionaries for handling parameters, results and HydroLang instance
 window.hydro = new Hydrolang()
-window.db = {}
-window.results = {}
-window.instancecounter = 0
 
 //Template attached to the module
 const template = document.createElement('template');
-template.id = 'DATA-MOD'
+template.id = 'MAP-MOD'
 template.innerHTML =
     `
 <style>
@@ -18,21 +17,11 @@ template.innerHTML =
 `;
 
 //Web component for handling data module.
-export default class datamod extends HTMLElement {
+export default class mapmod extends HTMLElement {
     static get properties() {
         return {
 
-            "id": {
-                type: String,
-                userDefined: true
-            },
-
             "func": {
-                type: String,
-                userDefined: true
-            },
-
-            "saveob": {
                 type: String,
                 userDefined: true
             },
@@ -67,17 +56,6 @@ export default class datamod extends HTMLElement {
         })
     }
 
-    counter(){
-       window.instancecounter ++
-       return window.instancecounter
-    }
-
-
-    //this behavior can be changed depending on the type of data
-    handlewaterdata(data) {
-        console.log(data)
-    }
-
     //Item called from the database
     callDatabase(item) {
         return new Promise(resolve => {
@@ -88,10 +66,6 @@ export default class datamod extends HTMLElement {
                 resolve(ob)
             }, 10);
         })
-    }
-
-    modproperties(){
-        return basebuilder.makePropertiesFromAttributes('data-mod')
     }
 
     //main class to handle the inputs from the user.
@@ -132,14 +106,11 @@ export default class datamod extends HTMLElement {
         var ob = await {
             ...res[0]
         }
-        var nw = await {
-            ...res[1]
-        }
 
         var vf = {}
         vf = await Object.assign(ob.parameters, nw)
 
-        await window.hydro.data.retrieve(vf, this.handlewaterdata)
+        await window.hydro.map.loader(vf)
 
     }
 
@@ -149,4 +120,4 @@ export default class datamod extends HTMLElement {
 }
 
 //Defining the web components into the DOM
-basebuilder.registerElement('data-mod', datamod)
+basebuilder.registerElement('map-mod', mapmod)
