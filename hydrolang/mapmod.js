@@ -80,19 +80,19 @@ export default class mapmod extends HTMLElement {
         //object parameters and append them to the global dictionaries
         this.shadowRoot.addEventListener("slotchange", (ev) => {
 
-                var r = ev.target.assignedElements()
-                var datamodprop = this.makePropertiesFromAttributes('data-mod')
-                //var datamodprop = basebuilder.makePropertiesFromAttributes('data-mod')
-                // var ar = this.makePropertiesFromParameters(r)
-                var ar = basebuilder.makePropertiesFromParameters(r)
-                var newdb = {}
-                for (var i = 0; i < ar.length; i++) {
-                    newdb[i] = {
-                        [r[i].localName]: ar[i]
-                    }
+            var r = ev.target.assignedElements()
+            var datamodprop = this.makePropertiesFromAttributes('data-mod')
+            //var datamodprop = basebuilder.makePropertiesFromAttributes('data-mod')
+            // var ar = this.makePropertiesFromParameters(r)
+            var ar = basebuilder.makePropertiesFromParameters(r)
+            var newdb = {}
+            for (var i = 0; i < ar.length; i++) {
+                newdb[i] = {
+                    [r[i].localName]: ar[i]
                 }
-                window.db[datamodprop.id] = newdb
-                console.log(`SLOT: ${ev.target.name} got`, ev.target.assignedElements())
+            }
+            window.db[datamodprop.id] = newdb
+            console.log(`SLOT: ${ev.target.name} got`, ev.target.assignedElements())
         })
     }
 

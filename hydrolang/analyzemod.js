@@ -3,7 +3,7 @@ import basebuilder from "./functions.js";
 //Example for using the analyze module. Still on development
 const template = document.createElement('template');
 template.innerHTML =
-template.id = 'ANALYZE-MOD'
+    template.id = 'ANALYZE-MOD'
 template.innerHTML =
     `
 <style>
@@ -87,7 +87,7 @@ class analyzemod extends HTMLElement {
 
     connectedCallback() {}
 
-    shout () {
+    shout() {
         console.log("Analyze-Mod Attached")
     }
 }

@@ -1,11 +1,11 @@
 import Hydrolang from "./hydro.js";
 
 //Hydro instance to be used globally
-var Hydro = Hydro || (function() {
+var Hydro = Hydro || (function () {
     var hydro = new Hydrolang()
 
     return {
-        ins: function() {
+        ins: function () {
             return hydro
         }
     }
@@ -13,7 +13,7 @@ var Hydro = Hydro || (function() {
 
 
 //Cookie service for storing parameters and arguments used in functions.
-if (JSON && JSON.stringify && JSON.parse) var Sess = Sess || (function() {
+if (JSON && JSON.stringify && JSON.parse) var Sess = Sess || (function () {
     var store = load();
 
     function load() {
@@ -21,7 +21,7 @@ if (JSON && JSON.stringify && JSON.parse) var Sess = Sess || (function() {
         var result = document.cookie.match(new RegExp(name + '=([^;]+)'));
 
         if (result)
-        return JSON.parse(result[1]);
+            return JSON.parse(result[1]);
 
         return {};
     }
@@ -31,7 +31,7 @@ if (JSON && JSON.stringify && JSON.parse) var Sess = Sess || (function() {
         //Letting cookies live for 1 day in total
         date.setHours(23, 59, 59, 999);
         var expires = "expires=" + date.toGMTString();
-        document.cookie = JSON.stringify(store)+"; "+expires
+        document.cookie = JSON.stringify(store) + "; " + expires
     };
 
     if (window.addEventListener) window.addEventListener("unload", Save, false);
@@ -39,16 +39,21 @@ if (JSON && JSON.stringify && JSON.parse) var Sess = Sess || (function() {
     else window.onunload = Save;
 
     return {
-        set: function(name, value) {
+        set: function (name, value) {
             store[name] = value;
         },
 
-        get: function(name) {
+        get: function (name) {
             return (store[name] ? store[name] : undefined);
         },
 
-        clear: function() { store = {};}
+        clear: function () {
+            store = {};
+        }
     }
 })();
 
-export {Hydro, Sess}
+export {
+    Hydro,
+    Sess
+}

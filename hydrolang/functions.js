@@ -1,4 +1,7 @@
-import {Hydro,Sess} from './globals.js'
+import {
+    Hydro,
+    Sess
+} from './globals.js'
 
 export default class basebuilder extends HTMLElement {
     static get prop() {
@@ -15,7 +18,7 @@ export default class basebuilder extends HTMLElement {
         return Hydro.ins()
     }
 
-    static counter(){
+    static counter() {
         window.instancecounter++
         return window.instancecounter
     }
@@ -57,12 +60,12 @@ export default class basebuilder extends HTMLElement {
 
         var tostore = Sess.get(name)
 
-        if(tostore == undefined){
-        tostore = value;
-    } else {
-        console.log(`${name} + restored from cookies`)
-        return tostore
-    }
+        if (tostore == undefined) {
+            tostore = value;
+        } else {
+            console.log(`${name} + restored from cookies`)
+            return tostore
+        }
         Sess.set(name, tostore)
     }
 
@@ -81,7 +84,7 @@ export default class basebuilder extends HTMLElement {
 }
 
 //Register this elemnt into the DOM
-if(!customElements.get('base-builder')) {
+if (!customElements.get('base-builder')) {
     window.hydronames = window.hydronames || [];
     window.hydronames.push('BASE-BUILDER');
     customElements.define('base-builder', basebuilder);

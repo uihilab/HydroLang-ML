@@ -1,6 +1,7 @@
 import basebuilder from './functions.js'
 
 //Declare global dictionaries for handling parameters, results and HydroLang instance
+
 window.db = {}
 window.results = {}
 window.instancecounter = 0
@@ -86,7 +87,7 @@ export default class datamod extends HTMLElement {
         })
     }
 
-    modproperties(){
+    modproperties() {
         return this.makePropertiesFromAttributes('data-mod')
     }
 
@@ -103,8 +104,13 @@ export default class datamod extends HTMLElement {
         })
     }
 
-    getresults(name, obj) {
-        
+    getresults(name) {
+        var key = name
+        if (key in window.results) {
+            return window.results[key]
+        } else {
+            console.log()
+        }
     }
 
     //main class to handle the inputs from the user.
@@ -123,24 +129,25 @@ export default class datamod extends HTMLElement {
         //object parameters and append them to the global dictionaries
         this.shadowRoot.addEventListener("slotchange", (ev) => {
 
-                var r = ev.target.assignedElements()
-                var ar = basebuilder.makePropertiesFromParameters(r)
-                var newdb = {}
-                for (var i = 0; i < ar.length; i++) {
-                    newdb[i] = {
-                        [r[i].localName]: ar[i]
-                    }
+            var r = ev.target.assignedElements()
+            var ar = basebuilder.makePropertiesFromParameters(r)
+            var newdb = {}
+            for (var i = 0; i < ar.length; i++) {
+                newdb[i] = {
+                    [r[i].localName]: ar[i]
                 }
-                datamodprop.id = count
-                window.db[datamodprop.id] = newdb
-                if (r.length == 0) {
-                    console.log(`No additional parameters detected for module ${datamodprop.id}.`)
-                } else {
+            }
+            datamodprop.id = count
+            window.db[datamodprop.id] = newdb
+            basebuilder.StoreVariable(datamodprop.id, newdb)
+            if (r.length == 0) {
+                console.log(`No additional parameters detected for module ${datamodprop.id}.`)
+            } else {
                 console.log(`Additional slots for module ${datamodprop.id}: ${ev.target.name} contains`, ev.target.assignedElements())
-            
-        }
-        
-            })
+
+            }
+
+        })
     }
 
     //asynchronous callback to call the data module and potentially the map module.
@@ -149,39 +156,40 @@ export default class datamod extends HTMLElement {
         var props = this.modproperties()
 
         if (props.func === "retrieve") {
-        var x = window.instancecounter
+            var x = window.instancecounter
 
-        var res = await this.callDatabase(x)
+            var res = await this.callDatabase(x)
 
-        var ob = await {
-            ...res[0]
+            var ob = await {
+                ...res[0]
+            }
+            var nw = await {
+                ...res[1]
+            }
+
+            var vf = {}
+            vf = await Object.assign(ob.parameters, nw)
+
+            var results = await basebuilder.hydro().data.retrieve(vf, this.handlewaterdata)
+            this.pushresults(props.saveob, results)
+
+        } else if (props.func === "transform") {
+            console.log("transform alive!")
+            console.log(props)
+
+        } else if (props.func === "upload") {
+            var up = basebuilder.hydro().data.upload(props.type)
+            var up2 = {
+                [props.saveob]: await up
+            }
+
+            console.log("upload alive!")
+            console.log(props)
+
+        } else if (props.func === "download") {
+            console.log("download alive!")
+            console.log(props)
         }
-        var nw = await {
-            ...res[1]
-        }
-
-        var vf = {}
-        vf = await Object.assign(ob.parameters, nw)
-
-        var results = await basebuilder.hydro().data.retrieve(vf, this.handlewaterdata)
-        this.pushresults(props.saveob, results)
-
-    } else if (props.func === "transform") {
-        console.log("transform alive!")
-        console.log(props)
-
-    } else if (props.func === "upload") {
-        var up = basebuilder.hydro().data.upload(props.type)
-        var up2 = {[props.saveob]: await up}
-
-        console.log("upload alive!")
-        console.log(props)
-
-    } else if (props.func === "download") {
-        console.log("download alive!")
-        basebuilder.StoreVariable(props.saveob, {a:1, b:2, c:3})
-        console.log(props)
-    }
     }
 
     shout() {
