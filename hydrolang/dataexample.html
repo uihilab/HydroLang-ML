@@ -11,7 +11,7 @@
 <body>
 
     <hydrolang-ml>
-        <data-mod id=4 func="retrieve" saveob="name">
+        <data-mod func="retrieve" saveob="name">
             <parameters source="usgs" dataType="instant-values" proxyurl="https://cors-anywhere.herokuapp.com/">
             </parameters>
             <arguments site="USGS:02056000" format="json" startDt="2020-08-30" endDt="2020-09-02" parameterCd="00060">
@@ -27,21 +27,32 @@
     </hydrolang-ml> -->
 
     <hydrolang-ml>
-        <data-mod id=1 func="retrieve" saveob="name2">
-            <parameters source="noaa" dataType="prec-15min" type="json" token="wOYszxFhCctvvmijQbDUaiVgNMmwFNQE"></parameters>
+        <data-mod func="retrieve" saveob="name2">
+            <parameters source="noaa" datatype="prec-15min" type="json" token="wOYszxFhCctvvmijQbDUaiVgNMmwFNQE"></parameters>
             <arguments stationid="COOP:018673" units="metric" startdate="2014-01-01" enddate="2014-12-31" datatype="QGAG"></arguments>
         </data-mod>
-        <data-mod id=2 func="retrieve" saveob="name3">
-            <parameters source="fema" dataType="disaster-declarations"></parameters>
+
+        <data-mod func="retrieve" saveob="name3">
+            <parameters source="fema" datatype="disaster-declarations"></parameters>
             <arguments state="AR"></arguments>
         </data-mod>
     </hydrolang-ml>
 
     <hydrolang-ml>
-        <data-mod id=3 func="retrieve" saveob="name4">
-            <parameters source="eauk" dataType="list-stations"></parameters>
+        <data-mod func="retrieve" saveob="name4">
+            <parameters source="eauk" datatype="list-stations"></parameters>
             <arguments parameter="rainfall" search="Northumberland"></arguments>
         </data-mod>
+<!-- 
+        <data-mod func="upload" saveob="name4" type="CSV">
+        </data-mod> -->
+
+        <data-mod func="transform" grabob="name2" saveob="name4" type="JSON">
+        </data-mod>
+
+        <data-mod func="download" grabob="name4">
+        </data-mod>
+
     </hydrolang-ml>
 
     <script type="module" src="./impexp.js"></script>

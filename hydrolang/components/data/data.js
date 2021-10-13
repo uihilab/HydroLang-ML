@@ -11,12 +11,13 @@ import stats from "../analyze/core/stats.js";
  * @returns {Object} Object with retrieved data.
  */
 
-function retrieve(params, callback) {
+async function retrieve(params, callback) {
   //obtain data from parameters set by user.
   var source = params["source"];
   var dataType = params["datatype"];
   var args = params["arguments"];
   var type = params["type"];
+  var result = []
 
   //verify if the data is contained within the hydrolang databases.
   if (!(datasources[source] && datasources[source].hasOwnProperty(dataType))) {
@@ -64,9 +65,11 @@ function retrieve(params, callback) {
     headers: head,
     success: function (data, status, xhr) {
       callback(data);
+      result.push(data)
     },
     error: function () {},
   });
+  return await result
 }
 
 /**

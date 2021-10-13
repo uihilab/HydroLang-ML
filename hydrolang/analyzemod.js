@@ -1,23 +1,14 @@
 import basebuilder from "./functions.js";
-import Hydrolang from "./hydro.js";
-
-//convert this guy into a global variable using window element
-const hydro = new Hydrolang()
-
 
 //Example for using the analyze module. Still on development
 const template = document.createElement('template');
 template.innerHTML =
+template.id = 'ANALYZE-MOD'
+template.innerHTML =
     `
 <style>
-    h3 {
-        color: coral;
-    }
 </style>
-<div class="hydrolang-web">
-    <h3></h3>
-</div>
-
+<div><slot></slot></div>
 `;
 
 class analyzemod extends HTMLElement {
@@ -97,7 +88,7 @@ class analyzemod extends HTMLElement {
     connectedCallback() {}
 
     shout () {
-        console.log("I'm allive!!")
+        console.log("Analyze-Mod Attached")
     }
 }
 

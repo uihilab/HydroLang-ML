@@ -1,8 +1,6 @@
 import basebuilder from './functions.js'
-import Hydrolang from './hydro.js'
 
 //Declare global dictionaries for handling parameters, results and HydroLang instance
-window.hydro = new Hydrolang()
 window.db = {}
 window.results = {}
 window.instancecounter = 0
@@ -21,12 +19,6 @@ template.innerHTML =
 export default class datamod extends HTMLElement {
     static get properties() {
         return {
-
-            "id": {
-                type: String,
-                userDefined: true
-            },
-
             "func": {
                 type: String,
                 userDefined: true
@@ -36,6 +28,16 @@ export default class datamod extends HTMLElement {
                 type: String,
                 userDefined: true
             },
+
+            "type": {
+                type: String,
+                userDefined: true
+            },
+
+            "grabob": {
+                type: String,
+                userDefined: true
+            }
         }
     }
 
@@ -67,15 +69,9 @@ export default class datamod extends HTMLElement {
         })
     }
 
-    counter(){
-       window.instancecounter ++
-       return window.instancecounter
-    }
-
-
     //this behavior can be changed depending on the type of data
     handlewaterdata(data) {
-        console.log(data)
+        console.log('Data pushed into results!')
     }
 
     //Item called from the database
@@ -91,7 +87,24 @@ export default class datamod extends HTMLElement {
     }
 
     modproperties(){
-        return basebuilder.makePropertiesFromAttributes('data-mod')
+        return this.makePropertiesFromAttributes('data-mod')
+    }
+
+    //Pushing results to the window object
+    pushresults(name, obj) {
+        return new Promise(resolve => {
+            setTimeout(() => {
+                var ob = {
+                    [name]: obj
+                }
+                Object.assign(window.results, ob)
+                resolve(ob)
+            }, 1000);
+        })
+    }
+
+    getresults(name, obj) {
+        
     }
 
     //main class to handle the inputs from the user.
@@ -102,14 +115,15 @@ export default class datamod extends HTMLElement {
         })
         shadow.append(template.content.cloneNode(true))
 
+        var datamodprop = this.modproperties()
+        var count = basebuilder.counter()
+
+
         //The events of slots changes are dealth with here. Create
         //object parameters and append them to the global dictionaries
         this.shadowRoot.addEventListener("slotchange", (ev) => {
 
                 var r = ev.target.assignedElements()
-                var datamodprop = this.makePropertiesFromAttributes('data-mod')
-                //var datamodprop = basebuilder.makePropertiesFromAttributes('data-mod')
-                // var ar = this.makePropertiesFromParameters(r)
                 var ar = basebuilder.makePropertiesFromParameters(r)
                 var newdb = {}
                 for (var i = 0; i < ar.length; i++) {
@@ -117,15 +131,25 @@ export default class datamod extends HTMLElement {
                         [r[i].localName]: ar[i]
                     }
                 }
+                datamodprop.id = count
                 window.db[datamodprop.id] = newdb
-                console.log(`SLOT: ${ev.target.name} got`, ev.target.assignedElements())
-        })
+                if (r.length == 0) {
+                    console.log(`No additional parameters detected for module ${datamodprop.id}.`)
+                } else {
+                console.log(`Additional slots for module ${datamodprop.id}: ${ev.target.name} contains`, ev.target.assignedElements())
+            
+        }
+        
+            })
     }
 
     //asynchronous callback to call the data module and potentially the map module.
     async connectedCallback() {
 
-        var x = await this.counter()
+        var props = this.modproperties()
+
+        if (props.func === "retrieve") {
+        var x = window.instancecounter
 
         var res = await this.callDatabase(x)
 
@@ -139,8 +163,25 @@ export default class datamod extends HTMLElement {
         var vf = {}
         vf = await Object.assign(ob.parameters, nw)
 
-        await window.hydro.data.retrieve(vf, this.handlewaterdata)
+        var results = await basebuilder.hydro().data.retrieve(vf, this.handlewaterdata)
+        this.pushresults(props.saveob, results)
 
+    } else if (props.func === "transform") {
+        console.log("transform alive!")
+        console.log(props)
+
+    } else if (props.func === "upload") {
+        var up = basebuilder.hydro().data.upload(props.type)
+        var up2 = {[props.saveob]: await up}
+
+        console.log("upload alive!")
+        console.log(props)
+
+    } else if (props.func === "download") {
+        console.log("download alive!")
+        basebuilder.StoreVariable(props.saveob, {a:1, b:2, c:3})
+        console.log(props)
+    }
     }
 
     shout() {

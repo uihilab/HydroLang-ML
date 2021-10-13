@@ -1,3 +1,5 @@
+import {Hydro,Sess} from './globals.js'
+
 export default class basebuilder extends HTMLElement {
     static get prop() {
         return {
@@ -7,6 +9,16 @@ export default class basebuilder extends HTMLElement {
             }
         }
     };
+
+    //Returns Hydrolang instance from namespace
+    static hydro() {
+        return Hydro.ins()
+    }
+
+    static counter(){
+        window.instancecounter++
+        return window.instancecounter
+    }
 
     //Create properties from passed parameters
     static makePropertiesFromParameters(elem) {
@@ -40,6 +52,21 @@ export default class basebuilder extends HTMLElement {
         return props
     }
 
+    //Store data in cache
+    static StoreVariable(name, value) {
+
+        var tostore = Sess.get(name)
+
+        if(tostore == undefined){
+        tostore = value;
+    } else {
+        console.log(`${name} + restored from cookies`)
+        return tostore
+    }
+        Sess.set(name, tostore)
+    }
+
+    //Register elements into the DOM
     static registerElement(name, elem) {
         if (!customElements.get(name)) {
             window.hydronames = window.hydronames || [];
@@ -53,6 +80,7 @@ export default class basebuilder extends HTMLElement {
     }
 }
 
+//Register this elemnt into the DOM
 if(!customElements.get('base-builder')) {
     window.hydronames = window.hydronames || [];
     window.hydronames.push('BASE-BUILDER');
