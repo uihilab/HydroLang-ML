@@ -18,9 +18,16 @@ export default class basebuilder extends HTMLElement {
         return Hydro.ins()
     }
 
-    static counter() {
-        window.instancecounter++
-        return window.instancecounter
+    static counter(){
+        return Hydro.counter()
+    }
+
+    static db() {
+        return Hydro.db()
+    }
+
+    static results() {
+        return Hydro.results()
     }
 
     //Create properties from passed parameters

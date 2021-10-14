@@ -1,11 +1,5 @@
 import basebuilder from './functions.js'
 
-//Declare global dictionaries for handling parameters, results and HydroLang instance
-
-window.db = {}
-window.results = {}
-window.instancecounter = 0
-
 //Template attached to the module
 const template = document.createElement('template');
 template.id = 'DATA-MOD'
@@ -72,7 +66,7 @@ export default class datamod extends HTMLElement {
 
     //this behavior can be changed depending on the type of data
     handlewaterdata(data) {
-        console.log('Data pushed into results!')
+        console.log(`Data added to results!`)
     }
 
     //Item called from the database
@@ -80,13 +74,14 @@ export default class datamod extends HTMLElement {
         return new Promise(resolve => {
             setTimeout(() => {
                 var ob = {
-                    ...window.db[item]
+                    ...basebuilder.db()[item]
                 }
                 resolve(ob)
             }, 10);
         })
     }
 
+    //Create properties from attributes for the data module
     modproperties() {
         return this.makePropertiesFromAttributes('data-mod')
     }
@@ -98,16 +93,17 @@ export default class datamod extends HTMLElement {
                 var ob = {
                     [name]: obj
                 }
-                Object.assign(window.results, ob)
+                Object.assign(basebuilder.results(), ob)
                 resolve(ob)
             }, 1000);
         })
     }
 
+    //Get results from the attribute
     getresults(name) {
         var key = name
-        if (key in window.results) {
-            return window.results[key]
+        if (key in basebuilder.results()) {
+            return basebuilder.results()[key]
         } else {
             console.log()
         }
@@ -138,7 +134,7 @@ export default class datamod extends HTMLElement {
                 }
             }
             datamodprop.id = count
-            window.db[datamodprop.id] = newdb
+            basebuilder.db()[datamodprop.id] = newdb
             basebuilder.StoreVariable(datamodprop.id, newdb)
             if (r.length == 0) {
                 console.log(`No additional parameters detected for module ${datamodprop.id}.`)

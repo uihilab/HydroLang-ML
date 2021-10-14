@@ -1,12 +1,29 @@
 import Hydrolang from "./hydro.js";
 
 //Hydro instance to be used globally
+//Extends 
 var Hydro = Hydro || (function () {
     var hydro = new Hydrolang()
+    window.instancecounter = 0
+    window.db = {}
+    window.results = {}
 
     return {
         ins: function () {
             return hydro
+        },
+        db: function () {
+            return window.db
+        },
+        results: function() {
+            return window.results
+        },
+        counter: function() {
+            window.instancecounter++
+        },
+
+        count: function() {
+            return window.instancecounter
         }
     }
 })();
