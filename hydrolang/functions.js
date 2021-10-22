@@ -1,6 +1,7 @@
 import {
     Hydro,
-    Sess
+    Cookie,
+    Local
 } from './globals.js'
 
 export default class basebuilder extends HTMLElement {
@@ -28,6 +29,10 @@ export default class basebuilder extends HTMLElement {
 
     static results() {
         return Hydro.results()
+    }
+
+    static count() {
+        Hydro.count()
     }
 
     //Create properties from passed parameters
@@ -62,10 +67,10 @@ export default class basebuilder extends HTMLElement {
         return props
     }
 
-    //Store data in cache
-    static StoreVariable(name, value) {
+    //Store data in cache, if required
+    static CookieStore(name, value) {
 
-        var tostore = Sess.get(name)
+        var tostore = Cookie.get(name)
 
         if (tostore == undefined) {
             tostore = value;
@@ -73,8 +78,16 @@ export default class basebuilder extends HTMLElement {
             console.log(`${name} + restored from cookies`)
             return tostore
         }
-        Sess.set(name, tostore)
+        Cookie.set(name, tostore)
     }
+
+    static LocalStore(name, value) {
+        Local.set(name, value)
+    };
+
+    static LocalGet(name) {
+        Local.get(name)
+    };
 
     //Register elements into the DOM
     static registerElement(name, elem) {

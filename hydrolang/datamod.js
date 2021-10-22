@@ -86,7 +86,7 @@ export default class datamod extends HTMLElement {
         return this.makePropertiesFromAttributes('data-mod')
     }
 
-    //Pushing results to the window object
+    //Pushing results to the local storage
     pushresults(name, obj) {
         return new Promise(resolve => {
             setTimeout(() => {
@@ -118,24 +118,25 @@ export default class datamod extends HTMLElement {
         shadow.append(template.content.cloneNode(true))
 
         var datamodprop = this.modproperties()
-        var count = basebuilder.counter()
 
 
         //The events of slots changes are dealth with here. Create
         //object parameters and append them to the global dictionaries
         this.shadowRoot.addEventListener("slotchange", (ev) => {
+            basebuilder.count()
 
             var r = ev.target.assignedElements()
             var ar = basebuilder.makePropertiesFromParameters(r)
             var newdb = {}
+
             for (var i = 0; i < ar.length; i++) {
                 newdb[i] = {
                     [r[i].localName]: ar[i]
                 }
             }
-            datamodprop.id = count
+
+            datamodprop.id = basebuilder.counter()
             basebuilder.db()[datamodprop.id] = newdb
-            basebuilder.StoreVariable(datamodprop.id, newdb)
             if (r.length == 0) {
                 console.log(`No additional parameters detected for module ${datamodprop.id}.`)
             } else {
@@ -150,8 +151,10 @@ export default class datamod extends HTMLElement {
     async connectedCallback() {
 
         var props = this.modproperties()
+        console.log(props)
 
         if (props.func === "retrieve") {
+        
             var x = window.instancecounter
 
             var res = await this.callDatabase(x)
@@ -159,6 +162,7 @@ export default class datamod extends HTMLElement {
             var ob = await {
                 ...res[0]
             }
+
             var nw = await {
                 ...res[1]
             }
@@ -170,10 +174,12 @@ export default class datamod extends HTMLElement {
             this.pushresults(props.saveob, results)
 
         } else if (props.func === "transform") {
+
             console.log("transform alive!")
             console.log(props)
 
         } else if (props.func === "upload") {
+
             var up = basebuilder.hydro().data.upload(props.type)
             var up2 = {
                 [props.saveob]: await up

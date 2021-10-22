@@ -4,6 +4,8 @@ import Hydrolang from "./hydro.js";
 //Extends 
 var Hydro = Hydro || (function () {
     var hydro = new Hydrolang()
+
+    //Initialize window object containers
     window.instancecounter = 0
     window.db = {}
     window.results = {}
@@ -19,18 +21,17 @@ var Hydro = Hydro || (function () {
             return window.results
         },
         counter: function() {
-            window.instancecounter++
-        },
-
-        count: function() {
             return window.instancecounter
+        },
+        count: function() {
+            window.instancecounter++
         }
     }
 })();
 
 
 //Cookie service for storing parameters and arguments used in functions.
-if (JSON && JSON.stringify && JSON.parse) var Sess = Sess || (function () {
+if (JSON && JSON.stringify && JSON.parse) var Cookie = Cookie || (function () {
     var store = load();
 
     function load() {
@@ -70,7 +71,56 @@ if (JSON && JSON.stringify && JSON.parse) var Sess = Sess || (function () {
     }
 })();
 
+//Local Storage Service
+if (JSON && JSON.stringify && JSON.parse) var Local = Local || (function () {
+
+    return {
+        set: function (key, value) {
+            if (!key || value) {return;}
+
+            if (typeof value === "object") {
+                value = JSON.stringify(value)
+            }
+
+            localStorage.setItem(key, value);
+            console.log(`Item ${key} has been saved.`)
+        },
+
+        get: function (key) {
+            var value = localStorage.getItem(key);
+
+            if (!value) {
+
+                console.log(`Item ${key} has not been found.`)                
+                return
+            }
+
+            if (value == null) {
+                console.log(`Item ${key} has not been found.`)
+                return false
+            }
+
+            if (value[0] === '{') {
+                value = JSON.parse(value)
+                console.log(`Item ${key} has been retrieved.`)
+            }
+
+            return value
+        },
+
+        remove: function (key) {
+            localStorage.removeItem(key)
+            console.log(`Item ${key} has been has been deleted.`)
+        },
+
+        clear: function () {
+            localStorage.clear();
+        }
+    }
+})();
+
 export {
     Hydro,
-    Sess
+    Cookie,
+    Local
 }
