@@ -81,6 +81,16 @@ export default class datamod extends HTMLElement {
         })
     }
 
+    //Promise to return the instance coutner
+    globalcounter() {
+        return new Promise(resolve => {
+            setTimeout(() => {
+                var x = basebuilder.counter()
+                resolve(x)
+            }, 1000)
+        })
+    }
+
     //Create properties from attributes for the data module
     modproperties() {
         return this.makePropertiesFromAttributes('data-mod')
@@ -151,13 +161,12 @@ export default class datamod extends HTMLElement {
     async connectedCallback() {
 
         var props = this.modproperties()
-        console.log(props)
 
         if (props.func === "retrieve") {
         
-            var x = window.instancecounter
+            var x = await this.globalcounter()
 
-            var res = await this.callDatabase(x)
+            var res = await this.callDatabase(await x)
 
             var ob = await {
                 ...res[0]
@@ -172,6 +181,7 @@ export default class datamod extends HTMLElement {
 
             var results = await basebuilder.hydro().data.retrieve(vf, this.handlewaterdata)
             this.pushresults(props.saveob, results)
+            basebuilder.LocalStore(props.saveob, results, "save")
 
         } else if (props.func === "transform") {
 

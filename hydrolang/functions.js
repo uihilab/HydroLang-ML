@@ -81,12 +81,17 @@ export default class basebuilder extends HTMLElement {
         Cookie.set(name, tostore)
     }
 
-    static LocalStore(name, value) {
+    //Access Local Storage
+    static LocalStore(name, value, type) {
+        if (type == "save") {
         Local.set(name, value)
+    } if (type == "retrieve") {
+        Local.get(name)
+    }
     };
 
     static LocalGet(name) {
-        Local.get(name)
+        
     };
 
     //Register elements into the DOM
