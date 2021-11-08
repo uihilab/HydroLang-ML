@@ -1,4 +1,4 @@
-import basebuilder from "./functions.js";
+import basebuilder from "../globals/functions.js";
 
 //Example for using the analyze module. Still on development
 const template = document.createElement('template');
@@ -11,7 +11,7 @@ template.innerHTML =
 <div><slot></slot></div>
 `;
 
-class analyzemod extends HTMLElement {
+export default class analyzemod extends HTMLElement {
 
     //properties defined per element
     static get properties() {
@@ -29,13 +29,18 @@ class analyzemod extends HTMLElement {
             "saveob": {
                 type: String,
                 userDefined: true
-            }
+            },
+
+            "datasource": {
+                type: String,
+                userDefined: true
+            },
         }
     }
 
     //observer of keys for each property of the HTML element
     static get observedAttributes() {
-        return Object.keys(hydroweb.properties)
+        return Object.keys(analyzemod.properties)
     }
 
     //Reusable property maker. Returns the names and values of the attributes passed.
@@ -48,7 +53,6 @@ class analyzemod extends HTMLElement {
         for (var i = 0; i < attr.length; i++) {
             var prop = attr[i]
             props[prop] = this.getAttribute(attr[i])
-            console.log(props[prop])
         }
         return props
     }
@@ -63,26 +67,27 @@ class analyzemod extends HTMLElement {
         shadow.appendChild(template.content.cloneNode(true));
         let web = document.querySelector('analyze-mod')
 
+        var props = this.makePropertiesFromAttributes('analyze-mod')
+
         //the data is read in the screen from the span element
+
+        if (props.datasource == "saved") {
+            var results =  basebuilder.LocalStore(props.sourcename)
+            console.log(results)
+        }
+        if (props.datasource == "input") {
         let data = web.querySelector('analyze-mod span')
         var values = data.textContent.split(",").map(x => parseInt(x))
-
-        var props = this.makePropertiesFromAttributes('analyze-mod')
-        console.log(props)
-
-        let res = hydro[props.module][props.component][props.func](values)
+        
+        let res = basebuilder.hydro()[props.module][props.component][props.func](values)
 
         template.innerHTML =
             `
         <h3>The result of your calculation is: ${res} </h3>
         
         `
+    }
 
-        Object.assign(window.db, {
-            [props.saveob]: res
-        })
-
-        console.log(window.db)
     }
 
     connectedCallback() {}

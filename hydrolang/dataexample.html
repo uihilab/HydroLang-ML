@@ -34,10 +34,12 @@
                 datatype="QGAG"></arguments>
         </data-mod>
 
-        <!-- <data-mod func="retrieve" saveob="name3">
-            <parameters source="fema" datatype="disaster-declarations"></parameters>
-            <arguments state="AR"></arguments>
-        </data-mod> -->
+        <analyze-mod component = "stats" func ="sum" datasource = "saved" sourcename="name2" saveob = "name3">
+        </analyze-mod>
+
+        <analyze-mod component="stats" func="sum" datasource = "input" saveob="name4">
+            <span slot="data">2,4,4,5,5,4,5,4,8</span>
+        </analyze-mod>
     </hydrolang-ml>
 
     <!-- <hydrolang-ml>
@@ -57,7 +59,7 @@
 
     <!-- </hydrolang-ml> -->
 
-    <script type="module" src="./impexp.js"></script>
+    <script type="module" src="./hydrolangml.js"></script>
 
 </body>
 

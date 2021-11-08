@@ -1,4 +1,4 @@
-import basebuilder from './functions.js';
+import basebuilder from '../globals/functions.js';
 
 export default class hydrolangml extends HTMLElement {
     constructor() {

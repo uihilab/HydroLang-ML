@@ -1,4 +1,4 @@
-import basebuilder from './functions.js'
+import basebuilder from '../globals/functions.js'
 
 //Template attached to the module
 const template = document.createElement('template');
@@ -181,7 +181,7 @@ export default class datamod extends HTMLElement {
 
             var results = await basebuilder.hydro().data.retrieve(vf, this.handlewaterdata)
             this.pushresults(props.saveob, results)
-            basebuilder.LocalStore(props.saveob, results, "save")
+            basebuilder.LocalStore(props.saveob, await results, "save")
 
         } else if (props.func === "transform") {
 

@@ -1,4 +1,4 @@
-import basebuilder from './functions.js';
+import basebuilder from '../globals/functions.js';
 
 //class for handling parameters
 export default class parameters extends HTMLElement {

@@ -1,4 +1,4 @@
-import Hydrolang from "./hydro.js";
+import Hydrolang from "../../hydro.js";
 
 //Hydro instance to be used globally
 //Extends 
