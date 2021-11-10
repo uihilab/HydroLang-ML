@@ -1,17 +1,16 @@
-import basebuilder from '../globals/functions.js'
+import maincomponent from '../globals/functions.js'
 
-//Template attached to the module
-const template = document.createElement('template');
-template.id = 'DATA-MOD'
-template.innerHTML =
-    `
-<style>
-</style>
-<div><slot></slot></div>
-`;
-
-//Web component for handling data module.
+/**
+ * Web component for handling data module.
+ * @class datamod
+ */
 export default class datamod extends HTMLElement {
+
+    /**
+     * Defines the allowable attributes in the component.
+     * @method properties
+     * @memberof datamod
+     */
     static get properties() {
         return {
             "func": {
@@ -34,9 +33,13 @@ export default class datamod extends HTMLElement {
                 userDefined: true
             }
         }
-    }
+    };
 
-    //observer of keys for each property of the HTML element
+    /**
+     * Observer of keys for each property of the HTML element.
+     * @method observedAttributes
+     * @memberof datamod
+     */
     static get observedAttributes() {
         return Object.keys(datamod.properties)
     }
@@ -74,7 +77,7 @@ export default class datamod extends HTMLElement {
         return new Promise(resolve => {
             setTimeout(() => {
                 var ob = {
-                    ...basebuilder.db()[item]
+                    ...maincomponent.db()[item]
                 }
                 resolve(ob)
             }, 10);
@@ -85,7 +88,7 @@ export default class datamod extends HTMLElement {
     globalcounter() {
         return new Promise(resolve => {
             setTimeout(() => {
-                var x = basebuilder.counter()
+                var x = maincomponent.counter()
                 resolve(x)
             }, 1000)
         })
@@ -103,7 +106,7 @@ export default class datamod extends HTMLElement {
                 var ob = {
                     [name]: obj
                 }
-                Object.assign(basebuilder.results(), ob)
+                Object.assign(maincomponent.results(), ob)
                 resolve(ob)
             }, 1000);
         })
@@ -112,8 +115,8 @@ export default class datamod extends HTMLElement {
     //Get results from the attribute
     getresults(name) {
         var key = name
-        if (key in basebuilder.results()) {
-            return basebuilder.results()[key]
+        if (key in maincomponent.results()) {
+            return maincomponent.results()[key]
         } else {
             console.log()
         }
@@ -125,6 +128,8 @@ export default class datamod extends HTMLElement {
         let shadow = this.attachShadow({
             mode: 'open'
         })
+        
+        const template = maincomponent.template('DATA-MOD')
         shadow.append(template.content.cloneNode(true))
 
         var datamodprop = this.modproperties()
@@ -133,10 +138,10 @@ export default class datamod extends HTMLElement {
         //The events of slots changes are dealth with here. Create
         //object parameters and append them to the global dictionaries
         this.shadowRoot.addEventListener("slotchange", (ev) => {
-            basebuilder.count()
+            maincomponent.count()
 
             var r = ev.target.assignedElements()
-            var ar = basebuilder.makePropertiesFromParameters(r)
+            var ar = maincomponent.makePropertiesFromParameters(r)
             var newdb = {}
 
             for (var i = 0; i < ar.length; i++) {
@@ -145,8 +150,8 @@ export default class datamod extends HTMLElement {
                 }
             }
 
-            datamodprop.id = basebuilder.counter()
-            basebuilder.db()[datamodprop.id] = newdb
+            datamodprop.id = maincomponent.counter()
+            maincomponent.db()[datamodprop.id] = newdb
             if (r.length == 0) {
                 console.log(`No additional parameters detected for module ${datamodprop.id}.`)
             } else {
@@ -179,9 +184,9 @@ export default class datamod extends HTMLElement {
             var vf = {}
             vf = await Object.assign(ob.parameters, nw)
 
-            var results = await basebuilder.hydro().data.retrieve(vf, this.handlewaterdata)
+            var results = await maincomponent.hydro().data.retrieve(vf, this.handlewaterdata)
             this.pushresults(props.saveob, results)
-            basebuilder.LocalStore(props.saveob, await results, "save")
+            maincomponent.LocalStore(props.saveob, results, "save")
 
         } else if (props.func === "transform") {
 
@@ -190,7 +195,7 @@ export default class datamod extends HTMLElement {
 
         } else if (props.func === "upload") {
 
-            var up = basebuilder.hydro().data.upload(props.type)
+            var up = maincomponent.hydro().data.upload(props.type)
             var up2 = {
                 [props.saveob]: await up
             }
@@ -210,4 +215,4 @@ export default class datamod extends HTMLElement {
 }
 
 //Defining the web components into the DOM
-basebuilder.registerElement('data-mod', datamod)
+maincomponent.registerElement('data-mod', datamod)

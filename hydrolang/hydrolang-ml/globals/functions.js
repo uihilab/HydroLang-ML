@@ -4,7 +4,12 @@ import {
     Local
 } from './globals.js'
 
-export default class basebuilder extends HTMLElement {
+/**
+ * Main class with functions used throughout all the components created.
+ * Used for registering the elements into the DOM.
+ * @class maincomponent
+ */
+export default class maincomponent extends HTMLElement {
     static get prop() {
         return {
             name: {
@@ -14,28 +19,68 @@ export default class basebuilder extends HTMLElement {
         }
     };
 
-    //Returns Hydrolang instance from namespace
+    /**
+     * Used for calling the HydroLang instance from the global container.
+     * @method hydro
+     * @memberof maincomponent
+     * @returns HydroLang instance
+     */
     static hydro() {
         return Hydro.ins()
-    }
+    };
 
+    /**
+     * Creates a new template to attach a component into.
+     * @method template
+     * @memberof maincomponent
+     * @returns template with slot to attach new web components
+     */
+    static template(name) {
+        const template = document.createElement('template');
+        template.id = name
+        template.innerHTML =
+        `
+        <style></style>
+        <div><slot></slot></div>
+        `;
+        return template
+    };
+
+    /**
+     * Used for counting the number of instances of a component.
+     * @method counter
+     * @memberof maincomponent
+     * @returns counter of instances of a component.
+     */
     static counter(){
         return Hydro.counter()
-    }
+    };
 
+    /**
+     * Accesses the window database that contains events attached as nodes.
+     * @method db
+     * @memberof maincomponent
+     * @returns global window database
+     */
     static db() {
         return Hydro.db()
-    }
+    };
 
     static results() {
         return Hydro.results()
-    }
+    };
 
     static count() {
         Hydro.count()
-    }
+    };
 
-    //Create properties from passed parameters
+    /**
+     * Creates an object of parameters from the properties of a component.
+     * @method makePropertiesFromParameters
+     * @memberof maincomponent
+     * @param {*} elem - slot element attached as node into a component.
+     * @returns {Object} attributes consolidated in an object. 
+     */
     static makePropertiesFromParameters(elem) {
         let attr = []
         var names = []
@@ -53,7 +98,13 @@ export default class basebuilder extends HTMLElement {
         return attr
     };
 
-    //Create properties from attributes
+    /**
+     * Creates an object of properties from attributes of a component.
+     * @method makePropertiesFromAttributes
+     * @memberof maincomponent
+     * @param {*} elem - web component name element. 
+     * @returns {Object} properties of objects from allowable attributes. 
+     */
     static makePropertiesFromAttributes(elem) {
         let ElemClass = customElements.get(elem);
         let attr = ElemClass.observedAttributes;
@@ -65,13 +116,18 @@ export default class basebuilder extends HTMLElement {
             props[prop] = this.getAttribute(attr[i])
         }
         return props
-    }
+    };
 
-    //Store data in cache, if required
+    /**
+     * Stores data in cache, if required. Also used to retrieve data.
+     * @method CookieStore
+     * @memberof maincomponent
+     * @param {String} name - name of the data to be stored or retrieved in a cookie. 
+     * @param {Object} value - object value to be stored in a cookie, null if retrieving. 
+     * @returns {void} - Stores the data inside a cookie for up to 48 hours.
+     */
     static CookieStore(name, value) {
-
         var tostore = Cookie.get(name)
-
         if (tostore == undefined) {
             tostore = value;
         } else {
@@ -79,9 +135,16 @@ export default class basebuilder extends HTMLElement {
             return tostore
         }
         Cookie.set(name, tostore)
-    }
+    };
 
-    //Access Local Storage
+    /**
+     * Stores data inside the local storage.
+     * @method LocalStore
+     * @memberof maincomponent
+     * @param {String} name - name of the data that is to be stored inside the local storage. 
+     * @param {Object} value - data to be stored into the local storage.
+     * @returns {void} -  
+     */
     static LocalStore(name, value, type) {
         if (type == "save") {
         Local.set(name, value)
@@ -90,27 +153,35 @@ export default class basebuilder extends HTMLElement {
     }
     };
 
-    static LocalGet(name) {
-        
-    };
-
-    //Register elements into the DOM
+    /**
+     * Registers the elements into the DOM.
+     * @method registerElement
+     * @memberof maincomponent
+     * @param {String} name - name of the web component. 
+     * @param {*} elem - web component class.
+     * @returns {void} stores the element into the DOM.
+     */
     static registerElement(name, elem) {
         if (!customElements.get(name)) {
             window.hydronames = window.hydronames || [];
             window.hydronames.push(name.toUpperCase());
             customElements.define(name, elem)
         }
-    }
-    //basic constructor req. Can be modified to verify dependencies between childs and parents.
+    };
+    
+    /**
+     * Basic constructor required. Can be modified to verify dependencies between childs and parents.
+     * @constructor
+     * @memberof maincomponent
+     */
     constructor() {
         super();
-    }
-}
+    };
+};
 
-//Register this elemnt into the DOM
-if (!customElements.get('base-builder')) {
+//Register this element into the DOM
+if (!customElements.get('main-component')) {
     window.hydronames = window.hydronames || [];
-    window.hydronames.push('BASE-BUILDER');
-    customElements.define('base-builder', basebuilder);
+    window.hydronames.push('MAIN-COMPONENT');
+    customElements.define('main-component', maincomponent);
 }

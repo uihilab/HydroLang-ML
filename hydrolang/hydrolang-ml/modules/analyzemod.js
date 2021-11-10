@@ -1,4 +1,4 @@
-import basebuilder from "../globals/functions.js";
+import maincomponent from "../globals/functions.js";
 
 //Example for using the analyze module. Still on development
 const template = document.createElement('template');
@@ -72,14 +72,14 @@ export default class analyzemod extends HTMLElement {
         //the data is read in the screen from the span element
 
         if (props.datasource == "saved") {
-            var results =  basebuilder.LocalStore(props.sourcename)
+            var results =  maincomponent.LocalStore(props.sourcename)
             console.log(results)
         }
         if (props.datasource == "input") {
         let data = web.querySelector('analyze-mod span')
         var values = data.textContent.split(",").map(x => parseInt(x))
         
-        let res = basebuilder.hydro()[props.module][props.component][props.func](values)
+        let res = maincomponent.hydro()[props.module][props.component][props.func](values)
 
         template.innerHTML =
             `
@@ -97,4 +97,4 @@ export default class analyzemod extends HTMLElement {
     }
 }
 
-basebuilder.registerElement('analyze-mod', analyzemod)
+maincomponent.registerElement('analyze-mod', analyzemod)

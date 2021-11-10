@@ -1,6 +1,15 @@
-import basebuilder from '../globals/functions.js';
+import maincomponent from '../globals/functions.js';
 
+/**
+ * Main class driver for the HydroLang.js components
+ * @class hydrolangml
+ */
 export default class hydrolangml extends HTMLElement {
+    /**
+     * Attaches elements and hears slot exchange.
+     * @constructor
+     * @memberof hydrolangml
+     */
     constructor() {
         super()
         this.attachShadow({
@@ -16,4 +25,4 @@ export default class hydrolangml extends HTMLElement {
     }
 }
 
-basebuilder.registerElement('hydrolang-ml', hydrolangml)
+maincomponent.registerElement('hydrolang-ml', hydrolangml)

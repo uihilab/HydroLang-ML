@@ -1,4 +1,4 @@
-import basebuilder from '../globals/functions.js';
+import maincomponent from '../globals/functions.js';
 
 //class for handling parameters
 export default class parameters extends HTMLElement {
@@ -13,4 +13,4 @@ export default class parameters extends HTMLElement {
     }
 };
 
-basebuilder.registerElement('func-parameters', parameters)
+maincomponent.registerElement('func-parameters', parameters)

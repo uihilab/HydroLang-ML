@@ -10,15 +10,6 @@
 
 <body>
 
-    <!-- <hydrolang-ml>
-        <data-mod func="retrieve" saveob="name1">
-            <parameters source="usgs" dataType="instant-values" proxyurl="https://cors-anywhere.herokuapp.com/">
-            </parameters>
-            <arguments site="USGS:02056000" format="json" startDt="2020-08-30" endDt="2020-09-02" parameterCd="00060">
-            </arguments>
-        </data-mod>
-    </hydrolang-ml> -->
-
 
     <!-- This can be either removed or added into a larger scheme so that an HTML tag
     grabs the whole modules called -->
@@ -42,24 +33,7 @@
         </analyze-mod>
     </hydrolang-ml>
 
-    <!-- <hydrolang-ml>
-        <data-mod func="retrieve" saveob="name4">
-            <parameters source="eauk" datatype="list-stations"></parameters>
-            <arguments parameter="rainfall" search="Northumberland"></arguments>
-        </data-mod> -->
-        <!-- 
-        <data-mod func="upload" saveob="name4" type="CSV">
-        </data-mod> -->
-
-        <!-- <data-mod func="transform" grabob="name2" saveob="name4" type="JSON">
-        </data-mod>
-
-        <data-mod func="download" grabob="name4">
-        </data-mod> -->
-
-    <!-- </hydrolang-ml> -->
-
-    <script type="module" src="./hydrolangml.js"></script>
+    <script type="module" src="./hydrolang-ml/hydrolangml.js"></script>
 
 </body>
 

@@ -1,5 +1,5 @@
-import basebuilder from './functions.js'
-import Hydrolang from './hydro.js'
+import basebuilder from '../globals/functions.js'
+import Hydrolang from '../../hydro.js'
 
 //BOILERPLATE! Will be updated afterwards.
 
