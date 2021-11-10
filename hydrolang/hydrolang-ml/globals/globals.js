@@ -1,7 +1,9 @@
 import Hydrolang from "../../hydro.js";
 
-//Hydro instance to be used globally
-//Extends 
+/**
+ * Provides the hydro instance from HydroLang.js and other variables for usage.
+ * @namespace Hydro
+ */
 var Hydro = Hydro || (function () {
     var hydro = new Hydrolang()
 
@@ -17,20 +19,23 @@ var Hydro = Hydro || (function () {
         db: function () {
             return window.db
         },
-        results: function() {
+        results: function () {
             return window.results
         },
-        counter: function() {
+        counter: function () {
             return window.instancecounter
         },
-        count: function() {
+        count: function () {
             window.instancecounter++
         }
     }
 })();
 
 
-//Cookie service for storing parameters and arguments used in functions.
+/**
+ * Cookie service for storing parameters and arguments used in functions.
+ * @namespace Cookie
+ */
 if (JSON && JSON.stringify && JSON.parse) var Cookie = Cookie || (function () {
     var store = load();
 
@@ -71,27 +76,35 @@ if (JSON && JSON.stringify && JSON.parse) var Cookie = Cookie || (function () {
     }
 })();
 
-//Local Storage Service
+/**
+ * Local Storage Service
+ * @namespace Local
+ */
 if (JSON && JSON.stringify && JSON.parse) var Local = Local || (function () {
 
     return {
-        set: function (key, value) {
-            if (!key || value) {return;}
+        set: async function (key, value) {
+            await null;
+
+            if (!key || value) {
+                return;
+            }
 
             if (typeof value === "object") {
                 value = JSON.stringify(value)
             }
 
-            localStorage.setItem(key, value);
             console.log(`Item ${key} has been saved.`)
+            return await localStorage.setItem(key, value);
         },
 
-        get: function (key) {
+        get: async function (key) {
+            await null;
             var value = localStorage.getItem(key);
 
             if (!value) {
 
-                console.log(`Item ${key} has not been found.`)                
+                console.log(`Item ${key} has not been found.`)
                 return
             }
 
@@ -105,10 +118,11 @@ if (JSON && JSON.stringify && JSON.parse) var Local = Local || (function () {
                 console.log(`Item ${key} has been retrieved.`)
             }
 
-            return value
+            return await value
         },
 
-        remove: function (key) {
+        remove: async function (key) {
+            await null;
             localStorage.removeItem(key)
             console.log(`Item ${key} has been has been deleted.`)
         },

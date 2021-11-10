@@ -42,7 +42,7 @@ export default class datamod extends HTMLElement {
      */
     static get observedAttributes() {
         return Object.keys(datamod.properties)
-    }
+    };
 
     //create properties from passed attributes accepted by element
     makePropertiesFromAttributes(elem) {
@@ -56,8 +56,15 @@ export default class datamod extends HTMLElement {
             props[prop] = this.getAttribute(attr[i])
         }
         return props
-    }
+    };
 
+    /**
+     * Grabs the keys of an existing object with a delay.
+     * @method grabKeyList
+     * @memberof datamod
+     * @param {Object} obj - object to grab keys from. 
+     * @returns {Object[]} array of the keys.
+     */
     grabKeyList(obj) {
         return new Promise(resolve => {
             setTimeout(() => {
@@ -65,14 +72,26 @@ export default class datamod extends HTMLElement {
                 resolve(x)
             }, 1)
         })
-    }
+    };
 
-    //this behavior can be changed depending on the type of data
+    /**
+     * Confirms that the data has been downloaded and added to results.
+     * @method handlewaterdata
+     * @memberof datamod
+     * @param {Object} data - retrieved data from any API.
+     * @returns {console} confirmation of data. 
+     */
     handlewaterdata(data) {
         console.log(`Data added to results!`)
-    }
+    };
 
-    //Item called from the database
+    /**
+     * Item called from the window global database
+     * @method callDatabase
+     * @memberof datamod
+     * @param {Object} item - item retrived from the database. 
+     * @returns {Object} object required for further manipulation.
+     */
     callDatabase(item) {
         return new Promise(resolve => {
             setTimeout(() => {
@@ -82,9 +101,14 @@ export default class datamod extends HTMLElement {
                 resolve(ob)
             }, 10);
         })
-    }
+    };
 
-    //Promise to return the instance coutner
+    /**
+     * Promise to return the instance counter
+     * @method globalcounter
+     * @memberof datamod
+     * @returns {Int} delays the counter variable from the global scope.
+     */
     globalcounter() {
         return new Promise(resolve => {
             setTimeout(() => {
@@ -92,14 +116,26 @@ export default class datamod extends HTMLElement {
                 resolve(x)
             }, 1000)
         })
-    }
+    };
 
-    //Create properties from attributes for the data module
+    /**
+     * Create properties from attributes for the data module
+     * @method modproperties
+     * @memberof datamod
+     * @returns {Object} - properties of the module
+     */
     modproperties() {
         return this.makePropertiesFromAttributes('data-mod')
-    }
+    };
 
-    //Pushing results to the local storage
+    /**
+     * Pushing results to the local storage
+     * @method pushresults
+     * @memberof datamod
+     * @param {String} name - name of the object to store. 
+     * @param {Object} obj - object to store
+     * @returns {void}
+     */
     pushresults(name, obj) {
         return new Promise(resolve => {
             setTimeout(() => {
@@ -110,9 +146,15 @@ export default class datamod extends HTMLElement {
                 resolve(ob)
             }, 1000);
         })
-    }
+    };
 
-    //Get results from the attribute
+    /**
+     * Get results from the attribute
+     * @method getresults
+     * @memberof datamod
+     * @param {String} name - name of the object to be retrieved. 
+     * @returns {Object} object required from the attributes.
+     */
     getresults(name) {
         var key = name
         if (key in maincomponent.results()) {
@@ -120,26 +162,32 @@ export default class datamod extends HTMLElement {
         } else {
             console.log()
         }
-    }
+    };
 
-    //main class to handle the inputs from the user.
+    /**
+     * Constructor that deals with the inputs from each slotted event.
+     * Requires methods from the maincomponent function.
+     * @constructor
+     * @memberof datamod
+     */
     constructor() {
+        //Required super method.
         super()
         let shadow = this.attachShadow({
             mode: 'open'
         })
-        
+        //Creation of the template holding the web component.
         const template = maincomponent.template('DATA-MOD')
         shadow.append(template.content.cloneNode(true))
-
+        //Creatioon of the properties of the module.
         var datamodprop = this.modproperties()
 
 
         //The events of slots changes are dealth with here. Create
         //object parameters and append them to the global dictionaries
         this.shadowRoot.addEventListener("slotchange", (ev) => {
+            //Initialize the counter for the module. 
             maincomponent.count()
-
             var r = ev.target.assignedElements()
             var ar = maincomponent.makePropertiesFromParameters(r)
             var newdb = {}
@@ -160,7 +208,7 @@ export default class datamod extends HTMLElement {
             }
 
         })
-    }
+    };
 
     //asynchronous callback to call the data module and potentially the map module.
     async connectedCallback() {
@@ -168,7 +216,7 @@ export default class datamod extends HTMLElement {
         var props = this.modproperties()
 
         if (props.func === "retrieve") {
-        
+
             var x = await this.globalcounter()
 
             var res = await this.callDatabase(await x)

@@ -1,19 +1,17 @@
 import maincomponent from "../globals/functions.js";
 
-//Example for using the analyze module. Still on development
-const template = document.createElement('template');
-template.innerHTML =
-    template.id = 'ANALYZE-MOD'
-template.innerHTML =
-    `
-<style>
-</style>
-<div><slot></slot></div>
-`;
+/**
+ * Web component for handling the analyze module of HydroLang.
+ * @class analyzemod
+ */
 
 export default class analyzemod extends HTMLElement {
 
-    //properties defined per element
+    /**
+     * Defines the allowable attributes in the component.
+     * @method properties
+     * @memberof datamod
+     */
     static get properties() {
         return {
             "component": {
@@ -38,7 +36,11 @@ export default class analyzemod extends HTMLElement {
         }
     }
 
-    //observer of keys for each property of the HTML element
+    /**
+     * Observer of keys for each property of the HTML element.
+     * @method observedAttributes
+     * @memberof datamod
+     */
     static get observedAttributes() {
         return Object.keys(analyzemod.properties)
     }
@@ -57,41 +59,53 @@ export default class analyzemod extends HTMLElement {
         return props
     }
 
-    //this constructor creates a shadow root and appends it to DOM. This can be done as a separate element.   
+    /**
+     * Main constructor for the analyze module. Handles the data inputs and performs calculations accordingly.
+     * @constructor
+     * @memberof analyzemod
+     */
     constructor() {
         super();
         let shadow = this.attachShadow({
             mode: 'open'
         });
 
+        const template = maincomponent.template('ANALYZE-MOD')
+
         shadow.appendChild(template.content.cloneNode(true));
         let web = document.querySelector('analyze-mod')
 
         var props = this.makePropertiesFromAttributes('analyze-mod')
+        console.log(props)
+        //var props = maincomponent.makePropertiesFromAttributes('analyze-mod')
 
         //the data is read in the screen from the span element
 
-        if (props.datasource == "saved") {
-            var results =  maincomponent.LocalStore(props.sourcename)
+        if (props.datasource === "saved") {
+            var results = maincomponent.LocalStore(props.sourcename)
             console.log(results)
         }
-        if (props.datasource == "input") {
-        let data = web.querySelector('analyze-mod span')
-        var values = data.textContent.split(",").map(x => parseInt(x))
-        
-        let res = maincomponent.hydro()[props.module][props.component][props.func](values)
+        if (props.datasource === "input") {
+            let data = web.querySelector('analyze-mod span')
+            var values = data.textContent.split(",").map(x => parseInt(x))
 
-        template.innerHTML =
-            `
+            let res = maincomponent.hydro()['analyze'][props.component][props.func](values)
+            console.log(res)
+
+            template.innerHTML =
+                `
         <h3>The result of your calculation is: ${res} </h3>
         
         `
+        }
     }
 
-    }
-
+    /**
+     * Shouting to see if the module is connected to the DOM
+     * @callback
+     * @memberof analyzemod
+     */
     connectedCallback() {}
-
     shout() {
         console.log("Analyze-Mod Attached")
     }

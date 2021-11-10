@@ -39,7 +39,7 @@ export default class maincomponent extends HTMLElement {
         const template = document.createElement('template');
         template.id = name
         template.innerHTML =
-        `
+            `
         <style></style>
         <div><slot></slot></div>
         `;
@@ -52,7 +52,7 @@ export default class maincomponent extends HTMLElement {
      * @memberof maincomponent
      * @returns counter of instances of a component.
      */
-    static counter(){
+    static counter() {
         return Hydro.counter()
     };
 
@@ -78,15 +78,13 @@ export default class maincomponent extends HTMLElement {
      * Creates an object of parameters from the properties of a component.
      * @method makePropertiesFromParameters
      * @memberof maincomponent
-     * @param {*} elem - slot element attached as node into a component.
+     * @param {String} elem - slot element attached as node into a component.
      * @returns {Object} attributes consolidated in an object. 
      */
     static makePropertiesFromParameters(elem) {
         let attr = []
         var names = []
-
         for (var i = 0; i < elem.length; i++) {
-
             var props = {}
             names.push(elem[i].getAttributeNames())
             for (var j = 0; j < names[i].length; j++) {
@@ -147,10 +145,10 @@ export default class maincomponent extends HTMLElement {
      */
     static LocalStore(name, value, type) {
         if (type == "save") {
-        Local.set(name, value)
-    } if (type == "retrieve") {
-        Local.get(name)
-    }
+            Local.set(name, value)
+        } else if (type == "retrieve") {
+            Local.get(name)
+        }
     };
 
     /**
@@ -168,7 +166,7 @@ export default class maincomponent extends HTMLElement {
             customElements.define(name, elem)
         }
     };
-    
+
     /**
      * Basic constructor required. Can be modified to verify dependencies between childs and parents.
      * @constructor

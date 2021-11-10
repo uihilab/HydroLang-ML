@@ -1,9 +1,17 @@
-//create imports for each of the implemented functions
-import maincomponent from './globals/functions.js'
-import parameters from './wrappers/parameters.js'
-import datamod from './modules/datamod.js'
-import mapmod from './modules/mapmod.js'
-import analyzemod from './modules/analyzemod.js'
-import hydrolangml from './wrappers/hydrolangmod.js'
+/**
+ * Module wrapper for using in HTML.
+ * @module hydrolangml
+ * @extends maincomponent
+ * @extends parameters
+ * @extends datamod
+ * @extends mapmod
+ * @extends analyzemod
+ * @extends hydrolangml
+ */
 
-export {maincomponent, parameters, datamod, analyzemod, mapmod, hydrolangml}
+export * as maincomponent from './globals/functions.js';
+export * as parameters from './wrappers/parameters.js';
+export * as datamod from './modules/datamod.js';
+export * as mapmod from './modules/mapmod.js';
+export * as analyzemod from './modules/analyzemod.js';
+export * as hydrolangml from './wrappers/hydrolangmod.js';
