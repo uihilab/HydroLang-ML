@@ -13,12 +13,12 @@ export default class datamod extends HTMLElement {
      */
     static get properties() {
         return {
-            "func": {
+            "method": {
                 type: String,
                 userDefined: true
             },
 
-            "saveob": {
+            "resultsname": {
                 type: String,
                 userDefined: true
             },
@@ -114,18 +114,8 @@ export default class datamod extends HTMLElement {
             setTimeout(() => {
                 var x = maincomponent.counter()
                 resolve(x)
-            }, 1000)
+            }, 10)
         })
-    };
-
-    /**
-     * Create properties from attributes for the data module
-     * @method modproperties
-     * @memberof datamod
-     * @returns {Object} - properties of the module
-     */
-    modproperties() {
-        return this.makePropertiesFromAttributes('data-mod')
     };
 
     /**
@@ -180,25 +170,25 @@ export default class datamod extends HTMLElement {
         const template = maincomponent.template('DATA-MOD')
         shadow.append(template.content.cloneNode(true))
         //Creatioon of the properties of the module.
-        var datamodprop = this.modproperties()
+        var datamodprop = this.makePropertiesFromAttributes('data-mod')
 
 
         //The events of slots changes are dealth with here. Create
         //object parameters and append them to the global dictionaries
         this.shadowRoot.addEventListener("slotchange", (ev) => {
+            var newdb = {}
             //Initialize the counter for the module. 
             maincomponent.count()
             var r = ev.target.assignedElements()
             var ar = maincomponent.makePropertiesFromParameters(r)
-            var newdb = {}
 
             for (var i = 0; i < ar.length; i++) {
                 newdb[i] = {
                     [r[i].localName]: ar[i]
                 }
             }
-
             datamodprop.id = maincomponent.counter()
+            console.log(datamodprop.id)
             maincomponent.db()[datamodprop.id] = newdb
             if (r.length == 0) {
                 console.log(`No additional parameters detected for module ${datamodprop.id}.`)
@@ -212,31 +202,29 @@ export default class datamod extends HTMLElement {
 
     //asynchronous callback to call the data module and potentially the map module.
     async connectedCallback() {
+        var props = this.makePropertiesFromAttributes('data-mod')
 
-        var props = this.modproperties()
-
-        if (props.func === "retrieve") {
+        if (props.method === "retrieve") {
 
             var x = await this.globalcounter()
+            var res = await this.callDatabase(x)
 
-            var res = await this.callDatabase(await x)
-
-            var ob = await {
+            var ob = {
                 ...res[0]
             }
-
-            var nw = await {
+            var nw = {
                 ...res[1]
             }
 
             var vf = {}
-            vf = await Object.assign(ob.parameters, nw)
+            vf = Object.assign(ob.parameters, nw)
 
-            var results = await maincomponent.hydro().data.retrieve(vf, this.handlewaterdata)
-            this.pushresults(props.saveob, results)
-            maincomponent.LocalStore(props.saveob, results, "save")
+            var results = maincomponent.hydro().data.retrieve(vf, this.handlewaterdata)
+            
+            this.pushresults(props.resultsname, await results)
+            maincomponent.LocalStore(props.resultsname, await results, "save")
 
-        } else if (props.func === "transform") {
+        } else if (props.method === "transform") {
 
             console.log("transform alive!")
             console.log(props)
@@ -255,10 +243,6 @@ export default class datamod extends HTMLElement {
             console.log("download alive!")
             console.log(props)
         }
-    }
-
-    shout() {
-        console.log("Attached")
     }
 }
 

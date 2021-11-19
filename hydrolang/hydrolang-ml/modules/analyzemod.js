@@ -19,12 +19,12 @@ export default class analyzemod extends HTMLElement {
                 userDefined: true
             },
 
-            "func": {
+            "method": {
                 type: String,
                 userDefined: true
             },
 
-            "saveob": {
+            "resultsname": {
                 type: String,
                 userDefined: true
             },
@@ -57,7 +57,7 @@ export default class analyzemod extends HTMLElement {
             props[prop] = this.getAttribute(attr[i])
         }
         return props
-    }
+    };
 
     /**
      * Main constructor for the analyze module. Handles the data inputs and performs calculations accordingly.
@@ -77,7 +77,6 @@ export default class analyzemod extends HTMLElement {
 
         var props = this.makePropertiesFromAttributes('analyze-mod')
         console.log(props)
-        //var props = maincomponent.makePropertiesFromAttributes('analyze-mod')
 
         //the data is read in the screen from the span element
 
@@ -89,7 +88,7 @@ export default class analyzemod extends HTMLElement {
             let data = web.querySelector('analyze-mod span')
             var values = data.textContent.split(",").map(x => parseInt(x))
 
-            let res = maincomponent.hydro()['analyze'][props.component][props.func](values)
+            let res = maincomponent.hydro()['analyze'][props.component][props.method](values)
             console.log(res)
 
             template.innerHTML =
@@ -98,16 +97,6 @@ export default class analyzemod extends HTMLElement {
         
         `
         }
-    }
-
-    /**
-     * Shouting to see if the module is connected to the DOM
-     * @callback
-     * @memberof analyzemod
-     */
-    connectedCallback() {}
-    shout() {
-        console.log("Analyze-Mod Attached")
     }
 }
 

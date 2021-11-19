@@ -10,15 +10,6 @@ import {
  * @class maincomponent
  */
 export default class maincomponent extends HTMLElement {
-    static get prop() {
-        return {
-            name: {
-                type: String,
-                userDefined: false
-            }
-        }
-    };
-
     /**
      * Used for calling the HydroLang instance from the global container.
      * @method hydro

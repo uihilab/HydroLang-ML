@@ -22,20 +22,39 @@
     <!-- Create input tag for the parameters to handle slotted events.-->
 
     <hydrolang-ml>
-        <!-- <data-mod func="retrieve" saveob="name2">
+
+        <!-- <data-mod func="retrieve" saveob="name3">
             <parameters source="noaa" datatype="prec-15min" type="json" token="wOYszxFhCctvvmijQbDUaiVgNMmwFNQE"/>
             <arguments stationid="COOP:018673" units="metric" startdate="2014-01-01" enddate="2014-12-31" datatype="QGAG"/>
         </data-mod> -->
 
-        <data-mod func="retrieve" saveob="name2">
+        <!-- <data-mod func="retrieve" saveob="name2">
             <parameters source="fema" datatype="disaster-declarations" />
             <arguments state="CA" />
+        </data-mod> -->
+
+        <!-- <data-mod func="retrieve" saveob="name4">
+            <parameters source="eauk" datatype="list-stations"></parameters>
+            <arguments parameter="rainfall" search="Northumberland"></arguments>
+        </data-mod> -->
+
+        <data-mod method="retrieve" resultsname="name1">
+            <parameters source="usgs" dataType="instant-values" proxyurl="https://cors-anywhere.herokuapp.com/">
+            </parameters>
+            <arguments site="USGS:02056000" format="json" startDt="2020-08-30" endDt="2020-09-02" parameterCd="00060">
+            </arguments>
         </data-mod>
+
+
+        <!-- 
+        <data-mod func="upload" saveob="name4" type="CSV">
+        </data-mod> -->
+
 
         <!-- <analyze-mod component = "stats" func ="sum" datasource = "saved" sourcename="name2" saveob = "name3">
         </analyze-mod> -->
 
-        <analyze-mod component="stats" func="sum" datasource="input" saveob="name4">
+        <analyze-mod component="stats" method="sum" datasource="input" resultsname="name4">
             <span slot="data">2,4,4,5,5,4,5,4,8</span>
         </analyze-mod>
     </hydrolang-ml>
