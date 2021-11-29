@@ -188,7 +188,6 @@ export default class datamod extends HTMLElement {
                 }
             }
             datamodprop.id = maincomponent.counter()
-            console.log(datamodprop.id)
             maincomponent.db()[datamodprop.id] = newdb
             if (r.length == 0) {
                 console.log(`No additional parameters detected for module ${datamodprop.id}.`)

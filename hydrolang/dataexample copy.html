@@ -17,16 +17,18 @@
 
     <!-- Create input tag for the parameters to handle slotted events.-->
 
+        <!-- Add datasource from IFIS to HydroLang.js.-->
+
     <hydrolang-ml>
-        <data-mod method="retrieve" resultsname="var1">
+
+        <data-mod method="retrieve" output="var1">
             <parameters source="usgs" dataType="instant-values" proxyurl="https://cors-anywhere.herokuapp.com/"></parameters>
             <arguments site="USGS:02056000" format="json" startDt="2020-08-30" endDt="2020-09-02" parameterCd="00060"></arguments>
         </data-mod>
 
-        <data-mod method="retrieve" resultsname="mydataexample2">
-            <parameters source="usgs" dataType="instant-values" proxyurl="https://cors-anywhere.herokuapp.com/"></parameters>
-            <arguments site="USGS:02056001" format="json" startDt="2020-08-30" endDt="2020-09-02" parameterCd="00060"></arguments>
-        </data-mod>
+        <analyze-mod component="stats" method="sum" input="var1" output="var2">
+        </analyze-mod>
+
     </hydrolang-ml>
 
     <script type="module" src="./hydrolang-ml/main.js"></script>

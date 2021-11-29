@@ -1,27 +1,11 @@
-import basebuilder from '../globals/functions.js'
-import Hydrolang from '../../hydro.js'
-
-//BOILERPLATE! Will be updated afterwards.
-
-//Declare global dictionaries for handling parameters, results and HydroLang instance
-window.hydro = new Hydrolang()
-
-//Template attached to the module
-const template = document.createElement('template');
-template.id = 'MAP-MOD'
-template.innerHTML =
-    `
-<style>
-</style>
-<div><slot></slot></div>
-`;
+import maincomponent from '../globals/functions.js'
 
 //Web component for handling data module.
 export default class mapmod extends HTMLElement {
     static get properties() {
         return {
 
-            "func": {
+            "method": {
                 type: String,
                 userDefined: true
             },
@@ -74,17 +58,20 @@ export default class mapmod extends HTMLElement {
         let shadow = this.attachShadow({
             mode: 'open'
         })
+
+        const template = maincomponent.template('MAP-MOD')
         shadow.append(template.content.cloneNode(true))
+
+        var mapmodprop = this.makePropertiesFromAttributes('map-mod')
 
         //The events of slots changes are dealth with here. Create
         //object parameters and append them to the global dictionaries
         this.shadowRoot.addEventListener("slotchange", (ev) => {
+            var newdb = {}
 
             var r = ev.target.assignedElements()
-            var datamodprop = this.makePropertiesFromAttributes('data-mod')
-            //var datamodprop = basebuilder.makePropertiesFromAttributes('data-mod')
-            // var ar = this.makePropertiesFromParameters(r)
-            var ar = basebuilder.makePropertiesFromParameters(r)
+            var datamodprop = this.makePropertiesFromAttributes('MAP-MOD')
+            var ar = maincomponent.makePropertiesFromParameters(r)
             var newdb = {}
             for (var i = 0; i < ar.length; i++) {
                 newdb[i] = {
@@ -113,11 +100,7 @@ export default class mapmod extends HTMLElement {
         await window.hydro.map.loader(vf)
 
     }
-
-    shout() {
-        console.log("Attached")
-    }
 }
 
 //Defining the web components into the DOM
-basebuilder.registerElement('map-mod', mapmod)
+maincomponent.registerElement('map-mod', mapmod)

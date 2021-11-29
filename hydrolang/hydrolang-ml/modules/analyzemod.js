@@ -85,7 +85,7 @@ export default class analyzemod extends HTMLElement {
             console.log(results)
         }
         if (props.datasource === "input") {
-            let data = web.querySelector('analyze-mod span')
+            let data = web.querySelector('analyze-mod data')
             var values = data.textContent.split(",").map(x => parseInt(x))
 
             let res = maincomponent.hydro()['analyze'][props.component][props.method](values)
