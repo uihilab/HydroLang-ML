@@ -9,18 +9,18 @@ var Hydro = Hydro || (function () {
 
     //Initialize window object containers
     window.instancecounter = 0
-    window.db = {}
-    window.results = {}
+    window.db = {"data":{}, "analyze":{}, "visualize":{}, "maps":{}}
+    window.results = {"data":{}, "analyze":{}, "visualize":{}, "maps":{}}
 
     return {
         ins: function () {
             return hydro
         },
-        db: function () {
-            return window.db
+        db: function (key) {
+            return window.db[key]
         },
-        results: function () {
-            return window.results
+        results: function (key) {
+            return window.results[key]
         },
         counter: function () {
             return window.instancecounter
@@ -83,42 +83,41 @@ if (JSON && JSON.stringify && JSON.parse) var Cookie = Cookie || (function () {
 if (JSON && JSON.stringify && JSON.parse) var Local = Local || (function () {
 
     return {
-        set: async function (key, value) {
-            await null;
-
-            if (!key || value) {
-                return;
-            }
-
-            if (typeof value === "object") {
-                value = JSON.stringify(value)
-            }
-
-            console.log(`Item ${key} has been saved.`)
-            return await localStorage.setItem(key, value);
+        set: function (key, value) {
+            return Promise.resolve().then(function() {
+                if (!key || value) {
+                    return;
+                }
+                if (typeof value === "object") {
+                    value = JSON.stringify(value)
+                }
+                console.log(`Item ${key} has been saved.`)
+                
+                return localStorage.setItem(key, value)});
         },
 
-        get: async function (key) {
-            await null;
-            var value = localStorage.getItem(key);
+        get: function (key) {
+            return Promise.resolve().then(function(){
+                var value = localStorage.getItem(key);
 
-            if (!value) {
-
-                console.log(`Item ${key} has not been found.`)
-                return
-            }
-
-            if (value == null) {
-                console.log(`Item ${key} has not been found.`)
-                return false
-            }
-
-            if (value[0] === '{') {
-                value = JSON.parse(value)
-                console.log(`Item ${key} has been retrieved.`)
-            }
-
-            return await value
+                if (!value) {
+    
+                    console.log(`Item ${key} has not been found.`)
+                    return
+                }
+    
+                if (value == null) {
+                    console.log(`Item ${key} has not been found.`)
+                    return false
+                }
+    
+                if (value[0] === '{') {
+                    value = JSON.parse(value)
+                    console.log(`Item ${key} has been retrieved.`)
+                }
+    
+                return value
+            })
         },
 
         remove: async function (key) {

@@ -18,17 +18,12 @@ export default class datamod extends HTMLElement {
                 userDefined: true
             },
 
-            "resultsname": {
+            "output": {
                 type: String,
                 userDefined: true
             },
 
-            "type": {
-                type: String,
-                userDefined: true
-            },
-
-            "grabob": {
+            "input": {
                 type: String,
                 userDefined: true
             }
@@ -82,7 +77,7 @@ export default class datamod extends HTMLElement {
      * @returns {console} confirmation of data. 
      */
     handlewaterdata(data) {
-        console.log(`Data added to results!`)
+        console.log('Data added to results!')
     };
 
     /**
@@ -96,10 +91,10 @@ export default class datamod extends HTMLElement {
         return new Promise(resolve => {
             setTimeout(() => {
                 var ob = {
-                    ...maincomponent.db()[item]
+                    ...maincomponent.db("data")[item]
                 }
                 resolve(ob)
-            }, 10);
+            }, 1000);
         })
     };
 
@@ -114,7 +109,7 @@ export default class datamod extends HTMLElement {
             setTimeout(() => {
                 var x = maincomponent.counter()
                 resolve(x)
-            }, 10)
+            }, 100)
         })
     };
 
@@ -132,7 +127,7 @@ export default class datamod extends HTMLElement {
                 var ob = {
                     [name]: obj
                 }
-                Object.assign(maincomponent.results(), ob)
+                Object.assign(maincomponent.results("data"), ob)
                 resolve(ob)
             }, 1000);
         })
@@ -145,13 +140,15 @@ export default class datamod extends HTMLElement {
      * @param {String} name - name of the object to be retrieved. 
      * @returns {Object} object required from the attributes.
      */
-    getresults(name) {
-        var key = name
-        if (key in maincomponent.results()) {
-            return maincomponent.results()[key]
+    getresults(key) {
+        return new Promise(resolve => {
+        if (maincomponent.isEmpty(maincomponent.results("data"))) {
+            var result = maincomponent.results("data")[key]
+            resolve(result)
         } else {
-            console.log()
+            console.log('There is no variable saved under those specifications')
         }
+    }, 10000)
     };
 
     /**
@@ -169,7 +166,7 @@ export default class datamod extends HTMLElement {
         //Creation of the template holding the web component.
         const template = maincomponent.template('DATA-MOD')
         shadow.append(template.content.cloneNode(true))
-        //Creatioon of the properties of the module.
+        //Creation of the properties of the module.
         var datamodprop = this.makePropertiesFromAttributes('data-mod')
 
 
@@ -187,12 +184,12 @@ export default class datamod extends HTMLElement {
                     [r[i].localName]: ar[i]
                 }
             }
-            datamodprop.id = maincomponent.counter()
-            maincomponent.db()[datamodprop.id] = newdb
-            if (r.length == 0) {
-                console.log(`No additional parameters detected for module ${datamodprop.id}.`)
+            //datamodprop.id = maincomponent.counter()
+            maincomponent.db("data")[datamodprop.output] = newdb
+            if (r.length === 0) {
+                console.log(`No additional parameters detected for module ${datamodprop.output}.`)
             } else {
-                console.log(`Additional slots for module ${datamodprop.id}: ${ev.target.name} contains`, ev.target.assignedElements())
+                console.log(`Additional slots for module ${datamodprop.output}: ${ev.target.name} contains`, ev.target.assignedElements())
 
             }
 
@@ -204,31 +201,27 @@ export default class datamod extends HTMLElement {
         var props = this.makePropertiesFromAttributes('data-mod')
 
         if (props.method === "retrieve") {
-
-            var x = await this.globalcounter()
-            var res = await this.callDatabase(x)
-
+            var res = await this.callDatabase(props.output)
             var ob = {
                 ...res[0]
             }
             var nw = {
                 ...res[1]
             }
-
             var vf = {}
             vf = Object.assign(ob.parameters, nw)
-
             var results = maincomponent.hydro().data.retrieve(vf, this.handlewaterdata)
             
-            this.pushresults(props.resultsname, await results)
+            this.pushresults(props.output, await results)
             maincomponent.LocalStore(props.resultsname, await results, "save")
 
         } else if (props.method === "transform") {
 
             console.log("transform alive!")
-            console.log(props)
+            var obtain = await this.getresults(props["var1"])
+            console.log(await obtain)
 
-        } else if (props.func === "upload") {
+        } else if (props.method === "upload") {
 
             var up = maincomponent.hydro().data.upload(props.type)
             var up2 = {

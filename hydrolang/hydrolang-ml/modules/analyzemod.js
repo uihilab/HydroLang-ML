@@ -24,12 +24,12 @@ export default class analyzemod extends HTMLElement {
                 userDefined: true
             },
 
-            "resultsname": {
+            "output": {
                 type: String,
                 userDefined: true
             },
 
-            "datasource": {
+            "input": {
                 type: String,
                 userDefined: true
             },

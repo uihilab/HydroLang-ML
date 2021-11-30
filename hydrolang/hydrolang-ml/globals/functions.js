@@ -21,23 +21,6 @@ export default class maincomponent extends HTMLElement {
     };
 
     /**
-     * Creates a new template to attach a component into.
-     * @method template
-     * @memberof maincomponent
-     * @returns template with slot to attach new web components
-     */
-    static template(name) {
-        const template = document.createElement('template');
-        template.id = name
-        template.innerHTML =
-            `
-        <style></style>
-        <div><slot></slot></div>
-        `;
-        return template
-    };
-
-    /**
      * Used for counting the number of instances of a component.
      * @method counter
      * @memberof maincomponent
@@ -53,16 +36,48 @@ export default class maincomponent extends HTMLElement {
      * @memberof maincomponent
      * @returns global window database
      */
-    static db() {
-        return Hydro.db()
+    static db(key) {
+        return Hydro.db(key)
     };
 
-    static results() {
-        return Hydro.results()
+    static results(key) {
+        return Hydro.results(key)
     };
 
     static count() {
         Hydro.count()
+    };
+
+    /**
+     * Creates a new template to attach a component into.
+     * @method template
+     * @memberof maincomponent
+     * @returns template with slot to attach new web components
+     */
+    static template(name) {
+        const template = document.createElement('template');
+        template.id = name
+        template.innerHTML =
+        `
+        <style></style>
+        <div><slot></slot></div>
+        `;
+        return template
+    };
+
+    /**
+     * Checks if an object is empty.
+     * @method isEmpty
+     * @memberof maincomponent
+     * @param {Object} Obj - required object for search.
+     * @returns {Boolean} True if an object does not have any object.
+     */
+    static isEmpty(obj) {
+        for (var prop in obj) {
+            if (obj.hasOwnProperty(prop))
+            return false;
+        }
+        return true
     };
 
     /**
