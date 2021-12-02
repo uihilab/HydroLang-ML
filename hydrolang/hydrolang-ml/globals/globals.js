@@ -8,7 +8,6 @@ var Hydro = Hydro || (function () {
     var hydro = new Hydrolang()
 
     //Initialize window object containers
-    window.instancecounter = 0
     window.db = {"data":{}, "analyze":{}, "visualize":{}, "maps":{}}
     window.results = {"data":{}, "analyze":{}, "visualize":{}, "maps":{}}
 
@@ -84,21 +83,18 @@ if (JSON && JSON.stringify && JSON.parse) var Local = Local || (function () {
 
     return {
         set: function (key, value) {
-            return Promise.resolve().then(function() {
-                if (!key || value) {
-                    return;
+                var x = value
+                if (x) {
+                    value = JSON.stringify(x)
+                    console.log(`Item ${key} has been saved.`)
+                    return window.localStorage.setItem(key, value);
+                } else {
+                    console.log("Cannot save object: it isnt an object!")
                 }
-                if (typeof value === "object") {
-                    value = JSON.stringify(value)
-                }
-                console.log(`Item ${key} has been saved.`)
-                
-                return localStorage.setItem(key, value)});
         },
 
         get: function (key) {
-            return Promise.resolve().then(function(){
-                var value = localStorage.getItem(key);
+                var value = window.localStorage.getItem(key);
 
                 if (!value) {
     
@@ -106,7 +102,7 @@ if (JSON && JSON.stringify && JSON.parse) var Local = Local || (function () {
                     return
                 }
     
-                if (value == null) {
+                if (value === null) {
                     console.log(`Item ${key} has not been found.`)
                     return false
                 }
@@ -117,17 +113,15 @@ if (JSON && JSON.stringify && JSON.parse) var Local = Local || (function () {
                 }
     
                 return value
-            })
         },
 
-        remove: async function (key) {
-            await null;
-            localStorage.removeItem(key)
+        remove: function (key) {
+            window.localStorage.removeItem(key)
             console.log(`Item ${key} has been has been deleted.`)
         },
 
         clear: function () {
-            localStorage.clear();
+            window.localStorage.clear();
         }
     }
 })();

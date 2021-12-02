@@ -19,10 +19,14 @@
 
     <hydrolang-ml>
 
-        <data-mod method="retrieve" output="var1">
+        <data-mod method="save" output="var3">
+            <data>40,29,40,50,30,291</data>
+        </data-mod>
+
+        <!-- <data-mod method="retrieve" output="var1">
             <parameters source="usgs" dataType="instant-values" proxyurl="https://cors-anywhere.herokuapp.com/"></parameters>
             <arguments site="USGS:02056000" format="json" startDt="2020-08-30" endDt="2020-09-02" parameterCd="00060"></arguments>
-        </data-mod>
+        </data-mod> -->
 
         <data-mod method="retrieve" output="var2">
             <parameters source="noaa" datatype="prec-15min" type="json" token="wOYszxFhCctvvmijQbDUaiVgNMmwFNQE">
@@ -31,9 +35,18 @@
                 datatype="QGAG"></arguments>
         </data-mod>
 
-
-        <data-mod method="transform" input="var1">
+        <data-mod method="retrieve" output="name2">
+            <parameters source="fema" datatype="disaster-declarations" />
+            <arguments state="CA" />
         </data-mod>
+        
+        <analyze-mod component="stats" method="mean" type="userinput" output="var5">
+            <data name="initialdata">4,5,4,5,8,4,8,5</data>
+        </analyze-mod>
+
+        <analyze-mod component="stats" method="sum" type="saved" input="var3" output="var4">
+        </analyze-mod>
+
 
 
     </hydrolang-ml>

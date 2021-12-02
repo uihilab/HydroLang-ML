@@ -24,6 +24,11 @@ export default class analyzemod extends HTMLElement {
                 userDefined: true
             },
 
+            "type":{
+                type: String,
+                userDefined: true
+            },
+
             "output": {
                 type: String,
                 userDefined: true
@@ -76,26 +81,26 @@ export default class analyzemod extends HTMLElement {
         let web = document.querySelector('analyze-mod')
 
         var props = this.makePropertiesFromAttributes('analyze-mod')
-        console.log(props)
 
         //the data is read in the screen from the span element
 
-        if (props.datasource === "saved") {
-            var results = maincomponent.LocalStore(props.sourcename)
-            console.log(results)
+        if (props.type === "saved") {
+            var x = maincomponent.getresults(props.input)
+            var values = JSON.parse(x)
+            let res = maincomponent.hydro()['analyze'][props.component][props.method](values)
+            if (props.output){
+            maincomponent.pushresults(props.output, res, 'local')
         }
-        if (props.datasource === "input") {
+        }
+        if (props.type === "userinput") {
             let data = web.querySelector('analyze-mod data')
             var values = data.textContent.split(",").map(x => parseInt(x))
 
             let res = maincomponent.hydro()['analyze'][props.component][props.method](values)
-            console.log(res)
-
-            template.innerHTML =
-                `
-        <h3>The result of your calculation is: ${res} </h3>
-        
-        `
+            if (props.output) {
+            maincomponent.pushresults(props.type, values, 'local')
+            maincomponent.pushresults(props.output, res, 'local')
+        }
         }
     }
 }

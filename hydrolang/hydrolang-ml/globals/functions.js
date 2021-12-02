@@ -150,9 +150,9 @@ export default class maincomponent extends HTMLElement {
      * @returns {void} -  
      */
     static LocalStore(name, value, type) {
-        if (type == "save") {
+        if (type === "save") {
             Local.set(name, value)
-        } else if (type == "retrieve") {
+        } else if (type === "retrieve") {
             Local.get(name)
         }
     };
@@ -171,6 +171,58 @@ export default class maincomponent extends HTMLElement {
             window.hydronames.push(name.toUpperCase());
             customElements.define(name, elem)
         }
+    };
+
+    /**
+     * Pushing results to the local storage
+     * @method pushresults
+     * @memberof maincomponent
+     * @param {String} name - name of the object to store. 
+     * @param {Object} obj - object to store
+     * @returns {void}
+     */
+    static pushresults(name, obj, db) {
+            if(db === 'global') {
+            return new Promise(resolve => {
+                setTimeout(() => {
+                    var ob = {
+                        [name]: obj
+                    }
+                    Object.assign(this.results("data"), ob)
+                    resolve(ob)
+                }, 1000);
+            })
+        } if (db === 'local') {
+            let promise = new Promise(resolve => {
+                setTimeout(() => resolve(obj), 1000)})
+            
+            promise.then((x) =>{
+                    this.LocalStore(name, x, "save")
+                })
+        }
+    };
+
+    /**
+     * Get results from the attribute
+     * @method getresults
+     * @memberof datamod
+     * @param {String} name - name of the object to be retrieved. 
+     * @returns {Object} object required from the attributes.
+     */
+    static getresults(keyfind) {
+        var value;
+        Object.keys(window.localStorage).some(function(k) {
+            if (k===keyfind) {
+                value = window.localStorage[k];
+                return true;
+            }
+            if (window.localStorage[k] && typeof window.localStorage[k] === 'object') {
+                value = this.getresults(window.localStorage[k], keyfind);
+                return value !== undefined;
+            }
+        });
+        console.log(`Item ${keyfind} has been retrieved.`)
+        return value
     };
 
     /**

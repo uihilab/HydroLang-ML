@@ -77,7 +77,7 @@ export default class datamod extends HTMLElement {
      * @returns {console} confirmation of data. 
      */
     handlewaterdata(data) {
-        console.log('Data added to results!')
+        console.log('Data retrieved!')
     };
 
     /**
@@ -111,44 +111,6 @@ export default class datamod extends HTMLElement {
                 resolve(x)
             }, 100)
         })
-    };
-
-    /**
-     * Pushing results to the local storage
-     * @method pushresults
-     * @memberof datamod
-     * @param {String} name - name of the object to store. 
-     * @param {Object} obj - object to store
-     * @returns {void}
-     */
-    pushresults(name, obj) {
-        return new Promise(resolve => {
-            setTimeout(() => {
-                var ob = {
-                    [name]: obj
-                }
-                Object.assign(maincomponent.results("data"), ob)
-                resolve(ob)
-            }, 1000);
-        })
-    };
-
-    /**
-     * Get results from the attribute
-     * @method getresults
-     * @memberof datamod
-     * @param {String} name - name of the object to be retrieved. 
-     * @returns {Object} object required from the attributes.
-     */
-    getresults(key) {
-        return new Promise(resolve => {
-        if (maincomponent.isEmpty(maincomponent.results("data"))) {
-            var result = maincomponent.results("data")[key]
-            resolve(result)
-        } else {
-            console.log('There is no variable saved under those specifications')
-        }
-    }, 10000)
     };
 
     /**
@@ -211,14 +173,12 @@ export default class datamod extends HTMLElement {
             var vf = {}
             vf = Object.assign(ob.parameters, nw)
             var results = maincomponent.hydro().data.retrieve(vf, this.handlewaterdata)
-            
-            this.pushresults(props.output, await results)
-            maincomponent.LocalStore(props.resultsname, await results, "save")
+            maincomponent.pushresults(props.output, results, 'local') 
 
         } else if (props.method === "transform") {
 
             console.log("transform alive!")
-            var obtain = await this.getresults(props["var1"])
+            var obtain = await this.getresults(maincomponent.results('data'), props.input)
             console.log(await obtain)
 
         } else if (props.method === "upload") {
@@ -231,9 +191,15 @@ export default class datamod extends HTMLElement {
             console.log("upload alive!")
             console.log(props)
 
-        } else if (props.func === "download") {
+        } else if (props.method === "download") {
             console.log("download alive!")
             console.log(props)
+        } 
+        else if (props.method === "save") {
+            let web = document.querySelector('data-mod')
+            let data = web.querySelector('data-mod data')
+            var values = data.textContent.split(",").map(x => parseInt(x))
+            maincomponent.LocalStore(props.output, values, "save")
         }
     }
 }
