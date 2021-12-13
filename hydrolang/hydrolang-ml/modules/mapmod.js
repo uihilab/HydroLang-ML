@@ -1,6 +1,9 @@
 import maincomponent from '../globals/functions.js'
 
-//Web component for handling data module.
+/**
+ * Web component for handling the map module
+ * @class mapmod
+ */
 export default class mapmod extends HTMLElement {
     static get properties() {
         return {
@@ -9,6 +12,7 @@ export default class mapmod extends HTMLElement {
                 type: String,
                 userDefined: true
             },
+            
         }
     }
 

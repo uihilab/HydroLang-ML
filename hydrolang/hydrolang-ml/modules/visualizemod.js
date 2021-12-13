@@ -1,28 +1,25 @@
 import maincomponent from '../globals/functions.js'
 
 /**
- * Web component for handling data module.
- * @class datamod
+ * Web component for handling visualize module.
+ * @class visualizemod
  */
-export default class datamod extends HTMLElement {
+export default class visualizemod extends HTMLElement {
 
     /**
      * Defines the allowable attributes in the component.
      * @method properties
-     * @memberof datamod
+     * @memberof visualizemod
      */
     static get properties() {
         return {
-            "method": {
-                type: String,
-                userDefined: true
-            },
-
+            //name of the div constructor.
             "output": {
                 type: String,
                 userDefined: true
             },
 
+            //data passed by the user.
             "input": {
                 type: String,
                 userDefined: true
@@ -33,10 +30,10 @@ export default class datamod extends HTMLElement {
     /**
      * Observer of keys for each property of the HTML element.
      * @method observedAttributes
-     * @memberof datamod
+     * @memberof visualizemod
      */
     static get observedAttributes() {
-        return Object.keys(datamod.properties)
+        return Object.keys(visualizemod.properties)
     };
 
     //create properties from passed attributes accepted by element
@@ -54,21 +51,10 @@ export default class datamod extends HTMLElement {
     };
 
     /**
-     * Confirms that the data has been downloaded and added to results.
-     * @method handlewaterdata
-     * @memberof datamod
-     * @param {Object} data - retrieved data from any API.
-     * @returns {console} confirmation of data. 
-     */
-    handlewaterdata(data) {
-        console.log('Data retrieved!')
-    };
-
-    /**
      * Constructor that deals with the inputs from each slotted event.
      * Requires methods from the maincomponent function.
      * @constructor
-     * @memberof datamod
+     * @memberof visualizemod
      */
     constructor() {
         //Required super method.
@@ -77,18 +63,16 @@ export default class datamod extends HTMLElement {
             mode: 'open'
         })
         //Creation of the template holding the web component.
-        const template = maincomponent.template('DATA-MOD')
+        const template = maincomponent.template('VISUALIZE-MOD')
         shadow.append(template.content.cloneNode(true))
         //Creation of the properties of the module.
-        var datamodprop = this.makePropertiesFromAttributes('data-mod')
+        var visualizemodprop = this.makePropertiesFromAttributes('visualize-mod')
 
 
         //The events of slots changes are dealth with here. Create
         //object parameters and append them to the global dictionaries
         this.shadowRoot.addEventListener("slotchange", (ev) => {
             var newdb = {}
-            //Initialize the counter for the module. 
-            //maincomponent.count()
             var r = ev.target.assignedElements()
             var ar = maincomponent.makePropertiesFromParameters(r)
 
@@ -97,12 +81,12 @@ export default class datamod extends HTMLElement {
                     [r[i].localName]: ar[i]
                 }
             }
-            //datamodprop.id = maincomponent.counter()
-            maincomponent.db("data")[datamodprop.output] = newdb
+            //visualizemodprop.id = maincomponent.counter()
+            maincomponent.db("visualize")[visualizemodprop.output] = newdb
             if (r.length === 0) {
-                console.log(`No additional parameters detected for module ${datamodprop.output}.`)
+                console.log(`No additional parameters detected for module ${visualizemodprop.output}.`)
             } else {
-                console.log(`Additional slots for module ${datamodprop.output}: ${ev.target.name} contains`, ev.target.assignedElements())
+                console.log(`Additional slots for module ${visualizemodprop.output}: ${ev.target.name} contains`, ev.target.assignedElements())
 
             }
 
@@ -111,10 +95,12 @@ export default class datamod extends HTMLElement {
 
     //asynchronous callback to call the data module and potentially the map module.
     async connectedCallback() {
-        var props = this.makePropertiesFromAttributes('data-mod')
+        var props = this.makePropertiesFromAttributes('visualize-mod')
 
-        if (props.method === "retrieve") {
-            var res = await maincomponent.callDatabase(props.output, "data")
+        if (props.method === "userinput") {
+            let data = web.querySelector('visualize-mod data')
+            var values = data.textContent.split(",".map(x => parseInt(x)))
+            var res = await this.callDatabase(props.output)
             var ob = {
                 ...res[0]
             }
@@ -125,35 +111,9 @@ export default class datamod extends HTMLElement {
             vf = Object.assign(ob.parameters, nw)
             var results = maincomponent.hydro().data.retrieve(vf, this.handlewaterdata)
             maincomponent.pushresults(props.output, results, 'local') 
-
-        } else if (props.method === "transform") {
-
-            console.log("transform alive!")
-            var obtain = await this.getresults(maincomponent.results('data'), props.input)
-            console.log(await obtain)
-
-        } else if (props.method === "upload") {
-
-            var up = maincomponent.hydro().data.upload(props.type)
-            var up2 = {
-                [props.saveob]: await up
-            }
-
-            console.log("upload alive!")
-            console.log(props)
-
-        } else if (props.method === "download") {
-            console.log("download alive!")
-            console.log(props)
-        } 
-        else if (props.method === "save") {
-            let web = document.querySelector('data-mod')
-            let data = web.querySelector('data-mod data')
-            var values = data.textContent.split(",").map(x => parseInt(x))
-            maincomponent.LocalStore(props.output, values, "save")
-        }
     }
+}
 }
 
 //Defining the web components into the DOM
-maincomponent.registerElement('data-mod', datamod)
+maincomponent.registerElement('visualize-mod', visualizemod)

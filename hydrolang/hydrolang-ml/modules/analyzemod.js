@@ -94,13 +94,19 @@ export default class analyzemod extends HTMLElement {
         }
         if (props.type === "userinput") {
             let data = web.querySelector('analyze-mod data')
-            var values = data.textContent.split(",").map(x => parseInt(x))
-
-            let res = maincomponent.hydro()['analyze'][props.component][props.method](values)
-            if (props.output) {
-            maincomponent.pushresults(props.type, values, 'local')
-            maincomponent.pushresults(props.output, res, 'local')
+            var values
+            if (data.textContent.includes("[", 0)) {
+                values = JSON.stringify(data.textContent)
+                console.log(values)
+            } else {
+            values = data.textContent.split(",").map(x => parseInt(x))
         }
+
+            //let res = maincomponent.hydro()['analyze'][props.component][props.method](values)
+            //if (props.output) {
+            //maincomponent.pushresults(props.type, values, 'local')
+            //maincomponent.pushresults(props.output, res, 'local')
+        //}
         }
     }
 }

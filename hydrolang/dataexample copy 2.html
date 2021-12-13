@@ -26,6 +26,11 @@
         <analyze-mod component="stats" method="sum" input="var3" output="var2">
         </analyze-mod>
 
+        <visualize-mod draw="chat" data="userinput" output="fig1" >
+            <parameters chat="line" title="realhydro"></parameters>
+            <data>7,5,8,9,5,4,2,4,5</data>
+        </visualize-mod>
+
     </hydrolang-ml>
 
     <script type="module" src="./hydrolang-ml/main.js"></script>

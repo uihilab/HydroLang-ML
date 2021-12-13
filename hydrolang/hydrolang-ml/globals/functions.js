@@ -205,7 +205,7 @@ export default class maincomponent extends HTMLElement {
     /**
      * Get results from the attribute
      * @method getresults
-     * @memberof datamod
+     * @memberof maincomponent
      * @param {String} name - name of the object to be retrieved. 
      * @returns {Object} object required from the attributes.
      */
@@ -223,6 +223,40 @@ export default class maincomponent extends HTMLElement {
         });
         console.log(`Item ${keyfind} has been retrieved.`)
         return value
+    };
+
+    /**
+     * Grabs the keys of an existing object with a delay.
+     * @method grabKeyList
+     * @memberof maincomponent
+     * @param {Object} obj - object to grab keys from. 
+     * @returns {Object[]} array of the keys.
+     */
+    static grabKeyList(obj) {
+            return new Promise(resolve => {
+                setTimeout(() => {
+                    var x = Object.keys(obj)
+                    resolve(x)
+                }, 1)
+            })
+        };
+
+    /**
+     * Item called from the window global database
+     * @method callDatabase
+     * @memberof maincomponent
+     * @param {Object} item - item retrived from the database. 
+     * @returns {Object} object required for further manipulation.
+     */
+    static callDatabase(item, name) {
+        return new Promise(resolve => {
+            setTimeout(() => {
+                var ob = {
+                    ...maincomponent.db(name)[item]
+                }
+                resolve(ob)
+            }, 1000);
+        })
     };
 
     /**
