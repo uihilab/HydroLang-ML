@@ -124,7 +124,7 @@ export default class datamod extends HTMLElement {
             var vf = {}
             vf = Object.assign(ob.parameters, nw)
             var results = maincomponent.hydro().data.retrieve(vf, this.handlewaterdata)
-            maincomponent.pushresults(props.output, results, 'local') 
+            maincomponent.pushresults(props.output, results, 'local')
 
         } else if (props.method === "transform") {
 

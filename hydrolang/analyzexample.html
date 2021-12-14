@@ -10,13 +10,13 @@
 
 <body>
     <hydrolang-ml>
-
-        <analyze-mod component="stats" method="sum" type="userinput" output="myanalyzeexample1">
-            <data name="example1">[2,4,4,5,5,4,5,4,8], [1,2,3,4,5,6,4]</data>
+        <analyze-mod component="stats" method="basicstats" type="userinput" output="myanalyzeexample1">
+            <data>2,4,4,5,5,4,5,4,8</data>
+            <data>1,2,3,4,5,6,4,1,2</data>
         </analyze-mod>
 
         <analyze-mod component="stats" method="normoutliers" type="userinput" output="myanalyzeexample2">
-            <data name="example2">40,29,40,50,30,291</data>
+            <data>40,29,40,50,30,291</data>
         </analyze-mod>
     </hydrolang-ml>
 

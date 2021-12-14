@@ -76,10 +76,37 @@ export default class analyzemod extends HTMLElement {
         });
 
         const template = maincomponent.template('ANALYZE-MOD')
-
         shadow.appendChild(template.content.cloneNode(true));
-        let web = document.querySelector('analyze-mod')
+        var props = this.makePropertiesFromAttributes('analyze-mod')
 
+        //The events of slots changes are dealth with here. Create
+        //object parameters and append them to the global dictionaries
+        // this.shadowRoot.addEventListener("slotchange", (ev) => {
+        //     var newdb = {}
+        //     //Initialize the counter for the module. 
+        //     //maincomponent.count()
+        //     var r = ev.target.assignedElements()
+        //     var ar = maincomponent.makePropertiesFromParameters(r)
+
+        //     for (var i = 0; i < ar.length; i++) {
+        //         newdb[i] = {
+        //             [r[i].localName]: ar[i]
+        //         }
+        //     }
+
+        //     maincomponent.db("analyze")[props.output] = newdb
+        //     if (r.length === 0) {
+        //         console.log(`No additional parameters detected for module ${props.output}.`)
+        //     } else {
+        //         console.log(`Additional slots for module ${props.output}: ${ev.target.name} contains`, ev.target.assignedElements())
+        //     }
+
+        // })
+    }
+
+    async connectedCallback() {
+
+        var data = [];
         var props = this.makePropertiesFromAttributes('analyze-mod')
 
         //the data is read in the screen from the span element
@@ -93,13 +120,23 @@ export default class analyzemod extends HTMLElement {
         }
         }
         if (props.type === "userinput") {
-            let data = web.querySelector('analyze-mod data')
-            var values
-            if (data.textContent.includes("[", 0)) {
-                values = JSON.stringify(data.textContent)
-                console.log(values)
-            } else {
-            values = data.textContent.split(",").map(x => parseInt(x))
+            try {
+                for (var i = 0; i < this.children.length; i++) {
+                data.push(this.children[i].textContent)
+                console.log("im here, part of", props.output)
+            }
+            }
+
+            catch(ex) {
+                console.error(ex)
+            }
+
+            for (var j =0; j < data.length; j++) {
+                data[j] = data[j].split(',').map(Number)
+                let res = maincomponent.hydro()['analyze'][props.component][props.method](data[j])
+                console.log(res)
+            }
+
         }
 
             //let res = maincomponent.hydro()['analyze'][props.component][props.method](values)
@@ -107,7 +144,7 @@ export default class analyzemod extends HTMLElement {
             //maincomponent.pushresults(props.type, values, 'local')
             //maincomponent.pushresults(props.output, res, 'local')
         //}
-        }
+         
     }
 }
 
