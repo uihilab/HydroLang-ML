@@ -441,7 +441,6 @@ export default class stats {
           t.push(time[j]);
         }
       }
-      console.timeEnd("intout")
       return [t, re];
     }
   }
@@ -496,7 +495,6 @@ export default class stats {
           t.push(time[j]);
         }
       }
-      console.timeEnd("normout")
       return [t, out];
     }
   }
@@ -528,7 +526,6 @@ export default class stats {
       var t = this.itemfilter(arr[0], out[0]);
       var or = this.itemfilter(arr[1], out[1]);
 
-      console.timeEnd("outremove")
       return [t, or];
     }
   }
@@ -594,7 +591,6 @@ export default class stats {
         diff2[i] = Math.pow(obs[i] - meanobs, 2);
       };
       var NSE = 1 - this.sum(diff1) / this.sum(diff2);
-      console.timeEnd("NSE")
       return NSE;
     }
 
@@ -608,7 +604,6 @@ export default class stats {
       }
       console.log(`The values are - Upper: ${this.sum(diff1)}, Lower: ${this.sum(diff2)} and ${this.sum(diff3)}`);
       var r = Math.pow(this.sum(diff1) / (Math.sqrt(this.sum(diff2)) * Math.sqrt(this.sum(diff3))), 2);
-      console.timeEnd("determ")
       return r;
     }
 
@@ -619,7 +614,6 @@ export default class stats {
         diff2[i] = Math.pow(Math.abs(model[i] - meanobs) + Math.abs(obs[i] - meanobs), 2);
       };
       var d = 1 - this.sum(diff1) / this.sum(diff2);
-      console.timeEnd("agree")
       return d;
     }
   }
@@ -698,7 +692,6 @@ export default class stats {
     //flatenise the data for graphing.
     var statx = this.flatenise(ex1);
 
-    console.timeEnd("basicstats")
     return statx;
   }
 

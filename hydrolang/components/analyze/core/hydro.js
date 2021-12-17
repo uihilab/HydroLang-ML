@@ -32,7 +32,6 @@ export default class hydro {
         return el != null;
       });
     }
-    console.timeEnd("arithmetic");
     return filtered;
   }
 
@@ -66,7 +65,6 @@ export default class hydro {
         out[j] = +res[i][j] / totarea;
       }
     }
-    console.timeEnd("thiessen");
     return out;
   }
 
@@ -184,7 +182,6 @@ export default class hydro {
         LagTime: lag
       });
     }
-    console.timeEnd("synthcalc");
     return sol;
   }
 
@@ -251,7 +248,6 @@ export default class hydro {
         ttp[i] = Number((ttp[i - 1] + step).toFixed(2));
         qqp[i] = Number((Math.exp(m) * Math.pow(ttp[i], m) * Math.exp(-m * ttp[i])).toFixed(3));
       }
-      console.timeEnd("dimunit");
       return [ttp, qqp];
     } else {
       alert("Please use available distributions!");
@@ -338,7 +334,6 @@ export default class hydro {
         unit[0][h] = Number((duh[0][h] * tp).toFixed(3));
         unit[1][h] = Number((duh[1][h] * qp).toFixed(3));
       };
-      console.timeEnd("unitcons");
       return unit;
     }
 
@@ -377,7 +372,6 @@ export default class hydro {
 
       unit[1].reverse();
 
-      console.timeEnd("unitcons");
       return {
         unithydro: unit,
         totalvol: vol
@@ -491,7 +485,6 @@ export default class hydro {
 
       finalhydro[1].reverse();
 
-      console.timeEnd("floodhydro");
       return finalhydro;
     } else if (params.type == "obs") {
       var hydros = [];
@@ -529,7 +522,6 @@ export default class hydro {
         final[0][p] = p;
       };
 
-      console.timeEnd("floodhydro");
       return final;
     }
   }
@@ -632,7 +624,6 @@ export default class hydro {
         totalflow[4][q] * landuse[4];
     }
 
-    console.timeEnd("bucket")
     /*var finalvalues = this.matrix(2,n, 0)
 
     for (var w = 0; w < finalvalues[1].length; w++) {
@@ -707,7 +698,6 @@ export default class hydro {
 
     vec_right[index] = (-k * (vec_left[index] - vec_left[index - 1])) / dx;
 
-    console.timeEnd("ground1d");
     return vec_left;
   }
 
@@ -788,7 +778,6 @@ export default class hydro {
         }
         findata.push(this.totalprec(minidata));
       }
-      console.timeEnd("aggr")
       return [fintime, findata];
     } else if (agtype == "disaggregation") {
       var finagg = params.agg.interval;

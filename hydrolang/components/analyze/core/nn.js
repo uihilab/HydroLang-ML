@@ -71,7 +71,6 @@ export default class nn {
     );
 
     //print the model
-    console.timeEnd("nnmodel");
     return model;
   }
 
@@ -108,7 +107,6 @@ export default class nn {
         .sub(outputMin)
         .div(outputMax.sub(outputMin));
 
-      console.timeEnd("tensors");
       return {
         inputs: normalizedInputs,
         outputs: normalizedOutputs,
@@ -150,7 +148,6 @@ export default class nn {
 
     const batchsize = batch;
 
-    console.timeEnd("trainmodel");
     return await model.fit(inputs, outputs, {
       batchsize,
       epochs: epochs,
@@ -182,7 +179,6 @@ export default class nn {
 
     const unNormPreds = predictedPoints.mul(outputMax.sub(outputMin)).add(outputMin)
 
-    console.timeEnd("predict");
     return Array.from(unNormPreds.dataSync());
   }
 

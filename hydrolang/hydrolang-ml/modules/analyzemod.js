@@ -78,30 +78,6 @@ export default class analyzemod extends HTMLElement {
         const template = maincomponent.template('ANALYZE-MOD')
         shadow.appendChild(template.content.cloneNode(true));
         var props = this.makePropertiesFromAttributes('analyze-mod')
-
-        //The events of slots changes are dealth with here. Create
-        //object parameters and append them to the global dictionaries
-        // this.shadowRoot.addEventListener("slotchange", (ev) => {
-        //     var newdb = {}
-        //     //Initialize the counter for the module. 
-        //     //maincomponent.count()
-        //     var r = ev.target.assignedElements()
-        //     var ar = maincomponent.makePropertiesFromParameters(r)
-
-        //     for (var i = 0; i < ar.length; i++) {
-        //         newdb[i] = {
-        //             [r[i].localName]: ar[i]
-        //         }
-        //     }
-
-        //     maincomponent.db("analyze")[props.output] = newdb
-        //     if (r.length === 0) {
-        //         console.log(`No additional parameters detected for module ${props.output}.`)
-        //     } else {
-        //         console.log(`Additional slots for module ${props.output}: ${ev.target.name} contains`, ev.target.assignedElements())
-        //     }
-
-        // })
     }
 
     async connectedCallback() {
@@ -120,31 +96,16 @@ export default class analyzemod extends HTMLElement {
         }
         }
         if (props.type === "userinput") {
-            try {
-                for (var i = 0; i < this.children.length; i++) {
-                data.push(this.children[i].textContent)
-                console.log("im here, part of", props.output)
-            }
-            }
-
-            catch(ex) {
-                console.error(ex)
-            }
+            data = maincomponent.datagrabber(this)
 
             for (var j =0; j < data.length; j++) {
                 data[j] = data[j].split(',').map(Number)
-                let res = maincomponent.hydro()['analyze'][props.component][props.method](data[j])
-                console.log(res)
+                var res = maincomponent.hydro()['analyze'][props.component][props.method](data[j])
+                if (props.output) {
+                    maincomponent.pushresults(props.type, res, 'local')
+                }
             }
-
-        }
-
-            //let res = maincomponent.hydro()['analyze'][props.component][props.method](values)
-            //if (props.output) {
-            //maincomponent.pushresults(props.type, values, 'local')
-            //maincomponent.pushresults(props.output, res, 'local')
-        //}
-         
+        }   
     }
 }
 

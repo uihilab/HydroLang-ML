@@ -260,6 +260,25 @@ export default class maincomponent extends HTMLElement {
     };
 
     /**
+     * Data grabber for child embedded into a parent component.
+     * @method datagrabber
+     * @param {Object} mod - module required for grabbing data 
+     * @returns {Object} 
+     */
+
+    static datagrabber(mod){
+        var data = [];
+        try {
+            for (var i = 0; mod.children.length; i++) {
+                data.push(mod.children[i].textContent)
+            }
+        }
+        catch (ex) {
+        }
+        return data
+    }
+
+    /**
      * Basic constructor required. Can be modified to verify dependencies between childs and parents.
      * @constructor
      * @memberof maincomponent
