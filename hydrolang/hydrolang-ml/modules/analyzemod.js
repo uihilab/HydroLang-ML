@@ -77,23 +77,40 @@ export default class analyzemod extends HTMLElement {
 
         const template = maincomponent.template('ANALYZE-MOD')
         shadow.appendChild(template.content.cloneNode(true));
-        var props = this.makePropertiesFromAttributes('analyze-mod')
     }
 
+    /**
+     * Async connected callback. All analyze functions are parsed through here.
+     * @callback
+     * @memberof analyzemod
+     */
     async connectedCallback() {
 
         var data = [];
+        var res = 0
         var props = this.makePropertiesFromAttributes('analyze-mod')
 
         //the data is read in the screen from the span element
 
         if (props.type === "saved") {
             var x = maincomponent.getresults(props.input)
-            var values = JSON.parse(x)
-            let res = maincomponent.hydro()['analyze'][props.component][props.method](values)
-            if (props.output){
-            maincomponent.pushresults(props.output, res, 'local')
-        }
+            try {
+                x = await JSON.parse(x)   
+            } catch (error) { 
+            }
+            if (x.length > 1) {
+                for (var i =0; i < x.length; i++){
+                    data.push(x[i])
+                    res = maincomponent.hydro()['analyze'][props.component][props.method](data[j])
+                }
+
+            } else if (x.length == 1) {
+                data.push(x)
+            }
+
+            if (props.output != null){
+                maincomponent.pushresults(props.output, res, 'local')
+            }
         }
         if (props.type === "userinput") {
             data = maincomponent.datagrabber(this)
@@ -102,7 +119,7 @@ export default class analyzemod extends HTMLElement {
                 data[j] = data[j].split(',').map(Number)
                 var res = maincomponent.hydro()['analyze'][props.component][props.method](data[j])
                 if (props.output) {
-                    maincomponent.pushresults(props.type, res, 'local')
+                    maincomponent.pushresults(props.output, res, 'local')
                 }
             }
         }   
