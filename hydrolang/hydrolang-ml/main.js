@@ -7,8 +7,10 @@
  * @extends mapmod
  * @extends analyzemod
  * @extends hydrolangml
+ * @extends visualizemod
  */
 
+export * as visualizemod from './modules/visualizemod.js';
 export * as maincomponent from './globals/functions.js';
 export * as parameters from './wrappers/parameters.js';
 export * as datamod from './modules/datamod.js';

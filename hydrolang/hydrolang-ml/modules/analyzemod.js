@@ -1,3 +1,4 @@
+import { analyze } from "../../components/core.js";
 import maincomponent from "../globals/functions.js";
 
 /**
@@ -100,11 +101,11 @@ export default class analyzemod extends HTMLElement {
                 if (x[0].length) {
                     for (var i =0; i < x.length; i++){
                         data.push(x[i])
-                        res = maincomponent.hydro()['analyze'][props.component][props.method](data[j])
+                        res = maincomponent.hydro().analyze[props.component][props.method](data[j])
                     }
     
                 } else {
-                    res = maincomponent.hydro()['analyze'][props.component][props.method](x)
+                    res = maincomponent.hydro().analyze[props.component][props.method](x)
                 }
     
                 maincomponent.pushresults(props.output, res, 'local')   

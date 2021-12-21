@@ -288,7 +288,7 @@ export default class maincomponent extends HTMLElement {
 
     static recursearch(object, values) {
         if (Array.isArray(object)) {
-            for (const obj of object) {
+            for (const obj in object) {
                 const result = this.recursearch(obj, values)
                 if (result) {
                     return obj
@@ -299,7 +299,7 @@ export default class maincomponent extends HTMLElement {
                 return object;
             }
 
-            for (const k of Object.keys(object)) {
+            for (const k in Object.keys(object)) {
                 if (typeof object[k] === "object") {
                     const o = this.recursearch(object[k], values);
                     if (o !== null && typeof o !== 'undefined'){

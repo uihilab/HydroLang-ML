@@ -127,10 +127,15 @@ export default class datamod extends HTMLElement {
             maincomponent.pushresults(props.output, results, 'local')
 
         } else if (props.method === "transform") {
-
+            var param = await maincomponent.callDatabase(props.output, "data")
+            var x = maincomponent.getresults(props.input)
+            var resol = param[0].parameters.resultname
+            var res = JSON.parse(x)
             console.log("transform alive!")
-            var obtain = await this.getresults(maincomponent.results('data'), props.input)
-            console.log(await obtain)
+            var clean = maincomponent.recursearch(res, resol)
+            console.log(clean)
+
+
 
         } else if (props.method === "upload") {
 

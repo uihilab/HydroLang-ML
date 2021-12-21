@@ -13,14 +13,28 @@ export default class visualizemod extends HTMLElement {
      */
     static get properties() {
         return {
+            "method": {
+                type: String,
+                userDefined: true
+            },
             //name of the div constructor.
             "output": {
                 type: String,
                 userDefined: true
             },
 
+            "draw": {
+                type: String,
+                userDefined: true
+            },
+
             //data passed by the user.
             "input": {
+                type: String,
+                userDefined: true
+            },
+
+            "type": {
                 type: String,
                 userDefined: true
             }
@@ -96,8 +110,26 @@ export default class visualizemod extends HTMLElement {
     //asynchronous callback to call the data module and potentially the map module.
     async connectedCallback() {
         var props = this.makePropertiesFromAttributes('visualize-mod')
+        var ob
 
-        if (props.method === "userinput") {
+        if (props.type === "saved") {
+            var x
+            try {
+                console.log("im here")
+                x = JSON.parse(maincomponent.getresults(props.input))
+
+                ob = {data:x,
+                      draw: props.draw,
+                      config: {
+                          div: props.output
+                      }}
+                maincomponent.hydro().visualize[props.method](ob)
+                console.log("im here")
+            } catch (error) {
+            }
+        }
+
+        if (props.type === "userinput") {
             let data = web.querySelector('visualize-mod data')
             var values = data.textContent.split(",".map(x => parseInt(x)))
             var res = await this.callDatabase(props.output)
