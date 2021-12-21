@@ -91,28 +91,27 @@ export default class analyzemod extends HTMLElement {
         var props = this.makePropertiesFromAttributes('analyze-mod')
 
         //the data is read in the screen from the span element
-
+        //or from the saved data from the local storage
+        //or from the downloaded data from the data module
         if (props.type === "saved") {
-            var x = maincomponent.getresults(props.input)
+            var x
             try {
-                x = await JSON.parse(x)   
+                x = JSON.parse(maincomponent.getresults(props.input))
+                if (x[0].length) {
+                    for (var i =0; i < x.length; i++){
+                        data.push(x[i])
+                        res = maincomponent.hydro()['analyze'][props.component][props.method](data[j])
+                    }
+    
+                } else {
+                    res = maincomponent.hydro()['analyze'][props.component][props.method](x)
+                }
+    
+                maincomponent.pushresults(props.output, res, 'local')   
             } catch (error) { 
             }
-            if (x.length > 1) {
-                for (var i =0; i < x.length; i++){
-                    data.push(x[i])
-                    res = maincomponent.hydro()['analyze'][props.component][props.method](data[j])
-                }
-
-            } else if (x.length == 1) {
-                data.push(x)
-            }
-
-            if (props.output != null){
-                maincomponent.pushresults(props.output, res, 'local')
-            }
         }
-        if (props.type === "userinput") {
+        else if (props.type === "userinput") {
             data = maincomponent.datagrabber(this)
 
             for (var j =0; j < data.length; j++) {
@@ -122,7 +121,7 @@ export default class analyzemod extends HTMLElement {
                     maincomponent.pushresults(props.output, res, 'local')
                 }
             }
-        }   
+        }
     }
 }
 

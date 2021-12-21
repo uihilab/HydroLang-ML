@@ -84,13 +84,9 @@ if (JSON && JSON.stringify && JSON.parse) var Local = Local || (function () {
     return {
         set: function (key, value) {
                 var x = value
-                if (x) {
-                    value = JSON.stringify(x)
-                    console.log(`Item ${key} has been saved.`)
-                    return window.localStorage.setItem(key, value);
-                } else {
-                    console.log("Cannot save object: it isnt an object!")
-                }
+                value = JSON.stringify(x)
+                window.localStorage.setItem(key, value);
+                return console.log(`Item ${key} has been saved.`)
         },
 
         get: function (key) {

@@ -274,8 +274,41 @@ export default class maincomponent extends HTMLElement {
             }
         }
         catch (ex) {
+            console.log("Issue with the data input. Revise!")
         }
         return data
+    }
+
+    /**
+     * Retrieves an array from nested JSON object.
+     * @method recursearch
+     * @param {Object} object - retrieved object from local storage or download
+     * @param {String} values - names of arrays that are to be retrieved
+     */
+
+    static recursearch(object, values) {
+        if (Array.isArray(object)) {
+            for (const obj of object) {
+                const result = this.recursearch(obj, values)
+                if (result) {
+                    return obj
+                }
+            }
+        } else {
+            if (object.hasOwnProperty(values)) {
+                return object;
+            }
+
+            for (const k of Object.keys(object)) {
+                if (typeof object[k] === "object") {
+                    const o = this.recursearch(object[k], values);
+                    if (o !== null && typeof o !== 'undefined'){
+                        return o;
+                    }
+                }
+            }
+            return null
+        }
     }
 
     /**
