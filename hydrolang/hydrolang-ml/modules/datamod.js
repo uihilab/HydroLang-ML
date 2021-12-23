@@ -100,9 +100,9 @@ export default class datamod extends HTMLElement {
             //datamodprop.id = maincomponent.counter()
             maincomponent.db("data")[datamodprop.output] = newdb
             if (r.length === 0) {
-                console.log(`No additional parameters detected for module ${datamodprop.output}.`)
+                console.log(`No additional parameters detected for module data, ${datamodprop.output}.`)
             } else {
-                console.log(`Additional slots for module ${datamodprop.output}: ${ev.target.name} contains`, ev.target.assignedElements())
+                console.log(`Additional slots for module data, ${datamodprop.output}: ${ev.target.name} contains`, ev.target.assignedElements())
 
             }
 

@@ -21,12 +21,6 @@ var Hydro = Hydro || (function () {
         results: function (key) {
             return window.results[key]
         },
-        counter: function () {
-            return window.instancecounter
-        },
-        count: function () {
-            window.instancecounter++
-        }
     }
 })();
 

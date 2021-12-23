@@ -10,9 +10,9 @@
 
 <body>
     <hydrolang-ml>
-        <!-- <analyze-mod component="stats" method="basicstats" type="userinput" output="myanex1">
+        <analyze-mod component="stats" method="basicstats" type="userinput" output="myanex1">
             <data>2,4,4,5,5,4,5,4,8</data>
-        </analyze-mod> -->
+        </analyze-mod>
 
         <analyze-mod component="stats" method="basicstats" type="userinput" output="myanex1a">
             <data>1,2,3,4,5,6,4,1,2</data>
@@ -25,8 +25,25 @@
         <!-- <analyze-mod component="stats" method="sum" type="saved" input="myanex1" output="myan3">
         </analyze-mod> -->
 
-        <visualize-mod method="styles" draw="table" type="saved" input="myanex1a" output="myan4">
+        <data-mod method="save" output="var4">
+            <data>{type: "FeatureCollection", 
+                features: [{type: "Feature", 
+                geometry:{type:"Polygon", coordinates: [[[100.0, 0.0],[101.0,0.0],[100.0,1.0],[101.0,1.0],],],},},],}</data>
+        </data-mod>
+
+        <visualize-mod method="styles" draw="table" type="saved" input="myanex1" output="myan4">
         </visualize-mod>
+
+        <visualize-mod method="styles" draw="chart" charttype="line" type="userinput" output="myan5">
+            <data>0,1,2,3,4,5,6,7,8,9,10</data>
+            <data>0.1,2,0.52,0.2,0.69,8,98,8,10,11,5</data>
+        </visualize-mod>
+
+        <map-mod method ="render" lat="40" lon="-100"></map-mod>
+        <!-- <map-mod method ="Layers" type = "saved" input="var4" layertype="geodata" name="firstlayer" geotype="Polygon"></map-mod> -->
+        <map-mod method ="Layers" type = "userinput" layertype="marker" name="firstlayer">
+            <data>14.035344,-87.192993</data>
+        </map-mod>
 
         <!-- <analyze-mod component="stats" method="mean" type="saved" input="myanex2" output="myan4">
         </analyze-mod> -->

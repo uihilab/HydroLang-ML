@@ -37,6 +37,11 @@ export default class visualizemod extends HTMLElement {
             "type": {
                 type: String,
                 userDefined: true
+            },
+
+            "charttype": {
+                type: String,
+                userDefined: true
             }
         }
     };
@@ -62,6 +67,40 @@ export default class visualizemod extends HTMLElement {
             props[prop] = this.getAttribute(attr[i])
         }
         return props
+    };
+
+    /**
+     * Returns an iterable object to be passed as parameter for visualize module in hydrolang.
+     * @method typeofvisual
+     * @memberof visualizemod
+     * @param {Object} data - data type to draw, ndarray depending on the visualization to use. 
+     * @param {String} draw - either drawing a table or a chart.
+     * @param {String} name - name assigned to both div and chart name. 
+     * @param {String} type - if passed, chart type to use (scatter, line, poly).
+     * @returns 
+     */
+    typeofvisual(data, draw,name, type) {
+        if (!type){
+            type = null
+        }
+        var ob
+        ob = {data:data,
+            draw: draw,
+            config:{}
+        }
+
+        if(draw == "table") {
+                ob.config = {
+                    div: name
+                }
+        } if (draw == "chart") {
+                ob.config = {
+                    chart: type,
+                    div: name,
+                    title: name
+                }
+        };
+        return ob
     };
 
     /**
@@ -95,12 +134,11 @@ export default class visualizemod extends HTMLElement {
                     [r[i].localName]: ar[i]
                 }
             }
-            //visualizemodprop.id = maincomponent.counter()
             maincomponent.db("visualize")[visualizemodprop.output] = newdb
             if (r.length === 0) {
-                console.log(`No additional parameters detected for module ${visualizemodprop.output}.`)
+                console.log(`No additional parameters detected for module visualize, ${visualizemodprop.output}.`)
             } else {
-                console.log(`Additional slots for module ${visualizemodprop.output}: ${ev.target.name} contains`, ev.target.assignedElements())
+                console.log(`Additional slots for module visualize, ${visualizemodprop.output}: ${ev.target.name} contains`, ev.target.assignedElements())
 
             }
 
@@ -110,40 +148,30 @@ export default class visualizemod extends HTMLElement {
     //asynchronous callback to call the data module and potentially the map module.
     async connectedCallback() {
         var props = this.makePropertiesFromAttributes('visualize-mod')
+        var x
         var ob
+        var data = []
 
-        if (props.type === "saved") {
-            var x
+        if (props.type == "saved") {
             try {
-                console.log("im here")
                 x = JSON.parse(maincomponent.getresults(props.input))
-
-                ob = {data:x,
-                      draw: props.draw,
-                      config: {
-                          div: props.output
-                      }}
+                ob = this.typeofvisual(x, props.draw, props.output)
                 maincomponent.hydro().visualize[props.method](ob)
-                console.log("im here")
             } catch (error) {
             }
         }
 
-        if (props.type === "userinput") {
-            let data = web.querySelector('visualize-mod data')
-            var values = data.textContent.split(",".map(x => parseInt(x)))
-            var res = await this.callDatabase(props.output)
-            var ob = {
-                ...res[0]
-            }
-            var nw = {
-                ...res[1]
-            }
-            var vf = {}
-            vf = Object.assign(ob.parameters, nw)
-            var results = maincomponent.hydro().data.retrieve(vf, this.handlewaterdata)
-            maincomponent.pushresults(props.output, results, 'local') 
-    }
+        if (props.type == "userinput") {
+            try {
+                data = maincomponent.datagrabber(this)
+                for (var j =0; j < data.length; j++) {
+                    data[j] = data[j].split(',').map(Number)
+                }
+                ob = this.typeofvisual(data, props.draw, props.output, props.charttype)
+                maincomponent.hydro().visualize[props.method](ob)
+        } catch (error) {
+        }
+        }
 }
 }
 

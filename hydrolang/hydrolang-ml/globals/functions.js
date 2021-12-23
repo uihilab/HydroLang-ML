@@ -21,16 +21,6 @@ export default class maincomponent extends HTMLElement {
     };
 
     /**
-     * Used for counting the number of instances of a component.
-     * @method counter
-     * @memberof maincomponent
-     * @returns counter of instances of a component.
-     */
-    static counter() {
-        return Hydro.counter()
-    };
-
-    /**
      * Accesses the window database that contains events attached as nodes.
      * @method db
      * @memberof maincomponent
@@ -42,10 +32,6 @@ export default class maincomponent extends HTMLElement {
 
     static results(key) {
         return Hydro.results(key)
-    };
-
-    static count() {
-        Hydro.count()
     };
 
     /**
@@ -268,6 +254,7 @@ export default class maincomponent extends HTMLElement {
 
     static datagrabber(mod){
         var data = [];
+        if (mod.children.textContent != null) {
         try {
             for (var i = 0; mod.children.length; i++) {
                 data.push(mod.children[i].textContent)
@@ -276,6 +263,7 @@ export default class maincomponent extends HTMLElement {
         catch (ex) {
             console.log("Issue with the data input. Revise!")
         }
+    }
         return data
     }
 

@@ -10,39 +10,21 @@
 
 <body>
 
-    <!-- This can be either removed or added into a larger scheme so that an HTML tag
-    grabs the whole modules called -->
-
-    <!-- input output for the objects, new tag for data input.-->
-
-    <!-- Create input tag for the parameters to handle slotted events.-->
-
     <hydrolang-ml>
-
-        <!-- <data-mod method="save" output="var3">
-            <data>40,29,40,50,30,291</data>
-        </data-mod> -->
 
         <data-mod method="retrieve" output="var1">
             <parameters source="usgs" dataType="instant-values" proxyurl="https://cors-anywhere.herokuapp.com/"></parameters>
             <arguments site="USGS:02056000" format="json" startDt="2020-08-30" endDt="2020-09-02" parameterCd="00060"></arguments>
         </data-mod>
 
-        <!-- <data-mod method="retrieve" output="var2">
-            <parameters source="noaa" datatype="prec-15min" type="json" token="wOYszxFhCctvvmijQbDUaiVgNMmwFNQE">
-            </parameters>
-            <arguments stationid="COOP:018673" units="metric" startdate="2014-01-01" enddate="2014-12-31"
-                datatype="QGAG"></arguments>
-        </data-mod> -->
-
         <!-- <data-mod method="retrieve" output="name2">
             <parameters source="fema" datatype="disaster-declarations" />
             <arguments state="CA" />
         </data-mod> -->
 
-        <!-- <data-mod method="transform" input="var1" output="var2">
-            <parameters resultname="value"></parameters>
-        </data-mod> -->
+        <data-mod method="transform" input="var1" output="var2">
+            <parameters resultname="value" keep="dateTime, value"></parameters>
+        </data-mod>
     </hydrolang-ml>
 
     <script type="module" src="./hydrolang-ml/main.js"></script>

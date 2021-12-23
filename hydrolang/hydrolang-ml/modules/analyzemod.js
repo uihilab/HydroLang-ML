@@ -1,4 +1,3 @@
-import { analyze } from "../../components/core.js";
 import maincomponent from "../globals/functions.js";
 
 /**
