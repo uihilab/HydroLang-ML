@@ -34,7 +34,13 @@ export default class datamod extends HTMLElement {
         return Object.keys(datamod.properties)
     };
 
-    //create properties from passed attributes accepted by element
+    /**
+     * Creates properties from allowable attributes for the web component.
+     * @method makePropertiesFromAttributes
+     * @memberof datamod
+     * @param {Object} elem - Custom element to create attributes from.
+     * @returns {Object} - Returns object with properties.
+     */
     makePropertiesFromAttributes(elem) {
         let ElemClass = customElements.get(elem);
         let attr = ElemClass.observedAttributes;
@@ -85,36 +91,35 @@ export default class datamod extends HTMLElement {
             var nw = Object.assign({}, params[1])
             ob.arguments = nw
             var results = maincomponent.hydro().data[props.method](await ob, this.handlewaterdata)
-            maincomponent.pushresults(props.output, await results, 'local')
-
-        } else if (props.method === "transform") {
-            var param = await maincomponent.callDatabase(props.output, "data")
-            var x = maincomponent.getresults(props.input)
-            var resol = param[0].parameters.resultname
-            var res = JSON.parse(x)
-            console.log("transform alive!")
-            var clean = maincomponent.recursearch(res, resol)
-            console.log(clean)
-
-        } else if (props.method === "upload") {
-
-            var up = maincomponent.hydro().data.upload(props.type)
-            var up2 = {
-                [props.saveob]: await up
+            if (results != null || results != undefined || results != []) {
+                maincomponent.pushresults(params[0].output, await results, 'local')
             }
 
-            console.log("upload alive!")
-            console.log(props)
+        // } else if (props.method === "transform") {
+        //     var param = await maincomponent.callDatabase(props.output, "data")
+        //     var x = maincomponent.getresults(props.input)
+        //     var resol = param[0].parameters.resultname
+        //     var res = JSON.parse(x)
+        //     console.log("transform alive!")
+        //     var clean = maincomponent.recursearch(res, resol)
+        //     console.log(clean)
+
+        } else if (props.method === "upload") {
+            var btn = document.createElement("BUTTON")
+            btn.innerHTML = "Upload here!"
+            btn.onclick = function () {
+                var prom = Promise.resolve(maincomponent.hydro().data[props.method](params[0].type))
+                maincomponent.LocalStore(params[0].output, prom.resolve, "save")         
+            }
+            document.body.appendChild(btn)
 
         } else if (props.method === "download") {
             console.log("download alive!")
             console.log(props)
         } 
         else if (props.method === "save") {
-            let web = document.querySelector('data-mod')
-            let data = web.querySelector('data-mod data')
-            var values = data.textContent.split(",").map(x => parseInt(x))
-            maincomponent.LocalStore(props.output, values, "save")
+            var data = maincomponent.datalistener(this)
+            maincomponent.LocalStore(params[0].output, data, "save")
         }
     }
 }

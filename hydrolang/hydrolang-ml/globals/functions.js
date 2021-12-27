@@ -125,7 +125,6 @@ export default class maincomponent extends HTMLElement {
         elem.shadowRoot.addEventListener("slotchange", (ev) => {
             var newdb = {}
             //Initialize the counter for the module. 
-            //maincomponent.count()
             var r = ev.target.assignedElements()
             var ar = this.makePropertiesFromParameters(r)
 
@@ -143,7 +142,31 @@ export default class maincomponent extends HTMLElement {
             }
 
         })
+    };
+
+    /**
+     * Retrieves data for a component to use. Can be either saved on local storage
+     * or can be inside tag lines <>.
+     * @method datalistener
+     * @memberof maincomponent
+     * @param {Object} mod - Custom component to retrieve data from
+     * @returns {Object} data.
+     */
+    static datalistener(mod) {
+        var data
+        var params = this.makePropertiesFromParameters(mod.children)
+
+        try{
+        if (params[0].type == "saved") {
+            data = JSON.parse(this.getresults(params[0].input))
+        } else {
+            data = JSON.parse(this.datagrabber(mod))
+        }
+    } catch (error) {
+        data = undefined
     }
+        return data
+    };
 
     /**
      * Stores data in cache, if required. Also used to retrieve data.

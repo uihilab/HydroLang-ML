@@ -5,27 +5,41 @@ import maincomponent from '../globals/functions.js'
  * @class mapmod
  */
 export default class mapmod extends HTMLElement {
+
+    /**
+     * Defines the allowable attributes in the component.
+     * @method properties
+     * @memberof mapmod
+     */
     static get properties() {
         return {
-
             "method": {
                 type: String,
                 userDefined: true
             },
-
             "type": {
                 type: String,
                 userDefined: true
             }
         }
-    }
+    };
 
-    //observer of keys for each property of the HTML element
+    /**
+     * Observer of keys for each property of the HTML element.
+     * @method observedAttributes
+     * @memberof mapmod
+     */
     static get observedAttributes() {
         return Object.keys(mapmod.properties)
-    }
+    };
 
-    //create properties from passed attributes accepted by element
+    /**
+     * Creates properties from allowable attributes for the web component.
+     * @method makePropertiesFromAttributes
+     * @memberof mapmod
+     * @param {Object} elem - Custom element to create attributes from.
+     * @returns {Object} - Returns object with properties.
+     */
     makePropertiesFromAttributes(elem) {
         let ElemClass = customElements.get(elem);
         let attr = ElemClass.observedAttributes;
@@ -39,88 +53,90 @@ export default class mapmod extends HTMLElement {
         return props
     };
 
-    //main class to handle the inputs from the user.
+    /**
+     * Constructor to open the shadow DOM and creating a template for the component.
+     * @constructor
+     * @memberof mapmod
+     */
     constructor() {
+        //Required super method.
         super()
         let shadow = this.attachShadow({
             mode: 'open'
         })
+        //Creates a template and attaches the web component to it.
         var props = this.makePropertiesFromAttributes('map-mod')
         if(props.method != "render") {} if(props.method === "render") {        
-        const template = maincomponent.template("mapmod", props.method)
-        shadow.appendChild(template.content.cloneNode(true))
+            const template = maincomponent.template("mapmod", props.method)
+            shadow.appendChild(template.content.cloneNode(true))
     }
     };
 
-    //asynchronous callback to call the data module and potentially the map module.
-    async connectedCallback() {
-        //rendering only open street maps using leaflet right now.
+    /**
+     * Creates an object to be used as a layer depending on the type of
+     * input by the user.
+     * @method typeofLayer
+     * @memberof mapmod
+     * @returns {Object} - 
+     */
+    typeofLayer(props, params, data) {
+        if(!data || data == undefined || data == null) {data = null}
         var mapconfig = {}
         var layertype = {}
+        console.log(data)
 
-        var props = this.makePropertiesFromAttributes('map-mod')
-        var params = maincomponent.makePropertiesFromParameters(this.children)
-
-        if(props.method === "render") {
-            await maincomponent.hydro().map.loader({maptype: "osm"})            
-            layertype = {type: "tile", name: "OpenStreetMap" }
+        if (props.method === "render") {
+            layertype = {type: "tile", name: params[0].name}
             mapconfig = {
                 maptype: "osm",
                 lat: params[0].lat,
                 lon: params[0].lon,
-                zoom: 20,
+                zoom: 40,
                 layertype: layertype
             }
-            await maincomponent.hydro().map.renderMap(mapconfig)
+        } if(props.method === "Layers") {
+            layertype = {
+                type: params[0].layer,
+                markertype: params[0].layer, 
+                geotype: params[0].geo,
+                data: data, 
+                name:params[0].name, 
+                coord: data,
+            }
+            mapconfig = {maptype: "osm", layertype: layertype}
+        }
+        return mapconfig
+    }
+
+    /**
+     * Function dealing with the inputs passed as data or attributes by the user.
+     * @callback
+     * @memberof mapmod
+     */
+    async connectedCallback() {
+        //rendering only open street maps using leaflet right now.
+        var props = this.makePropertiesFromAttributes('map-mod')
+        var params = maincomponent.makePropertiesFromParameters(this.children)
+        var data = maincomponent.datalistener(this)
+        var config = this.typeofLayer(props, params, data)
+
+        if(props.method === "render") {
+            await maincomponent.hydro().map.loader({maptype: "osm"})            
+            await maincomponent.hydro().map.renderMap(config)
             await maincomponent.hydro().map.Layers({maptype: "osm", layertype: {type: "draw"}})
         }
 
         if (props.method === "Layers") {
-            var x
-            if (props.type === "saved"){
-                try{
-                    x = JSON.parse(maincomponent.getresults(props.varname))
-                } catch (error) {
-                    console.log("Error in obtaining data.")
-                }
-            } if (props.type === "userinput") {
-                try {
-                    data = maincomponent.datagrabber(this)
-                    for (var j=0; j < data.length; j++){
-                        data[j] = data[j].split(',').map(Number)
-                    }
-                } catch (error) {
-                    console.log("Couldn't grab the data, revise input!")
-                }
+            try {
+            new Promise(resolve => {
+                setTimeout(() => {
+                    maincomponent.hydro().map.Layers(config)
+                }, 1000)});
+            } catch (error) {
+                console.log("No map found in screen! Please render map first.")
             }
-            if (props.layertype === "geodata"){
-                try{
-                    layertype = {
-                        type: "geodata", 
-                        geotype: props.geo,
-                        data: x, 
-                        name:props.name, 
-                        geotype:props.geotype
-                    }
-                    await maincomponent.hydro().map.Layers({maptype: "osm", layertype: layertype})
-                } catch (error) {
-                    console.log("No map found in screen! Please render map first.")
-                }
-            } if (props.layertype === "marker"){
-                try{
-                    layertype = {
-                        type: "marker",
-                        makertype: "marker",
-                        coord: x,
-                        name: props.name
-                    }
-                    await maincomponent.hydro().map.Layers({maptype: "osm", layertype: layertype})
-                } catch (error) {
-                    console.log("No map found in screen! Please render map first.")
-                }
-            }
-        }
     }
+}
 }
 
 //Defining the web components into the DOM

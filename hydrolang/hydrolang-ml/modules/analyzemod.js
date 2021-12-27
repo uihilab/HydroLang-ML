@@ -69,46 +69,14 @@ export default class analyzemod extends HTMLElement {
      * @memberof analyzemod
      */
     async connectedCallback() {
-
-        var data = [];
-        var res
         var props = this.makePropertiesFromAttributes('analyze-mod')
         var params = maincomponent.makePropertiesFromParameters(this.children)
-
-        // var cj = this.children
-        // for (let i =0; i < cj.length; i++){
-        //     console.log(Element.getAttribute(cj[i].tagName))
-        // }
-
-        //the data is read in the screen from the span element
-        //or from the saved data from the local storage
-        //or from the downloaded data from the data module
-        if (params[0].type === "saved") {
-            var x
-            try {
-                x = JSON.parse(maincomponent.getresults(params[0].input))
-                if (x[0].length) {
-                    for (var i =0; i < x.length; i++){
-                        data.push(x[i])
-                        res = maincomponent.hydro().analyze[props.component][props.method](data[j])
-                    }
-    
-                } else {
-                    res = maincomponent.hydro().analyze[props.component][props.method](x)
-                }
-    
-                maincomponent.pushresults(params[0].output, res, 'local')   
-            } catch (error) { 
-            }
-        }
-        else if (params[0].type === "userinput") {
-            data = maincomponent.datagrabber(this)
-
-            for (var j =0; j < data.length; j++) {
-                data[j] = data[j].split(',').map(Number)
-                res = maincomponent.hydro().analyze[props.component][props.method](data[j])
-                maincomponent.pushresults(params[0].output, res, 'local')
-            }
+        var data = maincomponent.datalistener(this)
+        try{
+            var res = maincomponent.hydro().analyze[props.component][props.method](data)
+            maincomponent.pushresults(params[0].output, res, 'local')
+        } catch(error) {
+            console.log("Check data types from HydroLang.js to see compatibility!")
         }
     }
 }

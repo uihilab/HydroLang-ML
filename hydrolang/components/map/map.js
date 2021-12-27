@@ -189,6 +189,7 @@ function renderMap(config) {
 
 function geoJSON(data) {
   var inf = data.layertype.data;
+  console.log(data)
   var geotype = inf.features[0].geometry.type;
 
   if (data.maptype == "google") {

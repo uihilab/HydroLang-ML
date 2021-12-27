@@ -17,7 +17,6 @@ export default class visualizemod extends HTMLElement {
                 type: String,
                 userDefined: true
             },
-
             "draw": {
                 type: String,
                 userDefined: true
@@ -34,7 +33,13 @@ export default class visualizemod extends HTMLElement {
         return Object.keys(visualizemod.properties)
     };
 
-    //create properties from passed attributes accepted by element
+    /**
+     * Creates properties from allowable attributes for the web component.
+     * @method makePropertiesFromAttributes
+     * @memberof visualizemod
+     * @param {Object} elem - Custom element to create attributes from.
+     * @returns {Object} - Returns object with properties.
+     */
     makePropertiesFromAttributes(elem) {
         let ElemClass = customElements.get(elem);
         let attr = ElemClass.observedAttributes;
@@ -83,7 +88,7 @@ export default class visualizemod extends HTMLElement {
     };
 
     /**
-     * Constructor that deals with the inputs from each slotted event.
+     * Constructor to open the shadow DOM and creating a template for the component.
      * Requires methods from the maincomponent function.
      * @constructor
      * @memberof visualizemod
@@ -99,23 +104,15 @@ export default class visualizemod extends HTMLElement {
         shadow.append(template.content.cloneNode(true))
     };
 
-    //asynchronous callback to call the data module and potentially the map module.
     /**
-     * Function dealing with
+     * Function dealing with the inputs passed as data or attributes by the user.
      * @callback
      * @memberof visualizemod
      */
     async connectedCallback() {
         var props = this.makePropertiesFromAttributes('visualize-mod')
         var params = maincomponent.makePropertiesFromParameters(this.children)
-        var data
-
-        if (params[0].type == "saved") {
-            data = JSON.parse(maincomponent.getresults(params[0].input))
-        } else {
-            data = JSON.parse(maincomponent.datagrabber(this))
-        }
-        
+        var data = maincomponent.datalistener(this)
         try {
             var ob = this.typeofvisual(data, props.draw, params[0].output, params[0].charttype)
             maincomponent.hydro().visualize[props.method](ob)
