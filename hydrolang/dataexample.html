@@ -17,14 +17,19 @@
             <arguments site="USGS:02056000" format="json" startDt="2020-08-30" endDt="2020-09-02" parameterCd="00060"></arguments>
         </data-mod>
 
-        <!-- <data-mod method="retrieve" output="name2">
-            <parameters source="fema" datatype="disaster-declarations" />
-            <arguments state="CA" />
-        </data-mod> -->
-
-        <data-mod method="transform" input="var1" output="var2">
-            <parameters resultname="value" keep="dateTime, value"></parameters>
+        <data-mod method="retrieve" output="name2">
+            <parameters source="fema" datatype="disaster-declarations"></parameters>
+            <arguments state="CA"></arguments>
         </data-mod>
+
+        <data-mod method="retrieve" output="name7">
+            <parameters source="noaa" datatype="prec-15min" type="json" token="gNUkMgFHFSYVWyNoabuUfuVhCTJkRvRq"></parameters>
+            <arguments stationid="COOP:018673" units="metric" startdate="2014-01-01" enddate="2014-12-31" limit="1000" datatype="QGAG"></arguments>
+        </data-mod>
+
+        <!-- <data-mod method="transform" input="var1" output="var2">
+            <parameters resultname="value" keep="dateTime, value"></parameters>
+        </data-mod> -->
     </hydrolang-ml>
 
     <script type="module" src="./hydrolang-ml/main.js"></script>

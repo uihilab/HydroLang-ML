@@ -13,46 +13,10 @@ export default class mapmod extends HTMLElement {
                 userDefined: true
             },
 
-            "lat": {
-                type: String,
-                userDefined: true
-            },
-
-            "lon": {
-                type: String,
-                userDefined: true
-            },
-
-            "layertype": {
-                type: String,
-                userDefined: true
-            },
-
             "type": {
                 type: String,
                 userDefined: true
-            },
-
-            "geotype": {
-                type: String,
-                userDefined: true
-            },
-
-            "name": {
-                type: String,
-                userDefined: true
-            },
-
-            "input": {
-                type: String,
-                userDefined: true
-            },
-
-            "varname": {
-                type: String,
-                userDefined: true
             }
-            
         }
     }
 
@@ -73,7 +37,7 @@ export default class mapmod extends HTMLElement {
             props[prop] = this.getAttribute(attr[i])
         }
         return props
-    }
+    };
 
     //main class to handle the inputs from the user.
     constructor() {
@@ -81,75 +45,45 @@ export default class mapmod extends HTMLElement {
         let shadow = this.attachShadow({
             mode: 'open'
         })
-
-        const template = maincomponent.template('MAP-MOD')
-        shadow.append(template.content.cloneNode(true))
-
-        var mapmodprop = this.makePropertiesFromAttributes('map-mod')
-
-        //The events of slots changes are dealth with here. Create
-        //object parameters and append them to the global dictionaries
-        this.shadowRoot.addEventListener("slotchange", (ev) => {
-            var newdb = {}
-            var r = ev.target.assignedElements()
-            var ar = maincomponent.makePropertiesFromParameters(r)
-            var newdb = {}
-            for (var i = 0; i < ar.length; i++) {
-                newdb[i] = {
-                    [r[i].localName]: ar[i]
-                }
-            }
-            maincomponent.db("maps")[mapmodprop.output] = newdb
-            if (r.length === 0) {
-                console.log(`No additional parameters detected for module maps,  ${mapmodprop.output}.`)
-            } else {
-                console.log(`Additional slots for module maps, ${mapmodprop.name}: ${ev.target.name} contains`, ev.target.assignedElements())
-
-            }
-            
-        })
+        var props = this.makePropertiesFromAttributes('map-mod')
+        if(props.method != "render") {} if(props.method === "render") {        
+        const template = maincomponent.template("mapmod", props.method)
+        shadow.appendChild(template.content.cloneNode(true))
     }
+    };
 
     //asynchronous callback to call the data module and potentially the map module.
     async connectedCallback() {
-        var mapmodprop = this.makePropertiesFromAttributes('map-mod')
         //rendering only open street maps using leaflet right now.
         var mapconfig = {}
         var layertype = {}
 
-        if(mapmodprop.method == "render") {
-            await maincomponent.hydro().map.loader({maptype: "osm"})
-            const style = document.createElement('style');
-            style.innerHTML = `#map {
-                height: 400px;
-                width: 800px;
-                margin-left: auto;
-                margin-right: auto;
-            }`
-            document.head.appendChild(style)
-            
+        var props = this.makePropertiesFromAttributes('map-mod')
+        var params = maincomponent.makePropertiesFromParameters(this.children)
+
+        if(props.method === "render") {
+            await maincomponent.hydro().map.loader({maptype: "osm"})            
             layertype = {type: "tile", name: "OpenStreetMap" }
             mapconfig = {
                 maptype: "osm",
-                lat: mapmodprop.lat,
-                lon: mapmodprop.lon,
-                zoom: 13,
+                lat: params[0].lat,
+                lon: params[0].lon,
+                zoom: 20,
                 layertype: layertype
             }
             await maincomponent.hydro().map.renderMap(mapconfig)
             await maincomponent.hydro().map.Layers({maptype: "osm", layertype: {type: "draw"}})
         }
 
-        if (mapmodprop.method === "Layers") {
+        if (props.method === "Layers") {
             var x
-            if (mapmodprop.type === "saved"){
+            if (props.type === "saved"){
                 try{
                     x = JSON.parse(maincomponent.getresults(props.varname))
                 } catch (error) {
                     console.log("Error in obtaining data.")
                 }
-            } if (mapmodprop.type === "userinput") {
-                var data = []
+            } if (props.type === "userinput") {
                 try {
                     data = maincomponent.datagrabber(this)
                     for (var j=0; j < data.length; j++){
@@ -159,7 +93,7 @@ export default class mapmod extends HTMLElement {
                     console.log("Couldn't grab the data, revise input!")
                 }
             }
-            if (mapmodprop.layertype === "geodata"){
+            if (props.layertype === "geodata"){
                 try{
                     layertype = {
                         type: "geodata", 
@@ -172,7 +106,7 @@ export default class mapmod extends HTMLElement {
                 } catch (error) {
                     console.log("No map found in screen! Please render map first.")
                 }
-            } if (mapmodprop.layertype === "marker"){
+            } if (props.layertype === "marker"){
                 try{
                     layertype = {
                         type: "marker",

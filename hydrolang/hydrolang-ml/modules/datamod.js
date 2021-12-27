@@ -22,11 +22,6 @@ export default class datamod extends HTMLElement {
                 type: String,
                 userDefined: true
             },
-
-            "input": {
-                type: String,
-                userDefined: true
-            }
         }
     };
 
@@ -61,7 +56,7 @@ export default class datamod extends HTMLElement {
      * @returns {console} confirmation of data. 
      */
     handlewaterdata(data) {
-        console.log('Data retrieved!')
+        console.log(`Data has been retrieved!`)
     };
 
     /**
@@ -77,54 +72,20 @@ export default class datamod extends HTMLElement {
             mode: 'open'
         })
         //Creation of the template holding the web component.
-        const template = maincomponent.template('DATA-MOD')
+        const template = maincomponent.template("datamod")
         shadow.append(template.content.cloneNode(true))
-        //Creation of the properties of the module.
-        var datamodprop = this.makePropertiesFromAttributes('data-mod')
-
-
-        //The events of slots changes are dealth with here. Create
-        //object parameters and append them to the global dictionaries
-        this.shadowRoot.addEventListener("slotchange", (ev) => {
-            var newdb = {}
-            //Initialize the counter for the module. 
-            //maincomponent.count()
-            var r = ev.target.assignedElements()
-            var ar = maincomponent.makePropertiesFromParameters(r)
-
-            for (var i = 0; i < ar.length; i++) {
-                newdb[i] = {
-                    [r[i].localName]: ar[i]
-                }
-            }
-            //datamodprop.id = maincomponent.counter()
-            maincomponent.db("data")[datamodprop.output] = newdb
-            if (r.length === 0) {
-                console.log(`No additional parameters detected for module data, ${datamodprop.output}.`)
-            } else {
-                console.log(`Additional slots for module data, ${datamodprop.output}: ${ev.target.name} contains`, ev.target.assignedElements())
-
-            }
-
-        })
     };
 
-    //asynchronous callback to call the data module and potentially the map module.
     async connectedCallback() {
         var props = this.makePropertiesFromAttributes('data-mod')
+        var params = maincomponent.makePropertiesFromParameters(this.children)
 
         if (props.method === "retrieve") {
-            var res = await maincomponent.callDatabase(props.output, "data")
-            var ob = {
-                ...res[0]
-            }
-            var nw = {
-                ...res[1]
-            }
-            var vf = {}
-            vf = Object.assign(ob.parameters, nw)
-            var results = maincomponent.hydro().data.retrieve(vf, this.handlewaterdata)
-            maincomponent.pushresults(props.output, results, 'local')
+            var ob = Object.assign({}, params[0])
+            var nw = Object.assign({}, params[1])
+            ob.arguments = nw
+            var results = maincomponent.hydro().data[props.method](await ob, this.handlewaterdata)
+            maincomponent.pushresults(props.output, await results, 'local')
 
         } else if (props.method === "transform") {
             var param = await maincomponent.callDatabase(props.output, "data")
@@ -134,8 +95,6 @@ export default class datamod extends HTMLElement {
             console.log("transform alive!")
             var clean = maincomponent.recursearch(res, resol)
             console.log(clean)
-
-
 
         } else if (props.method === "upload") {
 

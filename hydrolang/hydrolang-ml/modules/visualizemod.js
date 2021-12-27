@@ -17,29 +17,8 @@ export default class visualizemod extends HTMLElement {
                 type: String,
                 userDefined: true
             },
-            //name of the div constructor.
-            "output": {
-                type: String,
-                userDefined: true
-            },
 
             "draw": {
-                type: String,
-                userDefined: true
-            },
-
-            //data passed by the user.
-            "input": {
-                type: String,
-                userDefined: true
-            },
-
-            "type": {
-                type: String,
-                userDefined: true
-            },
-
-            "charttype": {
                 type: String,
                 userDefined: true
             }
@@ -73,11 +52,11 @@ export default class visualizemod extends HTMLElement {
      * Returns an iterable object to be passed as parameter for visualize module in hydrolang.
      * @method typeofvisual
      * @memberof visualizemod
-     * @param {Object} data - data type to draw, ndarray depending on the visualization to use. 
+     * @param {Object} data - data type to draw, ndarray depending on the visualization to use.
      * @param {String} draw - either drawing a table or a chart.
-     * @param {String} name - name assigned to both div and chart name. 
+     * @param {String} name - name assigned to both div and chart name.
      * @param {String} type - if passed, chart type to use (scatter, line, poly).
-     * @returns 
+     * @returns {Object} - object to be used for drawing.
      */
     typeofvisual(data, draw,name, type) {
         if (!type){
@@ -116,61 +95,32 @@ export default class visualizemod extends HTMLElement {
             mode: 'open'
         })
         //Creation of the template holding the web component.
-        const template = maincomponent.template('VISUALIZE-MOD')
+        const template = maincomponent.template("visualizemod")
         shadow.append(template.content.cloneNode(true))
-        //Creation of the properties of the module.
-        var visualizemodprop = this.makePropertiesFromAttributes('visualize-mod')
-
-
-        //The events of slots changes are dealth with here. Create
-        //object parameters and append them to the global dictionaries
-        this.shadowRoot.addEventListener("slotchange", (ev) => {
-            var newdb = {}
-            var r = ev.target.assignedElements()
-            var ar = maincomponent.makePropertiesFromParameters(r)
-
-            for (var i = 0; i < ar.length; i++) {
-                newdb[i] = {
-                    [r[i].localName]: ar[i]
-                }
-            }
-            maincomponent.db("visualize")[visualizemodprop.output] = newdb
-            if (r.length === 0) {
-                console.log(`No additional parameters detected for module visualize, ${visualizemodprop.output}.`)
-            } else {
-                console.log(`Additional slots for module visualize, ${visualizemodprop.output}: ${ev.target.name} contains`, ev.target.assignedElements())
-
-            }
-
-        })
     };
 
     //asynchronous callback to call the data module and potentially the map module.
+    /**
+     * Function dealing with
+     * @callback
+     * @memberof visualizemod
+     */
     async connectedCallback() {
         var props = this.makePropertiesFromAttributes('visualize-mod')
-        var x
-        var ob
-        var data = []
+        var params = maincomponent.makePropertiesFromParameters(this.children)
+        var data
 
-        if (props.type == "saved") {
-            try {
-                x = JSON.parse(maincomponent.getresults(props.input))
-                ob = this.typeofvisual(x, props.draw, props.output)
-                maincomponent.hydro().visualize[props.method](ob)
-            } catch (error) {
-            }
+        if (params[0].type == "saved") {
+            data = JSON.parse(maincomponent.getresults(params[0].input))
+        } else {
+            data = JSON.parse(maincomponent.datagrabber(this))
         }
-
-        if (props.type == "userinput") {
-            try {
-                data = maincomponent.datagrabber(this)
-                for (var j =0; j < data.length; j++) {
-                    data[j] = data[j].split(',').map(Number)
-                }
-                ob = this.typeofvisual(data, props.draw, props.output, props.charttype)
-                maincomponent.hydro().visualize[props.method](ob)
+        
+        try {
+            var ob = this.typeofvisual(data, props.draw, params[0].output, params[0].charttype)
+            maincomponent.hydro().visualize[props.method](ob)
         } catch (error) {
-        }
+            console.log("Error in rendering. Revise inputs!")
         }
 }
 }

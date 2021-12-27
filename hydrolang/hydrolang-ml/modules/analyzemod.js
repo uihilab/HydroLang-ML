@@ -23,21 +23,6 @@ export default class analyzemod extends HTMLElement {
                 type: String,
                 userDefined: true
             },
-
-            "type":{
-                type: String,
-                userDefined: true
-            },
-
-            "output": {
-                type: String,
-                userDefined: true
-            },
-
-            "input": {
-                type: String,
-                userDefined: true
-            },
         }
     }
 
@@ -74,8 +59,7 @@ export default class analyzemod extends HTMLElement {
         let shadow = this.attachShadow({
             mode: 'open'
         });
-
-        const template = maincomponent.template('ANALYZE-MOD')
+        const template = maincomponent.template("datamod")
         shadow.appendChild(template.content.cloneNode(true));
     }
 
@@ -87,16 +71,22 @@ export default class analyzemod extends HTMLElement {
     async connectedCallback() {
 
         var data = [];
-        var res = 0
+        var res
         var props = this.makePropertiesFromAttributes('analyze-mod')
+        var params = maincomponent.makePropertiesFromParameters(this.children)
+
+        // var cj = this.children
+        // for (let i =0; i < cj.length; i++){
+        //     console.log(Element.getAttribute(cj[i].tagName))
+        // }
 
         //the data is read in the screen from the span element
         //or from the saved data from the local storage
         //or from the downloaded data from the data module
-        if (props.type === "saved") {
+        if (params[0].type === "saved") {
             var x
             try {
-                x = JSON.parse(maincomponent.getresults(props.input))
+                x = JSON.parse(maincomponent.getresults(params[0].input))
                 if (x[0].length) {
                     for (var i =0; i < x.length; i++){
                         data.push(x[i])
@@ -107,19 +97,17 @@ export default class analyzemod extends HTMLElement {
                     res = maincomponent.hydro().analyze[props.component][props.method](x)
                 }
     
-                maincomponent.pushresults(props.output, res, 'local')   
+                maincomponent.pushresults(params[0].output, res, 'local')   
             } catch (error) { 
             }
         }
-        else if (props.type === "userinput") {
+        else if (params[0].type === "userinput") {
             data = maincomponent.datagrabber(this)
 
             for (var j =0; j < data.length; j++) {
                 data[j] = data[j].split(',').map(Number)
-                var res = maincomponent.hydro()['analyze'][props.component][props.method](data[j])
-                if (props.output) {
-                    maincomponent.pushresults(props.output, res, 'local')
-                }
+                res = maincomponent.hydro().analyze[props.component][props.method](data[j])
+                maincomponent.pushresults(params[0].output, res, 'local')
             }
         }
     }

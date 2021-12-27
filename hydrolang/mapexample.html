@@ -5,19 +5,24 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Map Example</title>
 </head>
-
 <body>
+
     <hydrolang-ml>
 
-        <map-mod method="loader">
-            <parameters maptype="osm"></data>
+        <map-mod method ="render">
+            <parameters lat="40" lon="-100"></parameters>
         </map-mod>
 
-        <analyze-mod component="stats" method="normoutliers" datasource="input" resultsname="myanalyzeexample2">
-            <data source="input">40,29,40,50,30,291</data>
-        </analyze-mod>
+        <map-mod method ="Layers" type ="userinput">
+            <parameters layertype="marker">[14.035344,-87.192993]</parameters>
+        </map-mod>
+
+        <map-mod method="Layers" type="userinput">
+            <parameters layertype="geodata" name="square" geotype="Polygon">{"type": "FeatureCollection", "features": [{"type": "Feature", "geometry":{"type":"Polygon", "coordinates": [[[100.0, 0.0],[101.0,0.0],[100.0,1.0],[101.0,1.0],],],},},],}</parameters>
+        </map-mod>
+
     </hydrolang-ml>
 
     <script type="module" src="./hydrolang-ml/main.js"></script>

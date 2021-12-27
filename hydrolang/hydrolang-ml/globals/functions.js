@@ -40,12 +40,25 @@ export default class maincomponent extends HTMLElement {
      * @memberof maincomponent
      * @returns template with slot to attach new web components
      */
-    static template(name) {
+    static template(mod, method) {
         const template = document.createElement('template');
-        template.id = name
-        template.innerHTML =
+        template.id = mod
+        if (method){
+        if (mod === "mapmod" && method === "render") {
+        const style = document.createElement('style');
+        style.innerHTML = `#map {
+                height: 400px;
+                width: 800px;
+                margin-left: auto;
+                margin-right: auto;
+            }`
+        document.head.appendChild(style)
+        }
+    }
+        template.innerHTML =    
         `
-        <style></style>
+        <style>
+        </style>
         <div><slot></slot></div>
         `;
         return template
@@ -108,6 +121,30 @@ export default class maincomponent extends HTMLElement {
         return props
     };
 
+    static slotlistener(elem,mod, attr){
+        elem.shadowRoot.addEventListener("slotchange", (ev) => {
+            var newdb = {}
+            //Initialize the counter for the module. 
+            //maincomponent.count()
+            var r = ev.target.assignedElements()
+            var ar = this.makePropertiesFromParameters(r)
+
+            for (var i = 0; i < ar.length; i++) {
+                newdb[i] = {
+                    [r[i].localName]: ar[i]
+                }
+            }
+            this.db(mod)[attr.output] = newdb
+            if (r.length === 0) {
+                console.log(`No additional parameters detected for module ${mod}, ${attr.output}.`)
+            } else {
+                console.log(`Additional slots for module ${mod}, ${attr.output}: ${ev.target.name} contains`, ev.target.assignedElements())
+
+            }
+
+        })
+    }
+
     /**
      * Stores data in cache, if required. Also used to retrieve data.
      * @method CookieStore
@@ -140,22 +177,6 @@ export default class maincomponent extends HTMLElement {
             Local.set(name, value)
         } else if (type === "retrieve") {
             Local.get(name)
-        }
-    };
-
-    /**
-     * Registers the elements into the DOM.
-     * @method registerElement
-     * @memberof maincomponent
-     * @param {String} name - name of the web component. 
-     * @param {*} elem - web component class.
-     * @returns {void} stores the element into the DOM.
-     */
-    static registerElement(name, elem) {
-        if (!customElements.get(name)) {
-            window.hydronames = window.hydronames || [];
-            window.hydronames.push(name.toUpperCase());
-            customElements.define(name, elem)
         }
     };
 
@@ -251,21 +272,18 @@ export default class maincomponent extends HTMLElement {
      * @param {Object} mod - module required for grabbing data 
      * @returns {Object} 
      */
-
     static datagrabber(mod){
         var data = [];
-        if (mod.children.textContent != null) {
         try {
-            for (var i = 0; mod.children.length; i++) {
+            for (var i = 0; i < mod.children.length; i++) {
                 data.push(mod.children[i].textContent)
             }
         }
         catch (ex) {
             console.log("Issue with the data input. Revise!")
         }
-    }
         return data
-    }
+    };
 
     /**
      * Retrieves an array from nested JSON object.
@@ -298,6 +316,22 @@ export default class maincomponent extends HTMLElement {
             return null
         }
     }
+
+    /**
+     * Registers the elements into the DOM.
+     * @method registerElement
+     * @memberof maincomponent
+     * @param {String} name - name of the web component. 
+     * @param {*} elem - web component class.
+     * @returns {void} stores the element into the DOM.
+     */
+    static registerElement(name, elem) {
+        if (!customElements.get(name)) {
+            window.hydronames = window.hydronames || [];
+            window.hydronames.push(name.toUpperCase());
+            customElements.define(name, elem)
+        }
+    };
 
     /**
      * Basic constructor required. Can be modified to verify dependencies between childs and parents.
