@@ -157,7 +157,7 @@ export default class maincomponent extends HTMLElement {
         var params = this.makePropertiesFromParameters(mod.children)
 
         try{
-        if (params[0].type == "saved") {
+        if (params[0].input && params[0].output) {
             data = JSON.parse(this.getresults(params[0].input))
         } else {
             data = JSON.parse(this.datagrabber(mod))
@@ -299,7 +299,9 @@ export default class maincomponent extends HTMLElement {
         var data = [];
         try {
             for (var i = 0; i < mod.children.length; i++) {
-                data.push(mod.children[i].textContent)
+                if(mod.children[i].tagName === 'DATASET') {
+                    data.push(mod.children[i].textContent)
+                }
             }
         }
         catch (ex) {

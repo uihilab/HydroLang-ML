@@ -12,24 +12,27 @@
     <hydrolang-ml>
 
         <data-mod method="save">
-            <parameters output="mygeocol">{"type": "FeatureCollection","features":[{"type": "Feature", "properties": {"Name":"Vancouver",},"geometry: {"type": "Point", "coordinates": [-122.34374999999999, 49.32512199104001],},},],}</parameters>
+            <parameters output="mygeocol"></parameters>
+            <dataset>{"type": "FeatureCollection","features":[{"type": "Feature", "properties": {"Name":"Vancouver",},"geometry: {"type": "Point", "coordinates": [-122.34374999999999, 49.32512199104001],},},],}</dataset>
         </data-mod>
 
         <map-mod method ="render">
-            <parameters lat="40" lon="-100" name="OpenTopoMap"></parameters>
+            <parameters lat="40" lon="-100" output="OpenTopoMap"></parameters>
         </map-mod>
 
         <map-mod method ="Layers">
-            <parameters type ="userinput" layer="marker" name="1st marker">[14.035344,-87.192993]</parameters>
+            <parameters layer="marker" output="1st marker"></parameters>
+            <dataset>[14.035344,-87.192993]</dataset>
         </map-mod>
 
         <map-mod method ="Layers">
-            <parameters type ="userinput" layer="marker" name="2nd marker">[40,-100]</parameters>
+            <parameters layer="marker" output="2nd marker"></parameters>
+            <dataset>[40,-100]</dataset>
         </map-mod>
 
-        <map-mod method="Layers">
-            <parameters type="saved" input="mygeocol" layer="geodata" name="mypoints" geo='Points'></parameters>
-        </map-mod>
+        <!-- <map-mod method="Layers">
+            <parameters input="mygeocol" layer="geodata" output="mypoints" geo='Points'></parameters>
+        </map-mod> -->
 
     </hydrolang-ml>
 

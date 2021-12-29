@@ -12,6 +12,11 @@
 
     <hydrolang-ml>
 
+        <data-mod method="save">
+            <parameters output="mydatatype2"></parameters>
+            <dataset>[[1,2,3,4],[1,2,1,1],[1,1,1,1]]</dataset>
+        </data-mod>
+
         <data-mod method="retrieve">
             <parameters source="usgs" dataType="instant-values" proxyurl="https://cors-anywhere.herokuapp.com/" output="var1"></parameters>
             <arguments site="USGS:02056000" format="json" startDt="2020-08-30" endDt="2020-09-02" parameterCd="00060"></arguments>

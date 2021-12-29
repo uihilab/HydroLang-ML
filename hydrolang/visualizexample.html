@@ -11,15 +11,17 @@
 <body>
     <hydrolang-ml>
         <analyze-mod component="stats" method="basicstats">
-            <parameters type="userinput" output="myanex1">[2,4,4,5,5,4,5,4,8]</parameters>
+            <parameters output="myanex1"></parameters>
+            <dataset>[2,4,4,5,5,4,5,4,8]</dataset>
         </analyze-mod>
 
-        <visualize-mod method="styles" draw="table">
-            <parameters type="saved" input="myanex1" output="myan1"></parameters>
+        <visualize-mod method="styles">
+            <parameters draw="table" input="myanex1" output="myan1"></parameters>
         </visualize-mod>
 
-        <visualize-mod method="styles" draw="chart">
-            <parameters type="userinput" charttype="line" output="myan5">[[0,1,2,3,4,5,6,7,8,9,10],[0.1,2,0.52,0.2,0.69,8,98,8,10,11,5]]</parameters>
+        <visualize-mod method="styles">
+            <parameters draw="chart" charttype="line" output="myan5"></parameters>
+            <dataset>[[0,1,2,3,4,5,6,7,8,9,10],[0.1,2,0.52,0.2,0.69,8,98,8,10,11,5]]</dataset>
         </visualize-mod>
 
     </hydrolang-ml>

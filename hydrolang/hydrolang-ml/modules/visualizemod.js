@@ -63,7 +63,7 @@ export default class visualizemod extends HTMLElement {
      * @param {String} type - if passed, chart type to use (scatter, line, poly).
      * @returns {Object} - object to be used for drawing.
      */
-    typeofvisual(data, draw,name, type) {
+    typeofvisual(data,draw,name, type) {
         if (!type){
             type = null
         }
@@ -114,7 +114,7 @@ export default class visualizemod extends HTMLElement {
         var params = maincomponent.makePropertiesFromParameters(this.children)
         var data = maincomponent.datalistener(this)
         try {
-            var ob = this.typeofvisual(data, props.draw, params[0].output, params[0].charttype)
+            var ob = this.typeofvisual(data, params[0].draw, params[0].output, params[0].charttype)
             maincomponent.hydro().visualize[props.method](ob)
         } catch (error) {
             console.log("Error in rendering. Revise inputs!")

@@ -86,7 +86,7 @@ export default class mapmod extends HTMLElement {
         console.log(data)
 
         if (props.method === "render") {
-            layertype = {type: "tile", name: params[0].name}
+            layertype = {type: "tile", name: params[0].output}
             mapconfig = {
                 maptype: "osm",
                 lat: params[0].lat,
@@ -100,7 +100,7 @@ export default class mapmod extends HTMLElement {
                 markertype: params[0].layer, 
                 geotype: params[0].geo,
                 data: data, 
-                name:params[0].name, 
+                name:params[0].output, 
                 coord: data,
             }
             mapconfig = {maptype: "osm", layertype: layertype}
@@ -119,6 +119,7 @@ export default class mapmod extends HTMLElement {
         var params = maincomponent.makePropertiesFromParameters(this.children)
         var data = maincomponent.datalistener(this)
         var config = this.typeofLayer(props, params, data)
+        console.log(config)
 
         if(props.method === "render") {
             await maincomponent.hydro().map.loader({maptype: "osm"})            

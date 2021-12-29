@@ -5,8 +5,8 @@ import _ from "../../modules/d3/d3.js";
 //Controllers, map and layers
 var osmap;
 var layercontroller;
-var baselayers = {};
-var overlayers = {};
+window.baselayers = {};
+window.overlayers = {};
 var drawings;
 var drawControl;
 
