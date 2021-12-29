@@ -112,7 +112,7 @@ function chart(params) {
       );
     }
   });
-  return "A chart is drawn based on given parameters";
+  return console.log("A chart is drawn based on given parameters");
 }
 
 /**
@@ -167,32 +167,36 @@ function table(params) {
 /**
  * preset styles for both charts and tables. The user can access by
  * passing parameters of data, type(chart or table), char
- * @function styles
+ * @function draw
  * @memberof visualize
  * @param {Object} params - overall parameters: data, draw, type.
  * @returns {Object} chart (graph or table) appended in body.
  */
 
-function styles(params) {
+function draw({params,args, data}={}) {
+  if(typeof args == 'undefined'){
+    args= 'Default'
+  }
+
   var pm;
-  var type = params.draw;
-  var d = stats.copydata(params.data);
+  var type = params.type;
+  var d = stats.copydata(data);
 
   if (type === "chart") {
-    if (d.length == 2) {
-      d[0].unshift('Duration')
-      d[1].unshift('Amount')
+    if (data.length == 2) {
+      data[0].unshift('Duration')
+      data[1].unshift('Amount')
     }
 
-    var charts = params.config.chart;
+    var charts = args.charttype;
     switch (charts) {
       case "column":
         pm = {
           chartType: charts,
-          data: d,
-          divID: params.config.div,
+          data: data,
+          divID: params.output,
           options: {
-            title: params.config.title,
+            title: params.output,
             width: "100%",
             height: "100%",
             legend: {
@@ -211,10 +215,10 @@ function styles(params) {
       case "line":
         pm = {
           chartType: charts,
-          data: d,
-          divID: params.config.div,
+          data: data,
+          divID: params.output,
           options: {
-            title: params.config.title,
+            title: params.output,
             curveType: "function",
             lineWidth: 2,
             explorer: {
@@ -234,10 +238,10 @@ function styles(params) {
       case "scatter":
         pm = {
           chartType: charts,
-          data: d,
-          divID: params.config.div,
+          data: data,
+          divID: params.output,
           options: {
-            title: params.config.title,
+            title: params.output,
             legend: {
               position: "bottom",
             },
@@ -248,7 +252,7 @@ function styles(params) {
             trendlines: {
               0: {
                 type: "polynomial",
-                degree: 2,
+                degree: 3,
                 visibleInLegend: true,
               },
             },
@@ -259,8 +263,8 @@ function styles(params) {
       case "timeline":
         pm = {
           chartType: charts,
-          data: d,
-          divID: params.config.div,
+          data: data,
+          divID: params.output,
           options: {
             dateFormat: 'HH:mm MMMM dd, yyyy',
             thickness: 1
@@ -274,8 +278,8 @@ function styles(params) {
     return chart(pm);
   } else if (type === "table") {
     pm = {
-      data: d,
-      divID: params.config.div,
+      data: data,
+      divID: params.output,
       dataType: ["string", "number"],
       options: {
         width: "50%",
@@ -293,7 +297,7 @@ function styles(params) {
 export {
   chart,
   table,
-  styles
+  draw
 };
 
 /***************************/

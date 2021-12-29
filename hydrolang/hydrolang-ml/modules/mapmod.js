@@ -119,7 +119,6 @@ export default class mapmod extends HTMLElement {
         var params = maincomponent.makePropertiesFromParameters(this.children)
         var data = maincomponent.datalistener(this)
         var config = this.typeofLayer(props, params, data)
-        console.log(config)
 
         if(props.method === "render") {
             await maincomponent.hydro().map.loader({maptype: "osm"})            

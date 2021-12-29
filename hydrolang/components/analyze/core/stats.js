@@ -44,7 +44,11 @@ export default class stats {
    * @example var copy = hydro1.analyze.stats.onearray(data)
    */
 
-  static onearray(data) {
+  static onearray(params, args, data) {
+    if (!params || !args) {
+      params = null
+      args = null
+    }
     var arr = [];
     arr.push(data[1]);
     return arr;
@@ -54,12 +58,17 @@ export default class stats {
    * Identifies gaps in data.
    * @method datagaps
    * @memberof stats
-   * @param {Object[]} arr - array object with data.
+   * @param {Object[]} arr - 1d array object with data.
    * @returns {number} Number of gaps in data.
    * @example var gaps = hydro1.analyze.stats.gapid(arr)
    */
 
-  static datagaps(arr) {
+  static datagaps(params, args, data) {
+    if (!params || !args) {
+      params = null
+      args = null
+    }
+    var arr = data
     var or;
     var gap = 0;
 
@@ -81,12 +90,17 @@ export default class stats {
    * Remove gaps in data with an option to fill the gap.
    * @method gapremoval
    * @memberof stats
-   * @param {Object[]} arr - array object with data.
+   * @param {Object[]} arr - 1d array object with data.
    * @returns {number} Number of gaps found in the data.
    * @example var freeofgaps = hydro1.analyze.stats.gapremoval(arr)
    */
 
-  static gapremoval(arr) {
+  static gapremoval(params, args, data) {
+    if (!params || !args) {
+      params = null
+      args = null
+    }
+    var arr = data
     var or = this.copydata(arr);
     var val;
 
@@ -117,7 +131,9 @@ export default class stats {
    * @example var times = hydro1.analyze.stats.timegaps(arr, timestep)
    */
 
-  static timegaps(arr, timestep) {
+  static timegaps(params, data) {
+    var timestep = params.timestep
+    var arr = data
     var or = this.copydata(arr);
 
     if (typeof arr[0] === "object") {
