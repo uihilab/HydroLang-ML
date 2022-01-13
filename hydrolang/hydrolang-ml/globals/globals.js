@@ -76,20 +76,19 @@ if (JSON && JSON.stringify && JSON.parse) var Cookie = Cookie || (function () {
 if (JSON && JSON.stringify && JSON.parse) var Local = Local || (function () {
 
     return {
-        set: function (key, value) {
+        set: async function (key, value) {
                 var x = value
                 value = JSON.stringify(x)
                 window.localStorage.setItem(key, value);
                 return console.log(`Item ${key} has been saved.`)
         },
 
-        get: function (key) {
+        get: async function (key) {
                 var value = window.localStorage.getItem(key);
 
                 if (!value) {
     
-                    console.log(`Item ${key} has not been found.`)
-                    return
+                    return console.log(`Item ${key} has not been found.`)
                 }
     
                 if (value === null) {
@@ -99,7 +98,7 @@ if (JSON && JSON.stringify && JSON.parse) var Local = Local || (function () {
     
                 if (value[0] === '{') {
                     value = JSON.parse(value)
-                    console.log(`Item ${key} has been retrieved.`)
+                    return console.log(`Item ${key} has been retrieved.`)
                 }
     
                 return value
@@ -107,7 +106,7 @@ if (JSON && JSON.stringify && JSON.parse) var Local = Local || (function () {
 
         remove: function (key) {
             window.localStorage.removeItem(key)
-            console.log(`Item ${key} has been has been deleted.`)
+            return console.log(`Item ${key} has been has been deleted.`)
         },
 
         clear: function () {

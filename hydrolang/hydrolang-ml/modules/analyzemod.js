@@ -72,12 +72,12 @@ export default class analyzemod extends HTMLElement {
         var props = this.makePropertiesFromAttributes('analyze-mod')
         var params = maincomponent.makePropertiesFromParameters(this.children)
         var data = maincomponent.datalistener(this)
-        try{
-            var res = maincomponent.hydro().analyze[props.component][props.method](data)
+        // try{
+            var res = maincomponent.hydro().analyze[props.component][props.method]({params: params[0], args: params[1], data: data})
             maincomponent.pushresults(params[0].output, res, 'local')
-        } catch(error) {
-            console.log("Check data types from HydroLang.js to see compatibility!")
-        }
+        // } catch(error) {
+        //     console.log("Check data types from HydroLang.js to see compatibility!")
+        // }
     }
 }
 

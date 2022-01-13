@@ -73,42 +73,6 @@ export default class mapmod extends HTMLElement {
     };
 
     /**
-     * Creates an object to be used as a layer depending on the type of
-     * input by the user.
-     * @method typeofLayer
-     * @memberof mapmod
-     * @returns {Object} - 
-     */
-    typeofLayer(props, params, data) {
-        if(!data || data == undefined || data == null) {data = null}
-        var mapconfig = {}
-        var layertype = {}
-        console.log(data)
-
-        if (props.method === "render") {
-            layertype = {type: "tile", name: params[0].output}
-            mapconfig = {
-                maptype: "osm",
-                lat: params[0].lat,
-                lon: params[0].lon,
-                zoom: 40,
-                layertype: layertype
-            }
-        } if(props.method === "Layers") {
-            layertype = {
-                type: params[0].layer,
-                markertype: params[0].layer, 
-                geotype: params[0].geo,
-                data: data, 
-                name:params[0].output, 
-                coord: data,
-            }
-            mapconfig = {maptype: "osm", layertype: layertype}
-        }
-        return mapconfig
-    }
-
-    /**
      * Function dealing with the inputs passed as data or attributes by the user.
      * @callback
      * @memberof mapmod
@@ -118,20 +82,18 @@ export default class mapmod extends HTMLElement {
         var props = this.makePropertiesFromAttributes('map-mod')
         var params = maincomponent.makePropertiesFromParameters(this.children)
         var data = maincomponent.datalistener(this)
-        var config = this.typeofLayer(props, params, data)
 
-        if(props.method === "render") {
-            await maincomponent.hydro().map.loader({maptype: "osm"})            
-            await maincomponent.hydro().map.renderMap(config)
-            await maincomponent.hydro().map.Layers({maptype: "osm", layertype: {type: "draw"}})
+        if(props.method === "render") {           
+            maincomponent.hydro().map.renderMap(props, params, data)
+            //maincomponent.hydro().map.Layers({maptype: "osm", layertype: {type: "draw"}})
         }
 
         if (props.method === "Layers") {
             try {
             new Promise(resolve => {
                 setTimeout(() => {
-                    maincomponent.hydro().map.Layers(config)
-                }, 1000)});
+                    maincomponent.hydro().map.Layers(props, params, data)
+                }, 1000)}); 
             } catch (error) {
                 console.log("No map found in screen! Please render map first.")
             }

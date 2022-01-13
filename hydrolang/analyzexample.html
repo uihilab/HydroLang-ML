@@ -10,17 +10,37 @@
 
 <body>
     <hydrolang-ml>
-        <style>
-            dataset { font-size: 0; }
-        </style>
         <analyze-mod component="stats" method="basicstats">
-            <parameters output="myanex2"></parameters>
+            <parameters output="basic_stats_example"></parameters>
             <dataset>[40,29,40,50,30,291]</dataset>
         </analyze-mod>
 
-        <visualize-mod method="draw">
-            <parameters type="table" input="myanex2" output="myan1"></parameters>
+        <analyze-mod component="hydro" method="syntheticalc">
+            <parameters type= "SCS" unit="si" output="synthetic_calc"></parameters>
+            <arguments L= 4000 slope= 10 cn= 82></arguments>
+        </analyze-mod>
+
+        <analyze-mod component="hydro" method="dimunithydro">
+            <parameters timestep= 0.2 numhours= 5 output="dim_data"></parameters>
+            <arguments type= "gamma" PRF= 484></arguments>
+        </analyze-mod>
+
+        <visualize-mod method="view">
+            <parameters input="basic_stats_example"></parameters>
         </visualize-mod>
+
+        <visualize-mod method="view">
+            <parameters input="synthetic_calc"></parameters>
+        </visualize-mod>
+
+        <visualize-mod method="draw">
+            <parameters input="dim_data" type="chart" name="Results from Dimensionless Hydrograph"></parameters>
+            <arguments charttype="column"></arguments>
+        </visualize-mod>
+
+        <!-- <visualize-mod method="draw">
+            <parameters type="table" input="myanex2" output="myan1"></parameters>
+        </visualize-mod> -->
 
     </hydrolang-ml>
 

@@ -8,34 +8,48 @@
     <title>Map Example</title>
 </head>
 <body>
-    <style>
-        dataset { font-size: 0; }
-    </style>
-
     <hydrolang-ml>
 
         <data-mod method="save">
             <parameters output="mygeocol"></parameters>
-            <dataset>{"type": "FeatureCollection","features":[{"type": "Feature", "properties": {"Name":"Vancouver",},"geometry: {"type": "Point", "coordinates": [-122.34374999999999, 49.32512199104001],},},],}</dataset>
+            <dataset>{"type": "Feature","properties": {"name": "Coors Field","amenity": "Baseball Stadium","popupContent": "This is where the Rockies play!"},"geometry": {"type": "Point","coordinates": [-104.99404, 39.75621]}}</dataset>
+        </data-mod>
+
+        <data-mod method="save">
+            <parameters output="mygeocol1"></parameters>
+            <dataset>{"type": "Feature","properties": {"party": "Republican"},"geometry": {"type": "Polygon","coordinates": [[[-104.05, 48.99],[-97.22, 48.98],[-96.58,  45.94],[-104.03, 45.94],[-104.05, 48.99]]]}}</dataset>
         </data-mod>
 
         <map-mod method ="render">
-            <parameters lat="40" lon="-100" output="OpenTopoMap"></parameters>
+            <parameters layer="tile" lat="41.6572" lon="-91.5414"></parameters>
         </map-mod>
 
         <map-mod method ="Layers">
-            <parameters layer="marker" output="1st marker"></parameters>
+            <parameters layer="tile" output="OpenStreetMap"></parameters>
+        </map-mod>
+
+        <map-mod method ="Layers">
+            <parameters layer="marker" output="firstmarker"></parameters>
             <dataset>[14.035344,-87.192993]</dataset>
         </map-mod>
 
         <map-mod method ="Layers">
-            <parameters layer="marker" output="2nd marker"></parameters>
-            <dataset>[40,-100]</dataset>
+            <parameters layer="marker" output="secondmarker"></parameters>
+            <dataset>[41.6572,-91.5414]</dataset>
         </map-mod>
 
-        <!-- <map-mod method="Layers">
-            <parameters input="mygeocol" layer="geodata" output="mypoints" geo='Points'></parameters>
-        </map-mod> -->
+        <map-mod method="Layers">
+            <parameters layer="geodata" output="mypoints" geo="Point"></parameters>
+            <dataset>{"type": "FeatureCollection","features":[{"type": "Feature", "properties": {"Name":"Vancouver"},"geometry": {"type": "Point", "coordinates": [-122.34374999999999, 49.32512199104001]}}]}</dataset>
+        </map-mod>
+
+        <map-mod method="Layers">
+            <parameters input="mygeocol" layer="geodata" output="mypoints2" geo="Point"></parameters>
+        </map-mod>
+
+        <map-mod method="Layers">
+            <parameters input="mygeocol1" layer="geodata" output="mypoly1" geo="Polygon"></parameters>
+        </map-mod>
 
     </hydrolang-ml>
 

@@ -19,70 +19,70 @@ var tableData;
  * hydro1.visualize.chart({chartType: 'column', data: x, divID: "new"});
  */
 
-function chart(params) {
+function chart({params, args, data} = {}) {
   ensureGoogleChartsIsSet().then(function () {
     var container = document.createElement("div");
     container.id = params.divID;
     container.title = `Graph of ${container.id}`;
-    container.className = "figure";
+    container.className = "chart";
     container.style = "width: 1000px; height: 500px";
     document.body.appendChild(container);
 
-    var d = params.data;
+    var d = data;
     var char = params.chartType;
-    var data;
+    var dat;
 
     switch (char) {
       case "scatter":
         var dt;
         if (d[0].length !== 2) {
-          dt = stats.arrchange(d);
+          dt = stats.arrchange({data: d});
         } else {
           dt = d
         }
 
-        data = googlecharts.visualization.arrayToDataTable(dt);
+        dat = googlecharts.visualization.arrayToDataTable(dt);
         break;
 
       case "column":
         var dt;
         if (d[0].length !== 2) {
-          dt = stats.arrchange(d);
+          dt = stats.arrchange({data: d});
         } else {
           dt = d
         }
 
-        data = googlecharts.visualization.arrayToDataTable(dt);
+        dat = googlecharts.visualization.arrayToDataTable(dt);
         break;
 
 
       case "histogram":
         var dt;
         if (d[0].length !== 2) {
-          dt = stats.arrchange(d);
+          dt = stats.arrchange({data: d});
         } else {
           dt = d
         }
 
-        data = googlecharts.visualization.arrayToDataTable(dt);
+        dat = googlecharts.visualization.arrayToDataTable(dt);
         break;
 
       case ("line" || "timeline"):
-        data = new tableData.data();
+        dat = new tableData.data();
 
         if (typeof d[0][1] === 'string') {
-          data.addColumn("date", d[0][0]);
-          data.addColumn("number", d[1][0]);
+          dat.addColumn("date", d[0][0]);
+          dat.addColumn("number", d[1][0]);
 
           for (var i = 1; i < d[0].length; i++) {
-            data.addRow([new Date(Date.parse(d[0][i])), d[1][i]]);
+            dat.addRow([new Date(Date.parse(d[0][i])), d[1][i]]);
           }
         } else {
-          data.addColumn("number", d[0][0]);
-          data.addColumn("number", d[1][0]);
+          dat.addColumn("number", d[0][0]);
+          dat.addColumn("number", d[1][0]);
 
           for (var i = 1; i < d[0].length; i++) {
-            data.addRow([d[0][i], d[1][i]]);
+            dat.addRow([d[0][i], d[1][i]]);
           }
         }
         break;
@@ -95,9 +95,9 @@ function chart(params) {
 
     if (params.hasOwnProperty("options")) {
       var options = params.options;
-      fig.draw(data, options);
+      fig.draw(dat, options);
     } else {
-      fig.draw(data);
+      fig.draw(dat);
     }
 
 
@@ -124,20 +124,21 @@ function chart(params) {
  * @example
  * hydro1.visualize.table({data: x, divID: "new", dataType: ["string", "number"]});
  */
-function table(params) {
+function table({params, args, data} = {}) {
   ensureGoogleChartsIsSet().then(function () {
     var container = document.createElement("div");
     container.id = params.divID;
+    container.className = "table"
     container.title = `Table of ${container.id}`;
     document.body.appendChild(container);
 
-    var d = params.data;
+    var d = data;
     var types = params.dataType;
-    var data = new tableData.data();
+    var dat = new tableData.data();
     var temp = [];
 
     for (var k = 0; k < d[0].length; k++) {
-      data.addColumn(types[k], d[0][k]);
+      dat.addColumn(types[k], d[0][k]);
     }
 
     for (var i = 0; i < d[1].length; i++) {
@@ -149,9 +150,9 @@ function table(params) {
       }
     }
 
-    data.addRows(temp);
+    dat.addRows(temp);
 
-    var view = new tableData.view(data);
+    var view = new tableData.view(dat);
     var table = new tableData.table(container);
 
     if (params.hasOwnProperty("options")) {
@@ -173,19 +174,17 @@ function table(params) {
  * @returns {Object} chart (graph or table) appended in body.
  */
 
-function draw({params,args, data}={}) {
-  if(typeof args == 'undefined'){
-    args= 'Default'
-  }
+function draw({params, args, data} = {}) {
+  var dat = data
+  dat[1] = dat[1].map(Number)
 
   var pm;
   var type = params.type;
-  var d = stats.copydata(data);
 
   if (type === "chart") {
-    if (data.length == 2) {
-      data[0].unshift('Duration')
-      data[1].unshift('Amount')
+    if (dat.length == 2) {
+      dat[0].unshift('Duration')
+      dat[1].unshift('Amount')
     }
 
     var charts = args.charttype;
@@ -193,12 +192,13 @@ function draw({params,args, data}={}) {
       case "column":
         pm = {
           chartType: charts,
-          data: data,
-          divID: params.output,
+          divID: params.name,
           options: {
-            title: params.output,
+            title: params.name,
+            titlePosition: 'center',
             width: "100%",
             height: "100%",
+            fontName: "monospace", 
             legend: {
               position: "top"
             },
@@ -215,10 +215,10 @@ function draw({params,args, data}={}) {
       case "line":
         pm = {
           chartType: charts,
-          data: data,
-          divID: params.output,
+          divID: params.name,
           options: {
-            title: params.output,
+            title: params.name,
+            fontName: "monospace",
             curveType: "function",
             lineWidth: 2,
             explorer: {
@@ -238,10 +238,10 @@ function draw({params,args, data}={}) {
       case "scatter":
         pm = {
           chartType: charts,
-          data: data,
-          divID: params.output,
+          divID: params.name,
           options: {
-            title: params.output,
+            title: params.name,
+            fontName: "monospace",
             legend: {
               position: "bottom",
             },
@@ -263,8 +263,8 @@ function draw({params,args, data}={}) {
       case "timeline":
         pm = {
           chartType: charts,
-          data: data,
-          divID: params.output,
+          divID: params.name,
+          fontName: "monospace",
           options: {
             dateFormat: 'HH:mm MMMM dd, yyyy',
             thickness: 1
@@ -275,18 +275,17 @@ function draw({params,args, data}={}) {
       default:
         break;
     }
-    return chart(pm);
+    return chart({params: pm, data: dat});
   } else if (type === "table") {
     pm = {
-      data: data,
-      divID: params.output,
+      divID: params.name,
       dataType: ["string", "number"],
       options: {
         width: "50%",
         height: "60%",
       },
     };
-    return table(pm);
+    return table({params: pm, data: dat});
   }
 }
 

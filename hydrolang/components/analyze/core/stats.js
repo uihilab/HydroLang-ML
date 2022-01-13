@@ -15,7 +15,7 @@ export default class stats {
    * @example var copy = hydro1.analyze.stats.copydata(data)
    */
 
-  static copydata(data) {
+  static copydata({params, args, data} = {}) {
     var arr;
     var values;
     var keys;
@@ -29,7 +29,7 @@ export default class stats {
     for (keys in data) {
       values = data[keys];
 
-      arr[keys] = this.copydata(values);
+      arr[keys] = this.copydata({data: values});
     }
 
     return arr;
@@ -44,11 +44,7 @@ export default class stats {
    * @example var copy = hydro1.analyze.stats.onearray(data)
    */
 
-  static onearray(params, args, data) {
-    if (!params || !args) {
-      params = null
-      args = null
-    }
+  static onearray({params, args, data} = {}) {
     var arr = [];
     arr.push(data[1]);
     return arr;
@@ -63,19 +59,15 @@ export default class stats {
    * @example var gaps = hydro1.analyze.stats.gapid(arr)
    */
 
-  static datagaps(params, args, data) {
-    if (!params || !args) {
-      params = null
-      args = null
-    }
+  static datagaps({params, args, data} = {}) {
     var arr = data
     var or;
     var gap = 0;
 
     if (typeof arr[0] != "object") {
-      or = this.copydata(arr);
+      or = this.copydata({data:arr});
     } else {
-      or = this.copydata(arr[1]);
+      or = this.copydata({data:arr[1]});
     }
     for (var i = 0; i < or.length; i++) {
       if (or[i] === undefined || Number.isNaN(or[i]) || or[i] === false) {
@@ -95,17 +87,13 @@ export default class stats {
    * @example var freeofgaps = hydro1.analyze.stats.gapremoval(arr)
    */
 
-  static gapremoval(params, args, data) {
-    if (!params || !args) {
-      params = null
-      args = null
-    }
+  static gapremoval({params, args, data}={}) {
     var arr = data
-    var or = this.copydata(arr);
+    var or = this.copydata({data:arr});
     var val;
 
     if (typeof or[0] != "object") {
-      val = this.cleaner(or);
+      val = this.cleaner({data:or});
     } else {
       var time = or[0];
       var ds = or[1];
@@ -114,8 +102,8 @@ export default class stats {
           delete time[i];
         }
       }
-      val = this.cleaner(ds);
-      time = this.cleaner(time);
+      val = this.cleaner({data:ds});
+      time = this.cleaner({data:time});
       return [time, val];
     }
   };
@@ -131,13 +119,13 @@ export default class stats {
    * @example var times = hydro1.analyze.stats.timegaps(arr, timestep)
    */
 
-  static timegaps(params, data) {
+  static timegaps({params, args, data} = {}) {
     var timestep = params.timestep
     var arr = data
-    var or = this.copydata(arr);
+    var or = this.copydata({data:arr});
 
     if (typeof arr[0] === "object") {
-      or = this.copydata(arr[0]);
+      or = this.copydata({data:arr[0]});
     }
     var datetr = [];
 
@@ -183,11 +171,11 @@ export default class stats {
    * @example var fills = hydro1.analyze.stats.gapfiller(arr, "time")
    */
 
-  static gapfiller(arr, type) {
-    var or = this.copydata(arr);
+  static gapfiller({params, args, data} = {}) {
+    var or = this.copydata({data: data});
 
-    if (typeof arr[0] === "object") {
-      or = this.copydata(arr[0]);
+    if (typeof data[0] === "object") {
+      or = this.copydata({data:data[0]});
     }
 
     var datetr = [];
@@ -200,7 +188,7 @@ export default class stats {
       }
     }
 
-    if (type === "time") {
+    if (params.type === "time") {
       var xo = [];
     }
   };
@@ -214,8 +202,8 @@ export default class stats {
    * @example var sum = hydro1.analyze.stats.sum(arr)
    */
 
-  static sum(arr) {
-    var sum = d3.sum(arr);
+  static sum({params, args, data} = {}) {
+    var sum = d3.sum(data);
     return sum;
   };
 
@@ -228,8 +216,8 @@ export default class stats {
    * @example var mean = hydro1.analyze.stats.mean(arr)
    */
 
-  static mean(arr) {
-    var m = d3.mean(arr);
+  static mean({params,args,data} ={}) {
+    var m = d3.mean(data);
     return m;
   };
 
@@ -242,8 +230,8 @@ export default class stats {
    * @example var med = hydro1.analyze.stats.median(arr)
    */
 
-  static median(arr) {
-    var m = d3.median(arr);
+  static median({params, args, data} = {}) {
+    var m = d3.median(data);
     return m;
   };
 
@@ -255,14 +243,14 @@ export default class stats {
    * @returns {number} Standard deviation.
    */
 
-  static stddev(arr) {
-    var mean = this.mean(arr);
+  static stddev({params, args, data} = {}) {
+    var mean = this.mean({data: data});
     var SD = 0;
     var nex = [];
-    for (var i = 0; i < arr.length; i += 1) {
-      nex.push((arr[i] - mean) * (arr[i] - mean));
+    for (var i = 0; i < data.length; i += 1) {
+      nex.push((data[i] - mean) * (data[i] - mean));
     }
-    return (SD = Math.sqrt(this.sum(nex) / nex.length));
+    return (SD = Math.sqrt(this.sum({data:nex}) / nex.length));
   };
 
   /**
@@ -274,8 +262,8 @@ export default class stats {
    * @example var var = hydro1.analyze.stats.variance(arr)
    */
 
-  static variance(arr) {
-    var vari = d3.variance(arr);
+  static variance({params, args, data}={}) {
+    var vari = d3.variance(data);
     return vari;
   };
 
@@ -288,10 +276,10 @@ export default class stats {
    * @example var sqr = hydro1.analyze.stats.sumsqrd(arr)
    */
 
-  static sumsqrd(arr) {
+  static sumsqrd({params, args, data} = {}) {
     var sum = 0;
-    var i = arr.length;
-    while (--i >= 0) sum += arr[i];
+    var i = data.length;
+    while (--i >= 0) sum += data[i];
     return sum;
   };
 
@@ -304,8 +292,8 @@ export default class stats {
    * @example var min = hydro1.analyze.stats.min(arr)
    */
 
-  static min(arr) {
-    var low = d3.min(arr);
+  static min({params, args, data} = {}) {
+    var low = d3.min(data);
     return low;
   }
 
@@ -318,8 +306,8 @@ export default class stats {
    * @example var max = hydro1.analyze.stats.max(arr)
    */
 
-  static max(arr) {
-    return d3.max(arr);
+  static max({params, args, data} = {}) {
+    return d3.max(data);
   }
 
   /**
@@ -331,13 +319,13 @@ export default class stats {
    * @example var un = hydro1.analyze.stats.unique(arr)
    */
 
-  static unique(arr) {
+  static unique({params, args, data} = {}) {
     var un = {},
       _arr = [];
-    for (var i = 0; i < arr.length; i++) {
-      if (!un[arr[i]]) {
-        un[arr[i]] = true;
-        _arr.push(arr[i]);
+    for (var i = 0; i < data.length; i++) {
+      if (!un[data[i]]) {
+        un[data[i]] = true;
+        _arr.push(data[i]);
       }
     }
     return _arr;
@@ -352,8 +340,8 @@ export default class stats {
    * @example var ob = hydro1.analyze.stats.frequency(arr)
    */
 
-  static frequency(arr) {
-    var _arr = this.copydata(arr);
+  static frequency({params, args, data}={}) {
+    var _arr = this.copydata({data: data});
     var counter = {};
     _arr.forEach((i) => {
       counter[i] = (counter[i] || 0) + 1;
@@ -370,12 +358,12 @@ export default class stats {
    * @example var st = hydro1.analyze.stats.standardize(arr)
    */
 
-  static standardize(arr) {
+  static standardize({params, args, data}={}) {
     var _arr = [];
-    var stddev = this.stddev(arr);
-    var mean = this.mean(arr);
-    for (var i = 0; i < arr.length; i++) {
-      _arr[i] = (arr[i] - mean) / stddev;
+    var stddev = this.stddev({data: data});
+    var mean = this.mean({data: data});
+    for (var i = 0; i < data.length; i++) {
+      _arr[i] = (data[i] - mean) / stddev;
     }
     return _arr;
   }
@@ -390,12 +378,12 @@ export default class stats {
    * @example var q25 = hydro1.analyze.stats.quantile(arr, 0.25)
    */
 
-  static quantile(arr, q) {
-    var _arr = arr.slice();
+  static quantile({params, args, data} = {}) {
+    var _arr = data.slice();
     _arr.sort(function (a, b) {
       return a - b;
     });
-    var p = (arr.length - 1) * q;
+    var p = (data.length - 1) * params.q;
     if (p % 1 === 0) {
       return _arr[p];
     } else {
@@ -420,26 +408,28 @@ export default class stats {
    * @example var interq = hydro1.analyze.stats.interoutliers(arr, 0.25, 0.75)
    */
 
-  static interoutliers(arr, q1, q2) {
+  static interoutliers({params, args, data} = {}) {
+    var q1 = params.q1
+    var q2 = params.q2
     if (!(q1 || q2)) {
       q1 = 0.25;
       q2 = 0.75;
     }
 
-    var or = this.copydata(arr);
+    var or = this.copydata({data:data});
     var time = [];
 
-    switch (typeof arr[0]) {
+    switch (typeof data[0]) {
       case "object":
-        time = this.copydata(arr[0]);
-        or = this.copydata(arr[1]);
+        time = this.copydata({data: data[0]});
+        or = this.copydata({data: data[1]});
         break;
       default:
         break;
     }
 
-    var Q_1 = this.quantile(or, q1);
-    var Q_2 = this.quantile(or, q2);
+    var Q_1 = this.quantile({data: or, params: {q: q1}});
+    var Q_2 = this.quantile({data: or, params: {q: q2}});
     var IQR = Math.abs(Q_2 - Q_1);
 
     var qd = Math.abs(Q_1 - 1.5 * IQR);
@@ -448,7 +438,7 @@ export default class stats {
     var xa = (arra) => arra.filter((x) => x >= qd || x >= qu);
     var re = xa(or);
 
-    if (typeof arr[0] != "object") {
+    if (typeof data[0] != "object") {
       return re;
     } else {
       var t = [];
@@ -472,19 +462,20 @@ export default class stats {
    * @example var normo = hydro1.analyze.stats.normoutliers(arr, -0.5, 0.5)
    */
 
-  static normoutliers(arr, low, high) {
-    if (!(low || high)) {
+  static normoutliers({params, args, data} = {}) {
+    var high, low
+    if (!(params.low || params.high)) {
       low = -0.5;
       high = 0.5;
     }
 
-    var or = this.copydata(arr);
+    var or = this.copydata({data: data});
     var time = [];
 
-    switch (typeof arr[0]) {
+    switch (typeof data[0]) {
       case "object":
-        time = this.copydata(arr[0]);
-        or = this.copydata(arr[1]);
+        time = this.copydata({data: data[0]});
+        or = this.copydata({data: data[1]});
         break;
       default:
         break;
@@ -494,7 +485,7 @@ export default class stats {
     var t2 = high;
 
     var out = [];
-    var stnd = this.standardize(or);
+    var stnd = this.standardize({data: or});
 
     for (var i = 0; i < or.length; i++) {
       if (stnd[i] < t1 || stnd[i] > t2) {
@@ -502,7 +493,7 @@ export default class stats {
       }
     }
 
-    if (typeof arr[0] != "object") {
+    if (typeof data[0] != "object") {
       return out;
     } else {
       var t = [];
@@ -527,16 +518,18 @@ export default class stats {
    * @example var c = hydro1.analyze.stats.outremove(arr, 'interquartile')
    */
 
-  static outremove(arr, type, p1, p2) {
+  static outremove({params, args, data} = {}) {
     var out;
+    var p1 = params.p1
+    var p2 = params.p2
 
-    if (type === "normalized") {
-      out = this.normoutliers(arr, p1, p2);
+    if (params.type === "normalized") {
+      out = this.normoutliers({params: {low: p1, high: p2}, data: data});
     } else {
-      out = this.interoutliers(arr, p1, p2);
+      out = this.interoutliers({params: {q1: p1, q2: p2}, data: data});
     }
 
-    if (typeof arr[0] != "object") {
+    if (typeof data[0] != "object") {
       return this.itemfilter(arr, out);
     } else {
       var t = this.itemfilter(arr[0], out[0]);
@@ -557,9 +550,9 @@ export default class stats {
    * var corr = hydro1.analyze.stats.correlation(params)
    */
 
-  static correlation(params) {
-    var q1 = params["Set1"];
-    var q2 = params["Set2"];
+  static correlation({params, args, data} = {}) {
+    var q1 = data[0];
+    var q2 = data[1];
     var n = q1.length + q2.length;
     var q1q2 = [];
     var sq1 = [];
@@ -569,9 +562,9 @@ export default class stats {
       sq1[i] = q1[i] * q1[i];
       sq2[i] = q2[i] * q2[i];
     }
-    var r1 = n * this.sum(q1q2) - this.sum(q1) * this.sum(q2);
-    var r2a = Math.sqrt(n * this.sum(sq1) - Math.pow(this.sum(q1), 2));
-    var r2b = Math.sqrt(n * this.sum(sq2) - Math.pow(this.sum(q2), 2));
+    var r1 = n * this.sum({data: q1q2}) - this.sum({data: q1}) * this.sum({data:q2});
+    var r2a = Math.sqrt(n * this.sum({data:sq1}) - Math.pow(this.sum({data: q1}), 2));
+    var r2b = Math.sqrt(n * this.sum({data: sq2}) - Math.pow(this.sum({data: q2}), 2));
     return r1 / (r2a * r2b);
   }
 
@@ -591,11 +584,11 @@ export default class stats {
    * var ns = hydro1.analyze.stats.nashsutcliffe(params)
    */
 
-  static efficiencies(params) {
-    var obs = params.observed;
-    var model = params.model;
-    var meanobs = this.mean(obs);
-    var meanmodel = this.mean(model);
+  static efficiencies({params, args, data} = {}) {
+    var obs = data[0];
+    var model = data[1];
+    var meanobs = this.mean({data: obs});
+    var meanmodel = this.mean({data: model});
 
     var diff1 = [];
     var diff2 = [];
@@ -606,7 +599,7 @@ export default class stats {
         diff1[i] = Math.pow(model[i] - obs[i], 2);
         diff2[i] = Math.pow(obs[i] - meanobs, 2);
       };
-      var NSE = 1 - this.sum(diff1) / this.sum(diff2);
+      var NSE = 1 - this.sum({data: diff1}) / this.sum({data:diff2});
       return NSE;
     }
 
@@ -618,8 +611,8 @@ export default class stats {
         diff2[i] = Math.pow(model[i] - meanmodel, 2);
         diff3[i] = Math.pow(obs[i] - meanobs, 2);
       }
-      console.log(`The values are - Upper: ${this.sum(diff1)}, Lower: ${this.sum(diff2)} and ${this.sum(diff3)}`);
-      var r = Math.pow(this.sum(diff1) / (Math.sqrt(this.sum(diff2)) * Math.sqrt(this.sum(diff3))), 2);
+      console.log(`The values are - Upper: ${this.sum({data: diff1})}, Lower: ${this.sum({data: diff2})} and ${this.sum({data: diff3})}`);
+      var r = Math.pow(this.sum({data: diff1}) / (Math.sqrt(this.sum({data: diff2})) * Math.sqrt(this.sum({data: diff3}))), 2);
       return r;
     }
 
@@ -629,7 +622,7 @@ export default class stats {
         diff1[i] = Math.pow(obs[i] - model[i], 2);
         diff2[i] = Math.pow(Math.abs(model[i] - meanobs) + Math.abs(obs[i] - meanobs), 2);
       };
-      var d = 1 - this.sum(diff1) / this.sum(diff2);
+      var d = 1 - this.sum({data: diff1}) / this.sum({data: diff2});
       return d;
     }
   }
@@ -645,12 +638,12 @@ export default class stats {
    * @example var st = hydro1.analyze.stats.fastfourier(arr)
    */
 
-  static fastfourier(arr) {
+  static fastfourier({params, args, data} = {}) {
     tf.setBackend("webgl");
-    for (var i = 0; i < arr.length; i++) {
-      arr[i] = Math.round(arr[i] + 5)
+    for (var i = 0; i < data.length; i++) {
+      data[i] = Math.round(data[i] + 5)
     };
-    const _arr = arr;
+    const _arr = data;
     const results = _arr.map((n) => {
       const tensors = [];
       const start = performance.now();
@@ -678,16 +671,16 @@ export default class stats {
    * @example var bs = hydro1.analyze.stats.basicstats(arr)
    */
 
-  static basicstats(arr) {
+  static basicstats({params, args, data} = {}) {
     //call the basic functions for analysis.
-    var count = arr.length;
-    var min = this.min(arr);
-    var max = this.max(arr);
-    var sum = this.sum(arr);
-    var mean = this.mean(arr);
-    var median = this.median(arr);
-    var std = this.stddev(arr);
-    var vari = this.variance(arr);
+    var count = data.length;
+    var min = this.min({data: data});
+    var max = this.max({data: data});
+    var sum = this.sum({data: data});
+    var mean = this.mean({data: data});
+    var median = this.median({data: data});
+    var std = this.stddev({data: data});
+    var vari = this.variance({data: data});
 
     var statparams = [
       ["Number of values", count],
@@ -700,13 +693,8 @@ export default class stats {
       ["Variance", vari],
     ];
 
-    var ex1 = {
-      graphdata: statparams,
-      Columns: ["Metric", "Value"],
-    };
-
     //flatenise the data for graphing.
-    var statx = this.flatenise(ex1);
+    var statx = this.flatenise({params: {columns: ["Metric", "Value"]}, data: statparams});
 
     return statx;
   }
@@ -724,13 +712,13 @@ export default class stats {
    * @example var ja = hydro1.analyze.stats.joinarray(arr)
    */
 
-  static joinarray(arr) {
+  static joinarray({params, arg, data} = {}) {
     var temp = [];
-    for (var i = 1; i < arr[0].length; i++) {
+    for (var i = 1; i < data[0].length; i++) {
       if (!temp[i]) {
         temp[i] = [];
       }
-      temp[i] = [arr[0], arr[1]].reduce((a, b) => a.map((v, i) => v + b[i]));
+      temp[i] = [data[0], data[1]].reduce((a, b) => a.map((v, i) => v + b[i]));
     }
     return temp;
   }
@@ -745,18 +733,18 @@ export default class stats {
    * var flat = hydro1.analyze.stats.flatenise(params)
    */
 
-  static flatenise(params) {
-    var x = params.Columns;
-    var d = params.graphdata;
+  static flatenise({params, args, data} = {}) {
+    var x = params.columns;
+    var d = data;
     var col = [];
-    var data = [];
+    var dat = [];
     for (var i = 0; i < x.length; i++) {
       col.push(x[i]);
     }
     for (var j = 0; j < d.length; j++) {
-      data.push(d[j].flat());
+      dat.push(d[j].flat());
     }
-    return [col, data];
+    return [col, dat];
   }
 
   /**
@@ -769,8 +757,8 @@ export default class stats {
    * @example var c = hydro1.analyze.stats.numerise(arr)
    */
 
-  static numerise(arr) {
-    var result = arr.map((x) => parseFloat(x));
+  static numerise({params, args, data} = {}) {
+    var result = data.map((x) => parseFloat(x));
     return result;
   }
 
@@ -783,8 +771,8 @@ export default class stats {
    * @example var c = hydro1.analyze.stats.cleaner(arr)
    */
 
-  static cleaner(arr) {
-    var x = arr.filter((x) => x === undefined || !Number.isNaN(x));
+  static cleaner({params, args, data} = {}) {
+    var x = data.filter((x) => x === undefined || !Number.isNaN(x));
     return x;
   }
 
@@ -798,8 +786,8 @@ export default class stats {
    * @example var its = hydro1.analyze.stats.itemfilter(arr1, arr2)
    */
 
-  static itemfilter(arr1, arr2) {
-    var x = arr1.filter((el) => !arr2.includes(el));
+  static itemfilter({params, args, data} = {}) {
+    var x = data[0].filter((el) => !data[1].includes(el));
     return x;
   }
 
@@ -813,11 +801,11 @@ export default class stats {
    * @example var c = hydro1.analyze.stats.dateparser(arr)
    */
 
-  static dateparser(arr) {
-    var x = this.copydata(arr);
+  static dateparser({params, args, data} = {}) {
+    var x = this.copydata({data: data});
     var xo = [];
-    for (var j = 0; j < arr.length; j++) {
-      xo.push(new Date(arr[j]).toLocaleString());
+    for (var j = 0; j < data.length; j++) {
+      xo.push(new Date(data[j]).toLocaleString());
     }
     return xo;
   }
@@ -832,8 +820,8 @@ export default class stats {
    * @example var c = hydro1.analyze.stats.arrchange(arr)
    */
 
-  static arrchange(arr) {
-    var x = this.copydata(arr);
+  static arrchange({params, args, data} = {}) {
+    var x = this.copydata({data: data});
     var transp = (matrix) => matrix[0].map((x, i) => matrix.map((x) => x[i]));
     return transp(x);
   }
@@ -847,10 +835,10 @@ export default class stats {
    * @returns {Object[]} arr1 with pushed data.
    */
 
-  static push(arr1, arr2) {
-    for (var j = 0; j < arr2.length; j++)
-      for (var i = 0; i < arr2[0].length; i++) {
-        arr1[j].push(arr2[j][i])
+  static push({params, args, data} = {}) {
+    for (var j = 0; j < data[1].length; j++)
+      for (var i = 0; i < data[0].length; i++) {
+        data[0][j].push(data[1][j][i])
       }
     return arr1
   }

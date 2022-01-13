@@ -41,24 +41,135 @@ export default class maincomponent extends HTMLElement {
      * @returns template with slot to attach new web components
      */
     static template(mod, method) {
+        var style = document.createElement('style');
         const template = document.createElement('template');
         template.id = mod
-        if (method){
+    
         if (mod === "mapmod" && method === "render") {
-        const style = document.createElement('style');
         style.innerHTML = `#map {
                 height: 400px;
                 width: 800px;
                 margin-left: auto;
                 margin-right: auto;
+                border-style: solid;
+                font-family: monospace;
             }`
-        document.head.appendChild(style)
+    } else if (mod === "hydrolangml") {
+        style = document.createElement('style');
+        style.innerHTML = 
+        `
+            dataset { font-size: 0; }
+        `
+    } else if(mod === "visualizemod") {
+        style.innerHTML = `
+
+        .chart {
+            margin-left: auto;
+            margin-right: auto;
+            font-famiy: monospace;
         }
+        
+        .table {
+            margin-left: auto;
+            margin-right: auto;
+            font-family: monospace;
+        }
+
+        .jsonrender{
+            margin-left: auto;
+            margin-right: auto;
+           position: relative;
+            background-color: #eaeaea;
+                padding: 0.5em;
+            color: black;
+            font-family: monospace;
+            font-size: 15px;
+            height: 300px;
+            width: 1000px;
+            border-radius: 7px;
+            overflow-x: scroll;
+            border-style: solid;
+         }
+
+         .jsonrender #text{
+            color: black;
+            font-family: monospace
+         }
+         
+         .renderjson a {
+             text-decoration: none;
+             color: black;
+             overflow: auto;
+             font-size: 15px;
+             font-family: monospace;
+         }
+         
+         .renderjson .disclosure {
+             color: red;
+             font-weight: bold;
+             font-size: 15px;
+             overflow: auto;
+             font-family: monospace;
+         }
+         
+         .renderjson .syntax {
+             color: black;
+             font-size: 15px;
+             overflow: auto;
+             font-family: monospace;
+         }
+         
+         .renderjson .string {
+             color: red;
+             font-size: 15px;
+             overflow: auto;
+             font-family: monospace;
+         }
+         
+         .renderjson .number {
+             color: red;
+             font-size: 15px;
+             overflow: auto;
+             font-family: monospace;
+         }
+         
+         .renderjson .boolean {
+             color: black;
+             font-size: 15px;
+             font-family: monospace;
+         }
+         
+         .renderjson .key {
+             color: purple;
+             font-size: 15px;
+             font-family: monospace;
+         }
+         
+         .renderjson .keyword {
+             color: purple;
+             font-size: 15px;
+             font-family: monospace;
+         }
+         
+         .renderjson .object.syntax {
+             color: black;
+             font-size: 15px;
+             font-family: monospace;
+         }
+         
+         .renderjson .array.syntax {
+             color: black;
+             font-size: 15px;
+             font-family: monospace;
+         }
+        `
+    } else if(mod === "datamod") {
+        style.innerHTML = `
+          `
     }
+    document.body.appendChild(style)
         template.innerHTML =    
         `
-        <style>
-        </style>
         <div><slot></slot></div>
         `;
         return template
@@ -98,7 +209,9 @@ export default class maincomponent extends HTMLElement {
             }
             attr.push(props)
         }
-        return attr
+
+        //In case there are numbers inside the objects.
+        return this.convertIntObj(attr)
     };
 
     /**
@@ -121,7 +234,13 @@ export default class maincomponent extends HTMLElement {
         return props
     };
 
-    static slotlistener(elem,mod, attr){
+    /**
+     * 
+     * @param {*} elem 
+     * @param {*} mod 
+     * @param {*} attr 
+     */
+    static slotlistener(elem, mod, attr){
         elem.shadowRoot.addEventListener("slotchange", (ev) => {
             var newdb = {}
             //Initialize the counter for the module. 
@@ -157,8 +276,9 @@ export default class maincomponent extends HTMLElement {
         var params = this.makePropertiesFromParameters(mod.children)
 
         try{
-        if (params[0].input && params[0].output) {
-            data = JSON.parse(this.getresults(params[0].input))
+        if (params[0].input != null || params[0].input != undefined) {
+            data = this.getresults(params[0].input)
+            data = JSON.parse(data)
         } else {
             data = JSON.parse(this.datagrabber(mod))
         }
@@ -244,14 +364,15 @@ export default class maincomponent extends HTMLElement {
         Object.keys(window.localStorage).some(function(k) {
             if (k===keyfind) {
                 value = window.localStorage[k];
+                console.log(`Item ${keyfind} has been retrieved.`)
                 return true;
             }
             if (window.localStorage[k] && typeof window.localStorage[k] === 'object') {
-                value = this.getresults(window.localStorage[k], keyfind);
+                value = this.getresults(keyfind);
+                console.log(`Item ${keyfind} has been retrieved.`)
                 return value !== undefined;
             }
         });
-        console.log(`Item ${keyfind} has been retrieved.`)
         return value
     };
 
@@ -290,6 +411,24 @@ export default class maincomponent extends HTMLElement {
     };
 
     /**
+     * 
+     * @param {*} obj 
+     * @returns 
+     */
+
+    static convertIntObj(obj) {
+        const res = {}
+        for (const key in obj) {
+          res[key] = {};
+          for (const prop in obj[key]) {
+            const parsed = parseFloat(obj[key][prop], 10);
+            res[key][prop] = isNaN(parsed) ? obj[key][prop] : parsed;
+          }
+        }
+        return res;
+      }
+
+    /**
      * Data grabber for child embedded into a parent component.
      * @method datagrabber
      * @param {Object} mod - module required for grabbing data 
@@ -300,7 +439,8 @@ export default class maincomponent extends HTMLElement {
         try {
             for (var i = 0; i < mod.children.length; i++) {
                 if(mod.children[i].tagName === 'DATASET') {
-                    data.push(mod.children[i].textContent)
+                    var x = mod.children[i].textContent
+                    data.push(x)
                 }
             }
         }
@@ -311,35 +451,41 @@ export default class maincomponent extends HTMLElement {
     };
 
     /**
-     * Retrieves an array from nested JSON object.
-     * @method recursearch
-     * @param {Object} object - retrieved object from local storage or download
-     * @param {String} values - names of arrays that are to be retrieved
+     * 
+     * @param {*} data 
+     * @returns 
      */
 
-    static recursearch(object, values) {
-        if (Array.isArray(object)) {
-            for (const obj in object) {
-                const result = this.recursearch(obj, values)
-                if (result) {
-                    return obj
-                }
-            }
-        } else {
-            if (object.hasOwnProperty(values)) {
-                return object;
-            }
+    static prettyPrint(params, data) {
+        //new div created on screen for each time an element is created.
+        //Note: not added ontp the web component, but rather into the DOM itself.
 
-            for (const k in Object.keys(object)) {
-                if (typeof object[k] === "object") {
-                    const o = this.recursearch(object[k], values);
-                    if (o !== null && typeof o !== 'undefined'){
-                        return o;
-                    }
-                }
-            }
-            return null
+        var isdivAdded = () => {return Boolean(document.querySelector(".jsonrender"))}
+        var isScriptAdded =(src) => {return Boolean(document.querySelector(`script[src="${src}"`))}
+
+        if (!isdivAdded()) {
+        var sr = document.createElement("div")
+        sr.className = "jsonrender"
+        sr.id = "jsonrender"
+        document.body.appendChild(sr)
+    }
+
+        //Using external library to render json on screen. Could be any type of json file.
+        //Documentation + library found at: https://github.com/caldwell/renderjson
+        var sc = document.createElement("script")
+        sc.type = "text/javascript"
+        sc.src = "https://cdn.rawgit.com/caldwell/renderjson/master/renderjson.js"
+        document.head.appendChild(sc)
+        sc.addEventListener('load', ()=>{
+            //Change 
+            renderjson.set_icons('+','-')
+            renderjson.set_show_to_level(2)
+            if (isdivAdded()) {
+                var name = document.createTextNode(params[0].input)
+                document.getElementById("jsonrender").appendChild(name)
+                document.getElementById("jsonrender").appendChild(renderjson(data))
         }
+        })
     }
 
     /**

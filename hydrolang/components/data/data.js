@@ -11,11 +11,11 @@ import stats from "../analyze/core/stats.js";
  * @returns {Object} Object with retrieved data.
  */
 
-async function retrieve(params, callback) {
+async function retrieve({params,args, callback} = {}) {
   //obtain data from parameters set by user.
   var source = params["source"];
   var dataType = params["datatype"];
-  var args = params["arguments"];
+  var args = args
   var type = params["type"];
   var result = []
 
@@ -64,12 +64,12 @@ async function retrieve(params, callback) {
     method: met,
     headers: head,
     success: function (data, status, xhr) {
-      callback(data);
       result.push(data)
+      callback(data);
     },
     error: function () {},
   });
-  return await result
+  return result
 }
 
 /**
@@ -85,16 +85,25 @@ async function retrieve(params, callback) {
  * var dataCSV = transform(data, config);
  */
 
-function transform(data, config) {
-  var type = config["type"];
+function transform({params, args, data} = {}) {
+  if(params) {
+    data = recursiveSearch({obj: data, searchkey: params.save})
+    data = data[0]
+    args.keep = JSON.parse(args.keep)
+  }
+  else if (!params) {
+    params = 0
+  }
+
+  var type = args.type;
   var clean;
 
   //verify if the object is an object. Go to the following step.
   var arr = data.map((_arrayElement) => Object.assign({}, _arrayElement));
   arr = typeof arr != "object" ? JSON.parse(arr) : arr;
 
-  if (config.hasOwnProperty("keep")) {
-    clean = config["keep"];
+  if (args.hasOwnProperty("keep")) {
+    clean = args["keep"];
   //values to be left on the object according to user, fed as array.
   var keep = new RegExp(clean.join("|"));
   for (var i = 0; i < arr.length; i++) {
@@ -102,7 +111,7 @@ function transform(data, config) {
       keep.test(k) || delete arr[i][k];
     }
   }
-} else {
+} if(!args.keep) {
   //if params dont have a keep array, continue.
   arr = arr;
 }
@@ -129,7 +138,7 @@ function transform(data, config) {
   // convert from JSON to CSV
   else if (type === "CSV") {
     if (data[0] instanceof Array) {
-      arr = stats.arrchange(data)
+      arr = stats.arrchange({data: data})
     } else {arr = arr}
     var str = "";
     for (var i = 0; i < arr.length; i++) {
@@ -158,10 +167,10 @@ function transform(data, config) {
       if (arr[prop] instanceof Array) {
         for (var array in arr[prop]) {
           xml += "<" + prop + ">";
-          xml += transform(new Object(arr[prop], config));
+          xml += transform({data: new Object(arr[prop], config)});
         }
       } else if (typeof arr[prop] == "object") {
-        xml += transform(new Object(arr[prop], config));
+        xml += transform({data: new Object(arr[prop], config)});
       } else {
         xml += arr[prop];
       }
@@ -173,6 +182,27 @@ function transform(data, config) {
     throw new Error("Please select a supported data conversion type!");
   }
 }
+
+/**
+ * 
+ * @param {Object} obj 
+ * @param {String} searchKey 
+ * @param {Object[]} results 
+ * @returns 
+ */
+
+function recursiveSearch ({obj, searchkey, results = []} = {}) {
+  const r = results;
+  Object.keys(obj).forEach(key => {
+     const value = obj[key];
+     if(key === searchkey && Array.isArray(value)){
+        r.push(value);
+     }else if(typeof value === 'object'){
+        recursiveSearch({obj: value, searchkey: searchkey, results: r});
+     }
+  });
+  return r;
+};
 
 /**
  * data upload from the local storage of the user for analysis.
@@ -253,13 +283,13 @@ function upload(type) {
             ret.push(arraycol(med, j));
           }
 
-          ret[1] = stats.numerise(ret[1]);
+          ret[1] = stats.numerise({data: ret[1]});
 
           for (var k = 0; k < ret.length; k++) {
             ret[k].pop()
           };
 
-          for (var j = 0; j < ret.length; j++) {ret[j] = stats.numerise(ret[j])}
+          for (var j = 0; j < ret.length; j++) {ret[j] = stats.numerise({data: ret[j]})}
 
           //transfrom from JSON file to new JS Object.
         } else if (type === "JSON") {
@@ -283,26 +313,26 @@ function upload(type) {
  * @returns {Object} downloaded data as link from HTML file.
  */
 
-function download(data, config) {
-  var type = config["type"];
+function download({params, args, data} = {}) {
+  var type = params.type;
   var blob;
   var exportfilename = "";
 
   //if CSV is required to be download, call the transform function.
   if (type === "CSV") {
-    var csv = this.transform(data, config);
+    var csv = this.transform({data: data, args: params});
     blob = new Blob([csv], {
       type: "text/csv; charset = utf-8;",
     });
-    exportfilename = "export.csv";
+    exportfilename = `${params.input}.csv`;
 
   //if JSON file is required. Similar as before. 
   } else if (type === "JSON") {
-    var js = this.transform(data, config);
+    var js = this.transform({data: data,args: params});
     blob = new Blob([js], {
       type: "text/json",
     });
-    exportfilename = "export.json";
+    exportfilename = `${params.input}.json`;
   }
 
   //if XML file is required for loading. Needs improvement.
@@ -338,4 +368,4 @@ function download(data, config) {
  * @module data
  * @exports data
  */
-export { retrieve, transform, download, upload };
+export { retrieve, transform, download, upload, recursiveSearch };

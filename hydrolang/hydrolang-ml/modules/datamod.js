@@ -85,41 +85,35 @@ export default class datamod extends HTMLElement {
     async connectedCallback() {
         var props = this.makePropertiesFromAttributes('data-mod')
         var params = maincomponent.makePropertiesFromParameters(this.children)
+        var data = maincomponent.datalistener(this)
 
         if (props.method === "retrieve") {
-            var ob = Object.assign({}, params[0])
-            var nw = Object.assign({}, params[1])
-            ob.arguments = nw
-            var results = maincomponent.hydro().data[props.method](await ob, this.handlewaterdata)
+            var results = maincomponent.hydro().data[props.method]({params: params[0], args: params[1], callback: this.handlewaterdata})
             if (results != null || results != undefined || results != []) {
                 maincomponent.pushresults(params[0].output, await results, 'local')
+            } else {
+                console.log("Problem with request. Revise inputs.")
             }
 
-        // } else if (props.method === "transform") {
-        //     var param = await maincomponent.callDatabase(props.output, "data")
-        //     var x = maincomponent.getresults(props.input)
-        //     var resol = param[0].parameters.resultname
-        //     var res = JSON.parse(x)
-        //     console.log("transform alive!")
-        //     var clean = maincomponent.recursearch(res, resol)
-        //     console.log(clean)
+         } else if (props.method === "transform") {
+             var cleaned = maincomponent.hydro().data[props.method]({params: params[0], args: params[1], data: data})
+             maincomponent.pushresults(params[0].output, cleaned, 'local')
 
-        } else if (props.method === "upload") {
+        }  else if (props.method === "upload") {
             var btn = document.createElement("BUTTON")
             btn.innerHTML = "Upload here!"
-            btn.onclick = function () {
-                var prom = Promise.resolve(maincomponent.hydro().data[props.method](params[0].type))
-                maincomponent.LocalStore(params[0].output, prom.resolve, "save")         
-            }
+            btn.onclick= myup
             document.body.appendChild(btn)
+            async function myup() {
+                var file = maincomponent.hydro().data[props.method](params[0].type)
+                maincomponent.pushresults(params[0].output, await file, 'local')
+            }
 
         } else if (props.method === "download") {
-            console.log("download alive!")
-            console.log(props)
+            maincomponent.hydro().data[props.method]({params: params[0], args: params[1], data: data})
         } 
         else if (props.method === "save") {
-            var data = maincomponent.datalistener(this)
-            maincomponent.LocalStore(params[0].output, data, "save")
+            maincomponent.pushresults(params[0].output, data, 'local')
         }
     }
 }

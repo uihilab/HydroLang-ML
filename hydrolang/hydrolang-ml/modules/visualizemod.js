@@ -17,10 +17,6 @@ export default class visualizemod extends HTMLElement {
                 type: String,
                 userDefined: true
             },
-            "draw": {
-                type: String,
-                userDefined: true
-            }
         }
     };
 
@@ -54,29 +50,6 @@ export default class visualizemod extends HTMLElement {
     };
 
     /**
-     * Returns an iterable object to be passed as parameter for visualize module in hydrolang.
-     * @method typeofvisual
-     * @memberof visualizemod
-     * @param {Object} data - data type to draw, ndarray depending on the visualization to use.
-     * @param {String} draw - either drawing a table or a chart.
-     * @param {String} name - name assigned to both div and chart name.
-     * @param {String} type - if passed, chart type to use (scatter, line, poly).
-     * @returns {Object} - object to be used for drawing.
-     */
-    typeofvisual(params, data) {
-        var ob = {data:data,
-            type: params[0].type,
-        }
-        var config = {
-            div: params[0].output,
-            charttype: params[0].charttype,
-            title: params[0].charttype
-        }
-        ob.config = config
-        return ob
-    };
-
-    /**
      * Constructor to open the shadow DOM and creating a template for the component.
      * Requires methods from the maincomponent function.
      * @constructor
@@ -102,11 +75,17 @@ export default class visualizemod extends HTMLElement {
         var props = this.makePropertiesFromAttributes('visualize-mod')
         var params = maincomponent.makePropertiesFromParameters(this.children)
         var data = maincomponent.datalistener(this)
-        try {
-            await maincomponent.hydro().visualize[props.method]({params:params[0], args:params[1], data:data})
-        } catch (error) {
-            console.log("Error in rendering. Revise inputs!")
+
+        // try {s
+            if (props.method === "view") {
+                maincomponent.prettyPrint(params, data)
+            }
+            else {
+            await maincomponent.hydro().visualize[props.method]({params: params[0], args: params[1], data: data})
         }
+        // } catch (error) {
+        //     console.log("Error in rendering. Revise inputs!")
+        // }
 }
 }
 

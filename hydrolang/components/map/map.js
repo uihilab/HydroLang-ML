@@ -13,7 +13,6 @@ var drawControl;
 /**
  * Calls the map type according to the user input. The renderMap function is required
  * for map visualization.
- * @async
  * @function loader
  * @memberof maps
  * @param {Object} config - Object with map type and additional parameters if required.
@@ -21,7 +20,7 @@ var drawControl;
  * @returns {Promise}  Libraries appended to the header of webpage.
  */
 
-async function loader(config) {
+ async function loader(config) {
   //For google maps API.
   if (config.maptype == "google") {
     const gApiKey = config.params.key;
@@ -38,6 +37,7 @@ async function loader(config) {
   }
 }
 
+
 /**
  * Layer function for appending tiles, geodata, markers, kml or drawing tools to a map.
  * @function Layers
@@ -46,24 +46,37 @@ async function loader(config) {
  * @returns {Object} layer appended to a map div that has already been created.
  */
 
-function Layers(config) {
-
+async function Layers(props, params, data) {
+  try{
+  if(!data || data == undefined || data == null) {data = null}
+  var layertype = {
+    type: params[0].layer,
+    markertype: params[0].layer, 
+    geotype: params[0].geo,
+    data: data, 
+    name:params[0].output, 
+    coord: data,
+}
+var mapconfig = {maptype: "osm", layertype: layertype}
+} catch (error) {
+}
   //in case the map required is google.
-  if (config.maptype == "google") {
-    geoJSON(config);
+  try{
+  if (mapconfig.maptype === "google") {
+    geoJSON(mapconfig);
   }
   //in case the map required is osm. 
-  else if (config.maptype == "osm") {
+  else if (mapconfig.maptype === "osm") {
     var layer;
-    var layertype = config.layertype.type;
-    var layername = config.layertype.name;
+    var type = mapconfig.layertype.type;
+    var layername = mapconfig.layertype.name;
     if (layercontroller === undefined) {
       layercontroller = new L.control.layers();
     } else {
       layercontroller = layercontroller;
     }
 
-    if (layertype === "tile") {
+    if (type === "tile") {
       layer = new L.TileLayer(
         tileprov[layername].url,
         tileprov[layername].options
@@ -72,30 +85,32 @@ function Layers(config) {
         [layername]: layer
       })
       layercontroller.addBaseLayer(layer, layername).addTo(osmap);
-      
-    } else if (layertype === "geodata") {
-      layer = geoJSON(config);
+    }
+  }
+      await osmap.whenReady(function(){
+    if (type === "geodata") {
+      layer = geoJSON(mapconfig);
       Object.assign(overlayers, {[layername]: layer})
       layercontroller.addOverlay(layer, layername).addTo(osmap);
-      osmap.fitBounds(layer.getBounds());
+      //osmap.fitBounds(layer.getBounds());
 
-    } else if (layertype === "marker") {
-      layer = addMarker(config);
+    } else if (type === "marker") {
+      layer = addMarker(mapconfig);
       Object.assign(overlayers, {[layername]: layer})
       layercontroller.addOverlay(layer, layername).addTo(osmap);
 
-    } else if (layertype === "kml") {
-      layer = kml(config);
+    } else if (type === "kml") {
+      layer = kml(mapconfig);
       Object.assign(overlayers, {[layername]: layer})
       layercontroller.addOverlay(layer, layername).addTo(osmap);
-      osmap.fitBounds(layer.getBounds());
+      //osmap.fitBounds(layer.getBounds());
 
-    } else if (layertype === "draw"){
+    } else if (type === "draw"){
       drawings = new L.FeatureGroup();
-      draw(config);
-      osmap.addLayer(drawings);
+      draw(mapconfig);
+      osmap.addLayer(mapdrawings);
 
-    } else if (layertype === "removelayers") {
+    } else if (type === "removelayers") {
       if (baselayers.hasOwnProperty(layername)) {
         osmap.removeLayer(baselayers[layername]);
         layercontroller.removeLayer(baselayers[layername]);
@@ -115,7 +130,10 @@ function Layers(config) {
         alert("there is no layer with that name!");
       };
     }
-  }
+  })
+}
+catch (error){
+}
 }
 
 /**
@@ -129,45 +147,68 @@ function Layers(config) {
  * @returns {Object} Attaches the required map to a div element on the html file.
  */
 
-function renderMap(config) {
-  //import the info from user input as data for further usage.
-  const data = {
-    maptype: config.maptype,
-    lat: config.lat,
-    lon: config.lon,
-    zoom: config.zoom,
-    layertype: config.layertype,
+async function renderMap(props, params, data) {
+  if(!data || data == undefined || data == null) {data = null}
+ 
+  var layertype ={
+    type:params[0].layer,
+    name: params[0].output
   };
+
+  var mapconfig = {
+    maptype: params[0].maptype,
+    lat: params[0].lat,
+    lon: params[0].lon,
+    zoom: 15,
+    layertype: layertype
+  }
+
+    //if (mapconfig.maptype != undefined || mapconfig.maptype != null) {
+    if(mapconfig.maptype == undefined || mapconfig.maptype == null) {
+      mapconfig = {
+        maptype: "osm",
+        lat: 41.6572,
+        lon: -91.5414,
+        zoom: 13,
+        layertype: {
+          type: "tile",
+          name: "OpenStreetMap"
+        },
+      };
+  }
+
+    await loader({maptype: mapconfig.maptype})
 
   //create div for element appending the map and add to data
   var container = document.createElement("div");
   container.id = "map";
   document.body.appendChild(container);
 
-  if (data.maptype == "google") {
+  if (mapconfig.maptype === "google") {
     const options = {
       mapTypeId: "terrain",
-      zoom: data.zoom,
+      zoom: mapconfig.zoom,
       center: {
-        lat: data.lat,
-        lng: data.lon,
+        lat: mapconfig.lat,
+        lng: mapconfig.lon,
       },
     };
     //append a new map to the map variable.
     osmap = new google.maps.Map(container, options);
-  } else if (data.maptype == "osm") {
-    //assign the tile type to the data object for rendering.
-    const tiletype = data.layertype.name;
-    if (!tileprov.hasOwnProperty(tiletype)) {
-      callback({
-        info: "No tile found for the given specifications.",
-      });
-    }
-
-    //import the tile options from the given data.
+  } else if (mapconfig.maptype === "osm") {
     osmap = new L.map(container.id);
-    osmap.setView([data.lat, data.lon], data.zoom);
-    this.Layers(data);
+    //assign the tile type to the data object for rendering.
+    const tiletype = mapconfig.layertype.name;
+    if (tiletype === "tile" && !tileprov.hasOwnProperty(tiletype)) {
+      console.log("No tile found!")
+      // callback({
+      //   info: "No tile found for the given specifications.",
+      // });
+      return;
+    }
+    //import the tile options from the given data.
+    osmap.setView([mapconfig.lat, mapconfig.lon], mapconfig.zoom);
+    Layers(mapconfig);
 
     var popup = new L.popup();
 
@@ -175,8 +216,12 @@ function renderMap(config) {
       popup.setLatLng(e.latlng).setContent(`You clicked the map at ${e.latlng.toString()}`).openOn(osmap);
     })
     osmap.on('click', onMapClick)
-  }
-}
+//   }; return resolve();
+// } setTimeout(waitforrender, 30)})();
+//   })
+};
+      //}
+    }
 
 /**
  * Creates different types of markers depending on what is required.
@@ -189,13 +234,17 @@ function renderMap(config) {
 
 function geoJSON(data) {
   var inf = data.layertype.data;
-  console.log(data)
-  var geotype = inf.features[0].geometry.type;
+  var geotype
+  if(inf.type === "FeatureCollection"){
+  geotype = inf.features[0].geometry.type;
+} else if (inf.type === "Feature") {
+  geotype = inf.geometry.type;
+}
 
-  if (data.maptype == "google") {
+  if (data.maptype === "google") {
     var geogoogle = osmap.data.addGeoJson(inf);
     return geogoogle;
-  } else if (data.maptype == "osm") {
+  } else if (data.maptype === "osm") {
 
     var onEachFeature = (feature, layer) => {
       if (feature.properties && feature.properties.Name && feature.properties.Lat && feature.properties.Lon) {
@@ -204,7 +253,7 @@ function geoJSON(data) {
     }
     var geopoint = () => {
       var style = {
-        radius: 5,
+        radius: 10,
         fillColor: "#2ce4f3",
         color: "#0dc1d3",
         weight: 1,
@@ -232,9 +281,9 @@ function geoJSON(data) {
       })
       return xa;
     };
-    if (geotype == "Point") {
+    if (geotype === "Point") {
       return geopoint();
-    } else if (geotype == "Polygon") {
+    } else if (geotype === "Polygon") {
       return geopoly();
     }
   }

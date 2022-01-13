@@ -16,7 +16,8 @@ export default class hydro {
    * @example var arithprecs = hydro1.analyze.hydro.arithmetic(raingages);
    */
 
-  static arithmetic(arr) {
+  static arithmetic({params, args, data} = {}) {
+    var arr = data
     var average = [];
     var final = [];
     var n = arr.length;
@@ -52,12 +53,12 @@ export default class hydro {
     var thiessenpol = hydro1.analyze.hydro.thiessen(thiessendata)
    */
 
-  static thiessen(data) {
-    var precs = data.rainfall;
-    var areas = data.areas;
-    var totarea = this.totalprec(areas);
-    var res = this.matrix(precs.length, areas.length, 0);
-    var out = this.matrix(1, precs[0].length, 0);
+  static thiessen({params, args, data}={}) {
+    var precs = params.rainfall;
+    var areas = params.areas;
+    var totarea = this.totalprec({data: areas});
+    var res = this.matrix({params: {m: precs.length, n: areas.length, d:0}});
+    var out = this.matrix({params: {m: 1, n: precs[0].length, d:0}});
 
     for (var i = 0; i < precs.length; i++) {
       for (var j = 0; j < precs[0].length; j++) {
@@ -82,11 +83,11 @@ export default class hydro {
    * returns = {MaxRetention: 2.1951219512195124, TimeConc: 0.4763041318819232, LagTime: 0.28578247912915394}
    */
 
-  static syntheticalc(params) {
+  static syntheticalc({params, args, data} = {}) {
     //imports from parameters.
     var type = params.type;
-    var lon = params.args.L;
-    var sl = params.args.slope;
+    var lon = args.l;
+    var sl = args.slope;
     var units = params.unit;
 
     //Varibles that are to be calculated as solutions.
@@ -95,9 +96,9 @@ export default class hydro {
     //Object containing the solutions for the request.
     var sol = new Object();
 
-    if (type == "SCS") {
+    if (type === "SCS") {
       var sc = 0;
-      var CN = params.args.CN;
+      var CN = args.cn;
 
       switch (units) {
         //longitude in feet, tc in hours, sl in percentage, sc in inches.
@@ -125,11 +126,11 @@ export default class hydro {
         TimePeak: tp,
         LagTime: lag,
       });
-    } else if (type == "kerby-kirpich") {
+    } else if (type === "kerby-kirpich") {
       var K = 0;
       var M = 0;
-      var N = params.args.N;
-      var sch = params.args.sch;
+      var N = args.N;
+      var sch = args.sch;
       switch (units) {
         case "si":
           //longitude in feet and sl as number.
@@ -159,8 +160,8 @@ export default class hydro {
         TimePeak: tp,
         LagTime: lag
       });
-    } else if (type == "kerby") {
-      var n = params.args.manning;
+    } else if (type === "kerby") {
+      var n = args.manning;
 
       switch (units) {
         // change calculations depending on units.
@@ -201,7 +202,7 @@ export default class hydro {
    * var dimunit = hydro1.analyze.hydro.dimunithydro(dimunithydrodata)
    */
 
-  static dimunithydro(params) {
+  static dimunithydro({params, args, data} = {}) {
     //populate
     var step = params.timestep;
     var hours = params.numhours;
@@ -214,9 +215,9 @@ export default class hydro {
     var qqp = Array(numstep).fill(0);
     var m = 0;
 
-    if ((params.distribution.type = "gamma")) {
+    if ((args.type = "gamma")) {
       //change gamma shape factor.
-      switch (params.distribution.PRF) {
+      switch (args.prf) {
         case 101:
           m = 0.26;
           break;
@@ -255,7 +256,7 @@ export default class hydro {
   }
 
   /**
-   * Hyetograph generator for a uniformly distributed rainfall event. Unfinished.
+   * Hyetograph generator for a uniformly distributed rainfall event. NOT FINISHED YET!
    * Considered for long duration storms.
    * The timestep should be uniformly distributed
    * @method hyetogen
@@ -264,7 +265,7 @@ export default class hydro {
    * @returns {Object[]} - n-D array of pulses per hour
    */
 
-  static hyetogen(data) {
+  static hyetogen({params, args, data} = {}) {
     var event = data.event;
     var time = event[0];
     var rainf = event[1];
@@ -297,20 +298,20 @@ export default class hydro {
    * var basinunit = hydro1.analyze.hydro.unithydrocons(unithydrodata);
    */
 
-  static unithydrocons(params) {
+  static unithydrocons({params, args, data} = {}) {
     //import parameters from user.
     var area = params.drainagearea;
-    var duh = params.hydro;
-    var unit = this.matrix(2, duh[0].length, 0);
+    var duh = data;
+    var unit = this.matrix({params: {m: 2, n: duh[0].length, d: 0}});
 
     //unit hydro from dimensionless hydrograph.
     if (params.type == "dim") {
       //peak rate factor chosen.
-      var peak = params.config.peak;
+      var peak = args.peak;
 
 
       //calculate time step.
-      var tconc = params.config.tconcentration;
+      var tconc = args.tconcentration;
       var deltat = Number((tconc * 0.133).toFixed(3));
 
       //calculate time to peak and construct result arrays.
@@ -340,8 +341,8 @@ export default class hydro {
     //unit hydro from observed hydrograph.
     else if (params.type == "obs") {
 
-      var baseflow = params.config.baseflow;
-      var drh = this.matrix(1, duh[0].length, 0);
+      var baseflow = args.baseflow;
+      var drh = this.matrix({params: {m: 1, n: duh[0].length, d: 0}});
       unit[0] = duh[0];
       //timestep in hours
       var timestep = Math.abs(unit[0][1] - unit[0][0]) * 60 * 60;
@@ -352,7 +353,7 @@ export default class hydro {
         drh[i] = Math.abs(duh[1][i] - baseflow);
       };
 
-      var sum = this.totalprec(drh) * timestep;
+      var sum = this.totalprec({data: drh}) * timestep;
       var vol = 0;
 
       switch (params.units) {
@@ -393,7 +394,7 @@ export default class hydro {
    * var fldh = hydro1.analyze.hydro.floodhydro(floodconfig)
    */
 
-  static floodhydro(params) {
+  static floodhydro({params, args, data} = {}) {
     //import data from parameters.
     const rain = params.rainfall;
     const unit = params.unithydro;
@@ -403,10 +404,10 @@ export default class hydro {
       baseflow = 0;
     };
 
-    if (params.type == "SCS") {
-      const cn = params.cn;
-      const stormdur = params.stormduration;
-      const timestep = params.timestep;
+    if (args.type == "SCS") {
+      const cn = args.cn;
+      const stormdur = args.stormduration;
+      const timestep = args.timestep;
 
       //transform the date into javascript format.
 
@@ -414,17 +415,17 @@ export default class hydro {
       var numarray = Math.round(stormdur / timestep);
       var finalcount = numarray + unit[0].length;
       var sc = 0;
-      var accumrainf = this.matrix(2, rain[1].length, 0);
+      var accumrainf = this.matrix({params: {m: 2, n: rain[1].length, d: 0}});
       accumrainf[0] = rain[0];
-      var accumrunff = this.matrix(2, rain[1].length, 0);
+      var accumrunff = this.matrix({params: {m: 2, n: rain[1].length, d: 0}});
       accumrunff[0] = rain[0];
-      var incrementrunff = this.matrix(2, rain[1].length, 0);
+      var incrementrunff = this.matrix({params: {m: 2, n: rain[1].length, d: 0}});
       incrementrunff[0] = rain[0];
-      var hydros = this.matrix(stormdur, finalcount, 0);
-      var finalhydro = this.matrix(2, finalcount, 0);
+      var hydros = this.matrix({params: {m: stormdur, n: finalcount, d: 0}});
+      var finalhydro = this.matrix({params: {m: 2, n: finalcount, d: 0}});
 
       // change calculations depending on units.
-      switch (params.units) {
+      switch (args.units) {
         case "si":
           sc = 1000 / cn - 10;
           break;
@@ -486,7 +487,7 @@ export default class hydro {
       finalhydro[1].reverse();
 
       return finalhydro;
-    } else if (params.type == "obs") {
+    } else if (args.type == "obs") {
       var hydros = [];
       var timestep = Math.abs(rain[0][1] - rain[0][0]);
 
@@ -499,7 +500,7 @@ export default class hydro {
         hydros.push(neq)
       };
 
-      var final = this.matrix(2, unit[1].length + hydros.length, 0);
+      var final = this.matrix({params: {m: 2, n: unit[1].length + hydros.length, d:0}});
 
       //zeros up
       for (var k = 0; k < hydros.length; k++) {
@@ -644,7 +645,7 @@ export default class hydro {
    * @return {Object[]} Matrix with solutions.
    */
 
-  static ground1d(params) {
+  static ground1d({params, args, data} = {}) {
     //pass data from params to variables.
     var length = params.length;
     var k = params.k;
@@ -659,9 +660,9 @@ export default class hydro {
     var dx = length / (nodes - 1);
 
     //create a new equation system
-    var matrix = this.matrix(nodes, nodes, 0);
-    var vec_left = this.matrix(1, nodes, 0);
-    var vec_right = this.matrix(1, nodes, 0);
+    var matrix = this.matrix({params: {m: nodes, n: nodes, d:0}});
+    var vec_left = this.matrix({params: {m:1, n:nodes, d:0}});
+    var vec_right = this.matrix({params: {m:1, n:nodes, d:0}});
 
     //equation system set up.
     var factor = k / dx;
@@ -687,7 +688,7 @@ export default class hydro {
     }
 
     //solve equation system.
-    this.equationsystemsolver(matrix, vec_left, vec_right);
+    this.equationsystemsolver({data:matrix, params: {left: vec_left, right: vec_right}});
 
     //calculate discharge in vec_right
     vec_right[0] = (-k * (vec_left[1] - vec_left[0])) / dx;
@@ -716,11 +717,13 @@ export default class hydro {
    * var rain = hydro1.analyze.hydro.rainaggr(config)
    */
 
-  static rainaggr(params) {
-    var event = params.event;
-    var agtype = params.agg.type;
+  static rainaggr({params,args, data} = {}) {
+    var event = data;
+    var agtype = params.type;
+    //time interval required by the user in minutes.
+    var finagg = params.interval;
 
-    var datetr = this.matrix(event.length, event[1].length, 0);
+    var datetr = this.matrix({params: {m: event.length, n:event[1].length, d:0}});
 
     for (var i = 0; i < event[0].length; i++) {
       if (typeof event[0][0] == "string") {
@@ -733,9 +736,6 @@ export default class hydro {
     for (var j = 1; j < event.length; j++) {
       datetr[j] = event[j];
     }
-
-    //time interval required by the user in minutes.
-    var finagg = params.agg.interval;
 
     //change the datatypes of date.
     if (agtype == "aggr") {
@@ -771,16 +771,17 @@ export default class hydro {
         var minidata = datetr[1].slice(j, j + count);
         if (typeof event[0][0] == "string") {
           fintime.push(
-            new Date(this.totalprec(minitime) - time).toLocaleTimeString()
+            new Date(this.totalprec({data:minitime}) - time).toLocaleTimeString()
           );
         } else {
           fintime.push(j);
         }
-        findata.push(this.totalprec(minidata));
+        findata.push(this.totalprec({data:minidata}));
       }
       return [fintime, findata];
     } else if (agtype == "disaggregation") {
-      var finagg = params.agg.interval;
+      var finagg = params.interval;
+      //Unfinished, still need to link more implementation.
     }
   }
 
@@ -798,11 +799,11 @@ export default class hydro {
    * var min = hydro1.analyze.hydro.totalprec(arr)
    */
 
-  static totalprec(arr) {
+  static totalprec({params, args, data} = {}) {
     var sum = 0;
-    var k = arr.length;
+    var k = data.length;
     while (--k >= 0) {
-      sum += arr[k];
+      sum += data[k];
     }
     return sum;
   }
@@ -816,17 +817,19 @@ export default class hydro {
    * @param {number} location - index to in substitute array.
    */
 
-  static move(array, from, to) {
-    if (to === from) return array;
+  static move({params, args, data} = {}) {
+    var from = params.from
+    var to = params. to
+    if (to === from) return data;
 
-    var target = array[from];
+    var target = data[from];
     var increment = to < from ? -1 : 1;
 
     for (var k = from; k != to; k += increment) {
-      array[k] = array[k + increment];
+      data[k] = data[k + increment];
     }
-    array[to] = target;
-    return array;
+    data[to] = target;
+    return data;
   }
 
   /**
@@ -840,14 +843,14 @@ export default class hydro {
    * @returns {Object[]} matrix - m x n array.
    */
 
-  static matrix(m, n, d) {
+  static matrix({params, args, data} = {}) {
     var mat;
-    if ((typeof d == undefined)) {
-      mat = Array(m).map(() => Array(n));
+    if ((typeof params.d == undefined)) {
+      mat = Array(params.m).map(() => Array(params.n));
     } else {
-      mat = Array(m)
-        .fill(d)
-        .map(() => Array(n).fill(d));
+      mat = Array(params.m)
+        .fill(params.d)
+        .map(() => Array(params.n).fill(params.d));
     }
     return mat;
   }
@@ -862,7 +865,10 @@ export default class hydro {
    * @returns {Object[]} vec_left.
    */
 
-  static equationsystemsolver(matrix, vec_left, vec_right) {
+  static equationsystemsolver({params, args, data} = {}) {
+    var matrix = data
+    var vec_left = params.left
+    var vec_right = params.right
     var fMaxEl;
     var fAcc;
     var nodes = vec_left.length;
