@@ -12,7 +12,7 @@ var Hydro = Hydro || (function () {
     window.results = {"data":{}, "analyze":{}, "visualize":{}, "maps":{}}
 
     return {
-        ins: function () {
+        ins: function ({params, args, data} = {}) {
             return hydro
         },
         db: function (key) {
@@ -77,17 +77,21 @@ if (JSON && JSON.stringify && JSON.parse) var Local = Local || (function () {
 
     return {
         set: async function (key, value) {
+            // if (window.localStorage[key]) {
+            //     return alert(`Item ${key} already exists! Please change name or revise data.`)
+            // } else {
                 var x = value
                 value = JSON.stringify(x)
                 window.localStorage.setItem(key, value);
-                return console.log(`Item ${key} has been saved.`)
+                return console.log(`Item ${key} has been saved in the local storage.`)
+            // }
         },
 
         get: async function (key) {
                 var value = window.localStorage.getItem(key);
 
                 if (!value) {
-    
+
                     return console.log(`Item ${key} has not been found.`)
                 }
     
@@ -111,6 +115,7 @@ if (JSON && JSON.stringify && JSON.parse) var Local = Local || (function () {
 
         clear: function () {
             window.localStorage.clear();
+            return console.log("All items have been removed from storage.")
         }
     }
 })();

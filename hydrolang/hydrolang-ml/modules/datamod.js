@@ -55,17 +55,6 @@ export default class datamod extends HTMLElement {
     };
 
     /**
-     * Confirms that the data has been downloaded and added to results.
-     * @method handlewaterdata
-     * @memberof datamod
-     * @param {Object} data - retrieved data from any API.
-     * @returns {console} confirmation of data. 
-     */
-    handlewaterdata(data) {
-        console.log(`Data has been retrieved!`)
-    };
-
-    /**
      * Constructor that deals with the inputs from each slotted event.
      * Requires methods from the maincomponent function.
      * @constructor
@@ -88,16 +77,16 @@ export default class datamod extends HTMLElement {
         var data = maincomponent.datalistener(this)
 
         if (props.method === "retrieve") {
-            var results = maincomponent.hydro().data[props.method]({params: params[0], args: params[1], callback: this.handlewaterdata})
+            var results = maincomponent.hydro().data[props.method]({params: params[0], args: params[1], data: data})
             if (results != null || results != undefined || results != []) {
                 maincomponent.pushresults(params[0].output, await results, 'local')
             } else {
                 console.log("Problem with request. Revise inputs.")
-            }
+        }
 
          } else if (props.method === "transform") {
              var cleaned = maincomponent.hydro().data[props.method]({params: params[0], args: params[1], data: data})
-             maincomponent.pushresults(params[0].output, cleaned, 'local')
+             maincomponent.pushresults(params[0].output, await cleaned, 'local')
 
         }  else if (props.method === "upload") {
             var btn = document.createElement("BUTTON")
@@ -114,6 +103,8 @@ export default class datamod extends HTMLElement {
         } 
         else if (props.method === "save") {
             maincomponent.pushresults(params[0].output, data, 'local')
+        } else if(props.method === "remove") {
+            maincomponent.LocalStore({name: params[0].input, type: "remove"})
         }
     }
 }

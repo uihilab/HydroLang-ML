@@ -6,12 +6,14 @@ import stats from "../analyze/core/stats.js";
  * Main function to retrieve data. Requires a callback handler after data has been downloaded.
  * @function retrieve
  * @memberof data
- * @param {Object} params - contain paramaters to retrieve data.
- * @param {Function} callback - data handler: either prompt to console, save to variable, etc.
- * @returns {Object} Object with retrieved data.
+ * @param {Object{}} params - Data parameter containing which source to use, the datatype from the source and type of data (CSV, XML, JSON).
+ * @param {Object{}} args - Any arguments required for obtaining the data.
+ * @returns {Object{}} res - Object with retrieved data.
+ * @example 
+ * hydro.
  */
 
-async function retrieve({params,args, callback} = {}) {
+async function retrieve({params,args, data} = {}) {
   //obtain data from parameters set by user.
   var source = params["source"];
   var dataType = params["datatype"];
@@ -64,10 +66,14 @@ async function retrieve({params,args, callback} = {}) {
     method: met,
     headers: head,
     success: function (data, status, xhr) {
-      result.push(data)
-      callback(data);
+      //all keys from the obtained data will be lowecased previous to be saved.
+      result.push(lowercasing(data))
+      alert(`Data from ${source} has been succesfully downloaded from request.`);
     },
-    error: function () {},
+    error: function () {
+      alert(`There was an error with the request. Please revise requirements.`)
+      return
+    },
   });
   return result
 }
@@ -76,7 +82,7 @@ async function retrieve({params,args, callback} = {}) {
  * Convert data types to one another.
  * @function transform
  * @memberof data
- * @param {Object} data - to be transformed as an object array.
+ * @param {Object{}} params - to be transformed as an object array.
  * @param {Object} config - transformation configuration
  * @returns {Object} Object in different formats with transformed data
  * @example
@@ -86,17 +92,19 @@ async function retrieve({params,args, callback} = {}) {
  */
 
 function transform({params, args, data} = {}) {
-  if(params) {
+  console.log(data)
+  if(params.save && args == undefined) {
+    data = recursiveSearch({obj: data, searchkey: params.save})
+    data = data[0]
+  } else if (params.save && args.keep) {
     data = recursiveSearch({obj: data, searchkey: params.save})
     data = data[0]
     args.keep = JSON.parse(args.keep)
   }
-  else if (!params) {
-    params = 0
-  }
 
   var type = args.type;
   var clean;
+  console.log(data)
 
   //verify if the object is an object. Go to the following step.
   var arr = data.map((_arrayElement) => Object.assign({}, _arrayElement));
@@ -182,27 +190,6 @@ function transform({params, args, data} = {}) {
     throw new Error("Please select a supported data conversion type!");
   }
 }
-
-/**
- * 
- * @param {Object} obj 
- * @param {String} searchKey 
- * @param {Object[]} results 
- * @returns 
- */
-
-function recursiveSearch ({obj, searchkey, results = []} = {}) {
-  const r = results;
-  Object.keys(obj).forEach(key => {
-     const value = obj[key];
-     if(key === searchkey && Array.isArray(value)){
-        r.push(value);
-     }else if(typeof value === 'object'){
-        recursiveSearch({obj: value, searchkey: searchkey, results: r});
-     }
-  });
-  return r;
-};
 
 /**
  * data upload from the local storage of the user for analysis.
@@ -363,9 +350,66 @@ function download({params, args, data} = {}) {
   }
 }
 
+  /***************************/
+  /***** Helper functions ****/
+  /***************************/
+
+/**
+ * Searches for an array with data passed as string.
+ * @function recursiveSearch
+ * @memberof data
+ * @param {Object{}} obj - Object to find the results from.
+ * @param {String} searchKey - Key to find inside the object.
+ * @param {Object[]} results - default parameter used to save objects. 
+ * @returns {Object[]} results - saved object from the search.
+ * @example 
+ * recursiveSearch({obj: {key1: "thisiskey", data: ["data1", "data2"]}, searchkey: 'data'}) 
+ * returns ["data1", "data2"]
+ */
+
+ function recursiveSearch ({obj, searchkey, results = []} = {}) {
+  const r = results;
+  //if (!obj.hasOwnProperty(searchkey)) {return}
+  Object.keys(obj).forEach(key => {
+     const value = obj[key];
+     if(key === searchkey && Array.isArray(value)){
+        r.push(value);
+        return;
+     }else if(typeof value === 'object' && value !== null){
+        recursiveSearch({obj: value, searchkey: searchkey, results: r});
+     }
+  });
+  return r;
+};
+
+/**
+ * Lowercases the keys in an object. Can be nested object with arrays or what not.
+ * @function lowercasing
+ * @memberof data
+ * @param {Object{}} obj - Object keys to lowercase them. 
+ * @returns {Object[]} obj - Copy of object with keys in lowercase.
+ * @example 
+ * lowercasing({NaMe: "myname", OtherName: "nextname"}) 
+ * returns {name: "myname", othername: "nextname"}
+ */
+function lowercasing (obj) {
+  if (typeof obj !== 'object') return obj;
+  if (Array.isArray(obj)) return obj.map(lowercasing)
+  return Object.keys(obj).reduce((newObj, key) => {
+    let val = obj[key];
+    let newVal = (typeof val === 'object') && val !== null ? lowercasing(val) : val;
+    newObj[key.toLowerCase()] = newVal;
+    return newObj
+  }, {})
+};
+
+  /**********************************/
+  /*** End of Helper functions **/
+  /**********************************/
+
 /**
  * Module for dealing with data.
  * @module data
  * @exports data
  */
-export { retrieve, transform, download, upload, recursiveSearch };
+export { retrieve, transform, download, upload};

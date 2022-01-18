@@ -211,7 +211,11 @@ export default class maincomponent extends HTMLElement {
         }
 
         //In case there are numbers inside the objects.
+        if (elem[0].parentElement.nodeName === 'DATA-MOD') {
+            return attr
+        } else {
         return this.convertIntObj(attr)
+    }
     };
 
     /**
@@ -315,11 +319,15 @@ export default class maincomponent extends HTMLElement {
      * @param {Object} value - data to be stored into the local storage.
      * @returns {void} -  
      */
-    static LocalStore(name, value, type) {
+    static LocalStore({name, value, type} = {}) {
         if (type === "save") {
             Local.set(name, value)
         } else if (type === "retrieve") {
             Local.get(name)
+        } else if (type === "remove") {
+            Local.remove(name)
+        } else if (type === "clear") {
+            Local.clear()
         }
     };
 
@@ -347,7 +355,7 @@ export default class maincomponent extends HTMLElement {
                 setTimeout(() => resolve(obj), 1000)})
             
             promise.then((x) =>{
-                    this.LocalStore(name, x, "save")
+                    this.LocalStore({name: name, value: x, type: "save"})
                 })
         }
     };
@@ -412,7 +420,7 @@ export default class maincomponent extends HTMLElement {
 
     /**
      * 
-     * @param {*} obj 
+     * @param {Object} obj - Object JSON that  
      * @returns 
      */
 
@@ -469,23 +477,38 @@ export default class maincomponent extends HTMLElement {
         sr.id = "jsonrender"
         document.body.appendChild(sr)
     }
+        var src = "https://cdn.rawgit.com/caldwell/renderjson/master/renderjson.js"
 
         //Using external library to render json on screen. Could be any type of json file.
         //Documentation + library found at: https://github.com/caldwell/renderjson
+        if (!isScriptAdded(src)) {
         var sc = document.createElement("script")
         sc.type = "text/javascript"
-        sc.src = "https://cdn.rawgit.com/caldwell/renderjson/master/renderjson.js"
+        sc.src = src
         document.head.appendChild(sc)
+    } if(isScriptAdded(src)) {
+        var sc = document.querySelector(`script[src="${src}"`)
         sc.addEventListener('load', ()=>{
             //Change 
             renderjson.set_icons('+','-')
             renderjson.set_show_to_level(2)
             if (isdivAdded()) {
-                var name = document.createTextNode(params[0].input)
+                var name
+                if (params[0].input === "all") {
+                    for (var i =0; i < Object.keys(window.localStorage).length; i++) {
+                        name = document.createTextNode(Object.keys(window.localStorage)[i])
+                        document.getElementById("jsonrender").appendChild(name)
+                        document.getElementById("jsonrender").appendChild(renderjson(JSON.parse(window.localStorage[Object.keys(window.localStorage)[i]])))
+                    }
+                }
+                else {
+                name = document.createTextNode(params[0].input)
                 document.getElementById("jsonrender").appendChild(name)
                 document.getElementById("jsonrender").appendChild(renderjson(data))
+            }
         }
         })
+    }
     }
 
     /**
