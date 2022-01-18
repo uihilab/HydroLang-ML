@@ -32,6 +32,12 @@ function chart({params, args, data} = {}) {
     var char = params.chartType;
     var dat;
 
+    if (d[0][0] instanceof String) {
+      for (var i =0; i < d.length; i++) {
+        d[i][0].shift()
+      }
+    }
+
     switch (char) {
       case "scatter":
         var dt;
@@ -289,6 +295,11 @@ function draw({params, args, data} = {}) {
   }
 }
 
+function prettyPrint({params, args, data}) {
+  //Add div for rendering JSON
+  
+}
+
 /**
  * Module for visualization of charts and tables.
  * @module visualize
@@ -335,6 +346,42 @@ function ensureGoogleChartsIsSet() {
       setTimeout(waitForGoogle, 30);
     })();
   });
+};
+
+function createDiv({params, args, data} = {}){
+  var dv = document.createElement('div')
+  dv.id = params.id
+  dv.className = params.class
+  document.body.appendChild(dv)
+}
+
+function createform({params, args, data} = {}) {
+  var fr = document.createElement('form')
+  fr.className = params.class
+  document.body.appendChild(fr)
+}
+
+function createScript({params, args, data} = {}) {
+  //Add any external script into the DOM for external library usage.
+  if (!isScriptAdded(params.src)) {
+  var sr = document.createElement("script")
+  sr.type = "text/javascript"
+  sr.src = params.src
+  document.head.appendChild(sc)
+  return
+//If the user wants to add functionality coming from the script, do after.
+} if (isScriptAdded(params.src)){
+  var sc = document.querySelector(`script[src="${params.src}"]`)
+  return sc
+}
+}
+
+function isdivAdded(divid) {
+  return Boolean(document.querySelector("."+divid))
+}
+
+function isScriptAdded(src) {
+  return Boolean(document.querySelector(`script[src="${src}"`))
 }
 
 /**********************************/

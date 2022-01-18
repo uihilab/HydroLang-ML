@@ -326,7 +326,7 @@ export default class maincomponent extends HTMLElement {
             Local.get(name)
         } else if (type === "remove") {
             Local.remove(name)
-        } else if (type === "clear") {
+        } else if (type === "clear" && name === "all") {
             Local.clear()
         }
     };
@@ -494,6 +494,10 @@ export default class maincomponent extends HTMLElement {
             renderjson.set_show_to_level(2)
             if (isdivAdded()) {
                 var name
+                if (window.localStorage.length === 0) {
+                    name = document.createTextNode("There are no items stored!")
+                    document.getElementById("jsonrender").appendChild(name)
+                }
                 if (params[0].input === "all") {
                     for (var i =0; i < Object.keys(window.localStorage).length; i++) {
                         name = document.createTextNode(Object.keys(window.localStorage)[i])

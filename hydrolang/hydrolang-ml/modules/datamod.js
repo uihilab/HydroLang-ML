@@ -76,17 +76,9 @@ export default class datamod extends HTMLElement {
         var params = maincomponent.makePropertiesFromParameters(this.children)
         var data = maincomponent.datalistener(this)
 
-        if (props.method === "retrieve") {
+        if (props.method === "retrieve" || props.method === "transform") {
             var results = maincomponent.hydro().data[props.method]({params: params[0], args: params[1], data: data})
-            if (results != null || results != undefined || results != []) {
-                maincomponent.pushresults(params[0].output, await results, 'local')
-            } else {
-                console.log("Problem with request. Revise inputs.")
-        }
-
-         } else if (props.method === "transform") {
-             var cleaned = maincomponent.hydro().data[props.method]({params: params[0], args: params[1], data: data})
-             maincomponent.pushresults(params[0].output, await cleaned, 'local')
+            maincomponent.pushresults(params[0].output, await results, 'local')
 
         }  else if (props.method === "upload") {
             var btn = document.createElement("BUTTON")
@@ -99,7 +91,12 @@ export default class datamod extends HTMLElement {
             }
 
         } else if (props.method === "download") {
+            if(window.localStorage[params[0].input]) {
             maincomponent.hydro().data[props.method]({params: params[0], args: params[1], data: data})
+        } else {
+            alert(`There is no object named ${params[0].input} on local storage`)
+            return
+        }
         } 
         else if (props.method === "save") {
             maincomponent.pushresults(params[0].output, data, 'local')

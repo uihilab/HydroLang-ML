@@ -92,7 +92,6 @@ async function retrieve({params,args, data} = {}) {
  */
 
 function transform({params, args, data} = {}) {
-  console.log(data)
   if(params.save && args == undefined) {
     data = recursiveSearch({obj: data, searchkey: params.save})
     data = data[0]
@@ -104,7 +103,6 @@ function transform({params, args, data} = {}) {
 
   var type = args.type;
   var clean;
-  console.log(data)
 
   //verify if the object is an object. Go to the following step.
   var arr = data.map((_arrayElement) => Object.assign({}, _arrayElement));
@@ -140,6 +138,12 @@ function transform({params, args, data} = {}) {
         final[j][n] = arrays[n][j];
       }
     }
+
+    if(args.keep) {
+    for (var j=0; j < final.length; j++){
+      final[j].unshift(args.keep[j])
+    }
+  }
     return final;
   }
 
@@ -199,11 +203,20 @@ function transform({params, args, data} = {}) {
  * @example var xo = hydro1.data.upload('CSV')
  */
 
-function upload(type) {
+function upload({params, args, data} = {}) {
+
+  var drop = document.createElement("div");
+  drop.id = "drop-area";
+  container.className = "table"
+  container.title = `Table of ${container.id}`;
+  document.body.appendChild(container);
+  
+  var btn = document.createElement("BUTTON")
+  btn.innerHTML = "Upload file here!"
   //create a new element to upload on header.
   var f = document.createElement("input");
   f.type = "file";
-  f.accept = type;
+  f.accept = params.type;
   var ret;
 
   //create a new type of object depending on the type selected by user.
