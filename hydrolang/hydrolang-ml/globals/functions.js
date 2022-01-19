@@ -459,63 +459,6 @@ export default class maincomponent extends HTMLElement {
     };
 
     /**
-     * 
-     * @param {*} data 
-     * @returns 
-     */
-
-    static prettyPrint(params, data) {
-        //new div created on screen for each time an element is created.
-        //Note: not added ontp the web component, but rather into the DOM itself.
-
-        var isdivAdded = () => {return Boolean(document.querySelector(".jsonrender"))}
-        var isScriptAdded =(src) => {return Boolean(document.querySelector(`script[src="${src}"`))}
-
-        if (!isdivAdded()) {
-        var sr = document.createElement("div")
-        sr.className = "jsonrender"
-        sr.id = "jsonrender"
-        document.body.appendChild(sr)
-    }
-        var src = "https://cdn.rawgit.com/caldwell/renderjson/master/renderjson.js"
-
-        //Using external library to render json on screen. Could be any type of json file.
-        //Documentation + library found at: https://github.com/caldwell/renderjson
-        if (!isScriptAdded(src)) {
-        var sc = document.createElement("script")
-        sc.type = "text/javascript"
-        sc.src = src
-        document.head.appendChild(sc)
-    } if(isScriptAdded(src)) {
-        var sc = document.querySelector(`script[src="${src}"`)
-        sc.addEventListener('load', ()=>{
-            //Change 
-            renderjson.set_icons('+','-')
-            renderjson.set_show_to_level(2)
-            if (isdivAdded()) {
-                var name
-                if (window.localStorage.length === 0) {
-                    name = document.createTextNode("There are no items stored!")
-                    document.getElementById("jsonrender").appendChild(name)
-                }
-                if (params[0].input === "all") {
-                    for (var i =0; i < Object.keys(window.localStorage).length; i++) {
-                        name = document.createTextNode(Object.keys(window.localStorage)[i])
-                        document.getElementById("jsonrender").appendChild(name)
-                        document.getElementById("jsonrender").appendChild(renderjson(JSON.parse(window.localStorage[Object.keys(window.localStorage)[i]])))
-                    }
-                }
-                else {
-                name = document.createTextNode(params[0].input)
-                document.getElementById("jsonrender").appendChild(name)
-                document.getElementById("jsonrender").appendChild(renderjson(data))
-            }
-        }
-        })
-    }
-    }
-
-    /**
      * Registers the elements into the DOM.
      * @method registerElement
      * @memberof maincomponent

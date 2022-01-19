@@ -177,15 +177,16 @@ function table({params, args, data} = {}) {
  * @function draw
  * @memberof visualize
  * @param {Object} params - overall parameters: data, draw, type.
- * @returns {Object} chart (graph or table) appended in body.
+ * @returns {Object} chart (graph, table, or json render) appended in body.
  */
 
 function draw({params, args, data} = {}) {
   var dat = data
-  dat[1] = dat[1].map(Number)
-
   var pm;
   var type = params.type;
+  if (type !== "json") {
+  dat[1] = dat[1].map(Number)
+}
 
   if (type === "chart") {
     if (dat.length == 2) {
@@ -292,21 +293,61 @@ function draw({params, args, data} = {}) {
       },
     };
     return table({params: pm, data: dat});
+  } else if (type === "json") {
+    return prettyPrint({params: params, data: data})
   }
 }
 
+/**
+ * Returns the a render space for json objects saved on local storage.
+ * @function prettyPrint
+ * @memberof visualize
+ * @param {Object{}} params - parameters including type of input (single or all) and type of renderer.
+ * @param {Object{}} data - data for running the renderer.
+ * @returns {Promise} renders to screen the json object to render. 
+ */
+
 function prettyPrint({params, args, data}) {
   //Add div for rendering JSON
-  
+
+    if (!isdivAdded("jsonrender")) {
+      createDiv({params : {id: "jsonrender", class: "jsonrender"}})
 }
+
+    //Using external library to render json on screen. Could be any type of json file.
+    //Documentation + library found at: https://github.com/caldwell/renderjson
+    var src = "https://cdn.rawgit.com/caldwell/renderjson/master/renderjson.js"
+
+    var sc = createScript({params: {src: src}})
+    sc.addEventListener('load', ()=>{
+        //Change 
+        renderjson.set_icons('+','-')
+        renderjson.set_show_to_level(2)
+        if (isdivAdded("jsonrender")) {
+            var name
+            if (window.localStorage.length === 0) {
+                name = document.createTextNode("There are no items stored!")
+                document.getElementById("jsonrender").appendChild(name)
+            }
+            if (params.input === "all") {
+                for (var i =0; i < Object.keys(window.localStorage).length; i++) {
+                    name = document.createTextNode(Object.keys(window.localStorage)[i])
+                    document.getElementById("jsonrender").appendChild(name)
+                    document.getElementById("jsonrender").appendChild(renderjson(JSON.parse(window.localStorage[Object.keys(window.localStorage)[i]])))
+                }
+            }
+            else {
+            name = document.createTextNode(params.input)
+            document.getElementById("jsonrender").appendChild(name)
+            document.getElementById("jsonrender").appendChild(renderjson(data))
+    }
+    }})}
 
 /**
  * Module for visualization of charts and tables.
  * @module visualize
  */
 export {
-  chart,
-  table,
   draw
 };
 
@@ -348,6 +389,14 @@ function ensureGoogleChartsIsSet() {
   });
 };
 
+/**
+ * Creates a div space for rendering all sorts of imagery.
+ * @function createDiv
+ * @memberof visualize
+ * @param {Object{}} params - arguments for creating div including divid and class
+ * @returns {Promise} div space appended to DOM.
+ */
+
 function createDiv({params, args, data} = {}){
   var dv = document.createElement('div')
   dv.id = params.id
@@ -355,11 +404,25 @@ function createDiv({params, args, data} = {}){
   document.body.appendChild(dv)
 }
 
+/**
+ * Creates a form appended to the DOM.
+ * @function createform
+ * @memberof visualize
+ * @param {Object{}} params - parameters containing classes and names for renderer.
+ * @returns {Promise} form appended to the DOM.
+ */
+
 function createform({params, args, data} = {}) {
   var fr = document.createElement('form')
   fr.className = params.class
   document.body.appendChild(fr)
 }
+
+/**
+ * 
+ * @param {Object{}} params - parameter including the source of the script to be used. 
+ * @returns {Promise} if found, returns the the script library to add listeners and handlers once loaded.
+ */
 
 function createScript({params, args, data} = {}) {
   //Add any external script into the DOM for external library usage.
@@ -367,8 +430,7 @@ function createScript({params, args, data} = {}) {
   var sr = document.createElement("script")
   sr.type = "text/javascript"
   sr.src = params.src
-  document.head.appendChild(sc)
-  return
+  document.head.appendChild(sr)
 //If the user wants to add functionality coming from the script, do after.
 } if (isScriptAdded(params.src)){
   var sc = document.querySelector(`script[src="${params.src}"]`)
