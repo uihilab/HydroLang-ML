@@ -40,134 +40,9 @@ export default class maincomponent extends HTMLElement {
      * @memberof maincomponent
      * @returns template with slot to attach new web components
      */
-    static template(mod, method) {
-        var style = document.createElement('style');
+    static template(mod) {
         const template = document.createElement('template');
         template.id = mod
-    
-        if (mod === "mapmod" && method === "render") {
-        style.innerHTML = `#map {
-                height: 400px;
-                width: 800px;
-                margin-left: auto;
-                margin-right: auto;
-                border-style: solid;
-                font-family: monospace;
-            }`
-    } else if (mod === "hydrolangml") {
-        style = document.createElement('style');
-        style.innerHTML = 
-        `
-            dataset { font-size: 0; }
-        `
-    } else if(mod === "visualizemod") {
-        style.innerHTML = `
-
-        .chart {
-            margin-left: auto;
-            margin-right: auto;
-            font-famiy: monospace;
-        }
-        
-        .table {
-            margin-left: auto;
-            margin-right: auto;
-            font-family: monospace;
-        }
-
-        .jsonrender{
-            margin-left: auto;
-            margin-right: auto;
-           position: relative;
-            background-color: #eaeaea;
-                padding: 0.5em;
-            color: black;
-            font-family: monospace;
-            font-size: 15px;
-            height: 300px;
-            width: 1000px;
-            border-radius: 7px;
-            overflow-x: scroll;
-            border-style: solid;
-         }
-
-         .jsonrender #text{
-            color: black;
-            font-family: monospace
-         }
-         
-         .renderjson a {
-             text-decoration: none;
-             color: black;
-             overflow: auto;
-             font-size: 15px;
-             font-family: monospace;
-         }
-         
-         .renderjson .disclosure {
-             color: red;
-             font-weight: bold;
-             font-size: 15px;
-             overflow: auto;
-             font-family: monospace;
-         }
-         
-         .renderjson .syntax {
-             color: black;
-             font-size: 15px;
-             overflow: auto;
-             font-family: monospace;
-         }
-         
-         .renderjson .string {
-             color: red;
-             font-size: 15px;
-             overflow: auto;
-             font-family: monospace;
-         }
-         
-         .renderjson .number {
-             color: red;
-             font-size: 15px;
-             overflow: auto;
-             font-family: monospace;
-         }
-         
-         .renderjson .boolean {
-             color: black;
-             font-size: 15px;
-             font-family: monospace;
-         }
-         
-         .renderjson .key {
-             color: purple;
-             font-size: 15px;
-             font-family: monospace;
-         }
-         
-         .renderjson .keyword {
-             color: purple;
-             font-size: 15px;
-             font-family: monospace;
-         }
-         
-         .renderjson .object.syntax {
-             color: black;
-             font-size: 15px;
-             font-family: monospace;
-         }
-         
-         .renderjson .array.syntax {
-             color: black;
-             font-size: 15px;
-             font-family: monospace;
-         }
-        `
-    } else if(mod === "datamod") {
-        style.innerHTML = `
-          `
-    }
-    document.body.appendChild(style)
         template.innerHTML =    
         `
         <div><slot></slot></div>
@@ -281,15 +156,17 @@ export default class maincomponent extends HTMLElement {
 
         try{
         if (params[0].input != null || params[0].input != undefined) {
+            //data = await JSON.parse(this.LocalStore({name: params[0].input, type: "retrieve"}))
             data = this.getresults(params[0].input)
             data = JSON.parse(data)
+            return data
         } else {
             data = JSON.parse(this.datagrabber(mod))
+            return data
         }
     } catch (error) {
         data = undefined
     }
-        return data
     };
 
     /**
@@ -323,7 +200,14 @@ export default class maincomponent extends HTMLElement {
         if (type === "save") {
             Local.set(name, value)
         } else if (type === "retrieve") {
-            Local.get(name)
+            let promise = new Promise(resolve => {
+                setTimeout(() => resolve(), 1000)})
+            
+            promise.then(() =>{
+                    return Local.get(name)
+                })
+
+            return Local.get(name)
         } else if (type === "remove") {
             Local.remove(name)
         } else if (type === "clear" && name === "all") {
@@ -377,7 +261,6 @@ export default class maincomponent extends HTMLElement {
             }
             if (window.localStorage[k] && typeof window.localStorage[k] === 'object') {
                 value = this.getresults(keyfind);
-                console.log(`Item ${keyfind} has been retrieved.`)
                 return value !== undefined;
             }
         });

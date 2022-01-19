@@ -64,12 +64,9 @@ export default class mapmod extends HTMLElement {
         let shadow = this.attachShadow({
             mode: 'open'
         })
-        //Creates a template and attaches the web component to it.
-        var props = this.makePropertiesFromAttributes('map-mod')
-        if(props.method != "render") {} if(props.method === "render") {        
-            const template = maincomponent.template("mapmod", props.method)
-            shadow.appendChild(template.content.cloneNode(true))
-    }
+        //Creates a template and attaches the web component to it.   
+        const template = maincomponent.template("mapmod")
+        shadow.appendChild(template.content.cloneNode(true))
     };
 
     /**
@@ -85,7 +82,7 @@ export default class mapmod extends HTMLElement {
 
         if(props.method === "render") {           
             maincomponent.hydro().map.renderMap(props, params, data)
-            //maincomponent.hydro().map.Layers({maptype: "osm", layertype: {type: "draw"}})
+            maincomponent.hydro().map.Layers({maptype: "osm", layertype: {type: "draw"}})
         }
 
         if (props.method === "Layers") {

@@ -1,0 +1,152 @@
+.maps {
+    height: 400px;
+    width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+    border-style: solid;
+    font-family: monospace;
+}
+
+dataset { font-size: 0; }
+
+.charts {
+    margin-left: auto;
+    margin-right: auto;
+    height: 400px;
+    width: 800px;
+    font-famiy: monospace;
+}
+
+.tables {
+    margin-left: auto;
+    margin-right: auto;
+    height: 400px;
+    width: 800px;
+    font-family: monospace;
+}
+
+.jsonrender{
+    margin-left: auto;
+    margin-right: auto;
+   position: relative;
+    background-color: #eaeaea;
+        padding: 0.5em;
+    color: black;
+    font-family: monospace;
+    font-size: 15px;
+    height: 300px;
+    width: 1000px;
+    border-radius: 7px;
+    overflow-x: scroll;
+    border-style: solid;
+ }
+
+ .jsonrender #text{
+    color: black;
+    font-family: monospace
+ }
+ 
+ .renderjson a {
+     text-decoration: none;
+     color: black;
+     overflow: auto;
+     font-size: 15px;
+     font-family: monospace;
+ }
+ 
+ .renderjson .disclosure {
+     color: red;
+     font-weight: bold;
+     font-size: 15px;
+     overflow: auto;
+     font-family: monospace;
+ }
+ 
+ .renderjson .syntax {
+     color: black;
+     font-size: 15px;
+     overflow: auto;
+     font-family: monospace;
+ }
+ 
+ .renderjson .string {
+     color: red;
+     font-size: 15px;
+     overflow: auto;
+     font-family: monospace;
+ }
+ 
+ .renderjson .number {
+     color: red;
+     font-size: 15px;
+     overflow: auto;
+     font-family: monospace;
+ }
+ 
+ .renderjson .boolean {
+     color: black;
+     font-size: 15px;
+     font-family: monospace;
+ }
+ 
+ .renderjson .key {
+     color: purple;
+     font-size: 15px;
+     font-family: monospace;
+ }
+ 
+ .renderjson .keyword {
+     color: purple;
+     font-size: 15px;
+     font-family: monospace;
+ }
+ 
+ .renderjson .object.syntax {
+     color: black;
+     font-size: 15px;
+     font-family: monospace;
+ }
+ 
+ .renderjson .array.syntax {
+     color: black;
+     font-size: 15px;
+     font-family: monospace;
+ }
+
+ .note {
+    width: 500px;
+    margin: 50px auto;
+    font-size: 1.1em;
+    color: #333;
+    text-align: justify;
+  }
+  #drop-area {
+    border: 2px dashed #ccc;
+    border-radius: 20px;
+    width: 480px;
+    margin: 50px auto;
+    padding: 20px;
+  }
+  #drop-area.highlight {
+    border-color: purple;
+  }
+
+  .upload-form {
+    margin-bottom: 10px;
+  }
+
+  #button {
+    display: inline-block;
+    padding: 10px;
+    background: #ccc;
+    cursor: pointer;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+  }
+  .button:hover {
+    background: #ddd;
+  }
+  #fileElem {
+    display: none;
+  }
+

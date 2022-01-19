@@ -1,6 +1,7 @@
 import * as mapsources from "../../modules/maps/mapsources.js";
 import tileprov from "../../modules/maps/tileprov.js";
 import _ from "../../modules/d3/d3.js";
+import * as visualize from "../visualize/visualize.js"
 
 //Controllers, map and layers
 var osmap;
@@ -180,9 +181,18 @@ async function renderMap(props, params, data) {
     await loader({maptype: mapconfig.maptype})
 
   //create div for element appending the map and add to data
-  var container = document.createElement("div");
-  container.id = "map";
-  document.body.appendChild(container);
+  visualize.createDiv({params: {
+    id: "map",
+    class: "maps",
+  }})
+
+  var container
+  if (visualize.isdivAdded){
+    container = document.getElementById("map")
+  }
+  // var container = document.createElement("div");
+  // container.id = "map";
+  // document.body.appendChild(container);
 
   if (mapconfig.maptype === "google") {
     const options = {

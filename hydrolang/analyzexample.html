@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./modules/css/hydrolang.css">
     <title>Analyze Example</title>
 </head>
 
@@ -25,12 +26,12 @@
             <arguments type= "gamma" PRF= 484></arguments>
         </analyze-mod>
 
-        <visualize-mod method="view">
-            <parameters input="basic_stats_example"></parameters>
+        <visualize-mod method="draw">
+            <parameters type= "json" input="basic_stats_example"></parameters>
         </visualize-mod>
 
-        <visualize-mod method="view">
-            <parameters input="synthetic_calc"></parameters>
+        <visualize-mod method="draw">
+            <parameters type= "json" input="synthetic_calc"></parameters>
         </visualize-mod>
 
         <visualize-mod method="draw">

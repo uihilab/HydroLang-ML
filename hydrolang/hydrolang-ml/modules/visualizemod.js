@@ -75,7 +75,7 @@ export default class visualizemod extends HTMLElement {
         var props = this.makePropertiesFromAttributes('visualize-mod')
         var params = maincomponent.makePropertiesFromParameters(this.children)
         var data = maincomponent.datalistener(this)
-        await maincomponent.hydro().visualize[props.method]({params: params[0], args: params[1], data: data})
+        maincomponent.hydro().visualize[props.method]({params: params[0], args: params[1], data: data})
 }
 }
 

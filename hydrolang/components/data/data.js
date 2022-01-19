@@ -1,6 +1,7 @@
 import * as datasources from "./datasources.js";
 import $ from "../../modules/jquery/jquery.js";
 import stats from "../analyze/core/stats.js";
+import * as visualize from "../visualize/visualize.js"
 
 /**
  * Main function to retrieve data. Requires a callback handler after data has been downloaded.
@@ -204,30 +205,70 @@ function transform({params, args, data} = {}) {
  */
 
 function upload({params, args, data} = {}) {
+  //Container for the uploading area
+  visualize.createDiv({params:{
+    id: "drop-area",
+  }})
 
-  var drop = document.createElement("div");
-  drop.id = "drop-area";
-  container.className = "table"
-  container.title = `Table of ${container.id}`;
-  document.body.appendChild(container);
-  
-  var btn = document.createElement("BUTTON")
-  btn.innerHTML = "Upload file here!"
+  //form for the uploading area
+  var fr = document.createElement('form')
+  fr.className = "upload-form"
+
+  var cont1
+  if(visualize.isdivAdded()){
+    cont1 = document.getElementById("drop-area")
+  }
+
   //create a new element to upload on header.
   var f = document.createElement("input");
   f.type = "file";
+  f.id = "fileElem"
   f.accept = params.type;
+
+  //create button label  
+  var btn = document.createElement("LABEL")
+  btn.className = "button"
+  btn.htmlFor = "fileElem"
+  btn.innerHTML = "Upload file here!"
+
+  //Append all created elements to div
+  fr.appendChild(f)
+  cont1.appendChild(fr)
+  cont1.appendChild(btn)
+
+  //Preventing default drag behaviors
+  ;['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+    cont1.addEventListener(eventName, preventDefaults, false)
+    document.body.addEventListener(eventName, preventDefaults, false)
+  })
+
+  //Highlighting drop area when dragged over it
+  ;['dragenter', 'dragover'].forEach(eventName => {
+    cont1.addEventListener(eventName, highlight, false)
+  })
+
+  ;['dragleave', 'drop'].forEach(eventName => {
+    cont1.addEventListener(eventName, unhighlight, false)
+  })
+
+  cont1.addEventListener('drop', selectors, false)
+
+  var preventDefaults = ((e) => {e.preventDefault(); e.stopPropagation()})
+  var highlight = ((e) => {cont1.classList.add('highlight')})
+  var unhighlight = ((e) => {cont1.classList.remove('active')})
+
+
   var ret;
 
   //create a new type of object depending on the type selected by user.
-  if (type === "CSV") {
+  if (params.type === "CSV") {
     ret = [];
-  } else if (type === "JSON") {
+  } else if (params.type === "JSON") {
     ret = new Object();
   }
 
   //intialize the caller for obtaining the files.
-  const selectors = () => {
+  var selectors = () => {
     //create input file selector.
     f.onchange = (e) => {
       //select file by the user
@@ -263,7 +304,7 @@ function upload({params, args, data} = {}) {
         var content = readerEvent.target.result;
 
         //conversion of the data from CSV to array.
-        if (type === "CSV") {
+        if (params.type === "CSV") {
           var alltext = content.split(/\r\n|\n/);
           var med = [];
           for (var i = 0; i < alltext.length; i++) {
@@ -292,14 +333,13 @@ function upload({params, args, data} = {}) {
           for (var j = 0; j < ret.length; j++) {ret[j] = stats.numerise({data: ret[j]})}
 
           //transfrom from JSON file to new JS Object.
-        } else if (type === "JSON") {
+        } else if (params.type === "JSON") {
           Object.assign(ret, JSON.parse(content));
         }
       };
     };
-    f.click();
+    //f.click();
   };
-  selectors();
   return ret;
 }
 

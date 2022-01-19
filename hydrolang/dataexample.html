@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./modules/css/hydrolang.css">
     <title>Data Example</title>
 </head>
 
@@ -32,11 +33,11 @@
             <arguments stationid="COOP:018673" units="metric" startdate="2014-01-01" enddate="2014-12-31" limit="1000" datatype="QGAG"></arguments>
         </data-mod> -->
 
-        <!-- <data-mod method="upload">
+        <data-mod method="upload">
             <parameters type="CSV" output="myupload"></parameters>
-        </data-mod> -->
+        </data-mod>
 
-        <visualize-mod method="draw">
+        <!-- <visualize-mod method="draw">
             <parameters type= "json" input="all"></parameters>
         </visualize-mod>
 
@@ -48,7 +49,7 @@
         <data-mod method= "transform">
             <parameters input="usgs_data" save="value" output="cleaned_usgs_data1"></parameters>
             <arguments type= "ARR" keep= '["datetime", "value"]'></arguments>
-        </data-mod>
+        </data-mod> -->
 
         <!-- <data-mod method= "remove">
             <parameters input="all"></parameters>
@@ -65,10 +66,10 @@
             <parameters input="cleaned_usgs_data"></parameters>
         </visualize-mod> -->
 
-        <visualize-mod method="draw">
+        <!-- <visualize-mod method="draw">
             <parameters type="chart" input="cleaned_usgs_data1" name="Results from USGS"></parameters>
             <arguments charttype="column"></arguments>
-        </visualize-mod>
+        </visualize-mod> -->
 
         <!-- <data-mod method="download">
             <parameters input="cleanedvar3" type="CSV"></parameters>

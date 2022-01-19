@@ -21,12 +21,17 @@ var tableData;
 
 function chart({params, args, data} = {}) {
   ensureGoogleChartsIsSet().then(function () {
-    var container = document.createElement("div");
-    container.id = params.divID;
-    container.title = `Graph of ${container.id}`;
-    container.className = "chart";
-    container.style = "width: 1000px; height: 500px";
-    document.body.appendChild(container);
+    createDiv({params: {
+      id: params.divID,
+      title: `Graph of ${params.divID}`,
+      className: "charts",
+      //style: "width: 1000px; height: 500px" 
+    }})
+
+    var container
+    if(isdivAdded){
+      container = document.getElementById(params.divID)
+    }
 
     var d = data;
     var char = params.chartType;
@@ -132,11 +137,16 @@ function chart({params, args, data} = {}) {
  */
 function table({params, args, data} = {}) {
   ensureGoogleChartsIsSet().then(function () {
-    var container = document.createElement("div");
-    container.id = params.divID;
-    container.className = "table"
-    container.title = `Table of ${container.id}`;
-    document.body.appendChild(container);
+    createDiv({params:{
+      id: params.divID,
+      title: `Table of ${params.divID}`,
+      className: "tables",
+    }})
+
+    var container
+    if (isdivAdded) {
+      container = document.getElementById(params.divID)
+    }
 
     var d = data;
     var types = params.dataType;
@@ -348,7 +358,11 @@ function prettyPrint({params, args, data}) {
  * @module visualize
  */
 export {
-  draw
+  draw,
+  createDiv,
+  createform,
+  isdivAdded,
+  isScriptAdded
 };
 
 /***************************/
@@ -400,12 +414,14 @@ function ensureGoogleChartsIsSet() {
 function createDiv({params, args, data} = {}){
   var dv = document.createElement('div')
   dv.id = params.id
+  dv.title = params.title
   dv.className = params.class
+  dv.style = params.style
   document.body.appendChild(dv)
 }
 
 /**
- * Creates a form appended to the DOM.
+ * Creates a form appended to the DOM with a button attached to it.
  * @function createform
  * @memberof visualize
  * @param {Object{}} params - parameters containing classes and names for renderer.
@@ -419,7 +435,9 @@ function createform({params, args, data} = {}) {
 }
 
 /**
- * 
+ * Creates 
+ * @function createScript
+ * @memberof visualize
  * @param {Object{}} params - parameter including the source of the script to be used. 
  * @returns {Promise} if found, returns the the script library to add listeners and handlers once loaded.
  */

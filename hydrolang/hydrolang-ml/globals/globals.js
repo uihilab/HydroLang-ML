@@ -76,22 +76,21 @@ if (JSON && JSON.stringify && JSON.parse) var Cookie = Cookie || (function () {
 if (JSON && JSON.stringify && JSON.parse) var Local = Local || (function () {
 
     return {
-        set: async function (key, value) {
+        set: function (key, value) {
             // if (window.localStorage[key]) {
             //     return alert(`Item ${key} already exists! Please change name or revise data.`)
             // } else {
                 var x = value
-                value = JSON.stringify(x)
-                window.localStorage.setItem(key, value);
+                x = JSON.stringify(x)
+                window.localStorage.setItem(key, x);
                 return console.log(`Item ${key} has been saved in the local storage.`)
             // }
         },
 
-        get: async function (key) {
+        get: function (key) {
                 var value = window.localStorage.getItem(key);
 
                 if (!value) {
-
                     return console.log(`Item ${key} has not been found.`)
                 }
     
@@ -100,12 +99,9 @@ if (JSON && JSON.stringify && JSON.parse) var Local = Local || (function () {
                     return false
                 }
     
-                if (value[0] === '{') {
-                    value = JSON.parse(value)
-                    return console.log(`Item ${key} has been retrieved.`)
-                }
-    
-                return value
+                console.log(`Item ${key} has been retrieved.`)
+                var result = value
+                return result
         },
 
         remove: function (key) {

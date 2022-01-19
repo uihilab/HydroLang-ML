@@ -76,27 +76,9 @@ export default class datamod extends HTMLElement {
         var params = maincomponent.makePropertiesFromParameters(this.children)
         var data = maincomponent.datalistener(this)
 
-        if (props.method === "retrieve" || props.method === "transform") {
+        if (props.method === "retrieve" || props.method === "transform" || props.method === "upload" || props.method === "download") {
             var results = maincomponent.hydro().data[props.method]({params: params[0], args: params[1], data: data})
             maincomponent.pushresults(params[0].output, await results, 'local')
-
-        }  else if (props.method === "upload") {
-            var btn = document.createElement("BUTTON")
-            btn.innerHTML = "Upload here!"
-            btn.onclick= myup
-            document.body.appendChild(btn)
-            async function myup() {
-                var file = maincomponent.hydro().data[props.method](params[0].type)
-                maincomponent.pushresults(params[0].output, await file, 'local')
-            }
-
-        } else if (props.method === "download") {
-            if(window.localStorage[params[0].input]) {
-            maincomponent.hydro().data[props.method]({params: params[0], args: params[1], data: data})
-        } else {
-            alert(`There is no object named ${params[0].input} on local storage`)
-            return
-        }
         } 
         else if (props.method === "save") {
             maincomponent.pushresults(params[0].output, data, 'local')
