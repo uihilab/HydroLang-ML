@@ -41,13 +41,36 @@ export default class maincomponent extends HTMLElement {
      * @returns template with slot to attach new web components
      */
     static template(mod) {
+        if (mod === "hydrolangml") {
         const template = document.createElement('template');
-        template.id = mod
-        template.innerHTML =    
+        template.id = "hydrolang"
+        template.innerHTML = 
         `
-        <div><slot></slot></div>
+        <div id="hydrolang">
+            <h1> This is some content for hydrolang </h1>
+            <div id="analyze"></div>
+            <slot>
+            </slot>
+            <slot id="visualize">
+                <div id="visualize"></div>
+            </slot>
+            <slot>
+                <div id="map"></div>
+            </slot>
+            <slot>
+                <div id="data"></div>
+            </slot>
+        </div>
         `;
         return template
+        } if (mod === "analyzemod") {
+            var hydro = document.querySelector('#analyze')
+            
+        } if (mod === "visualizemod") {
+            //var hydro = document.querySelector('hydrolang-ml').shadowRoot.querySelector("#visualize")
+        } if (mod === "mapmod") {
+        } if (mod === "datamod") {
+        }
     };
 
     /**
@@ -156,16 +179,14 @@ export default class maincomponent extends HTMLElement {
 
         try{
         if (params[0].input != null || params[0].input != undefined) {
-            //data = await JSON.parse(this.LocalStore({name: params[0].input, type: "retrieve"}))
-            data = this.getresults(params[0].input)
-            data = JSON.parse(data)
-            return data
+            data = JSON.parse(this.LocalStore({name: params[0].input, type: "retrieve"}))
+            //data = JSON.parse(this.getresults(params[0].input))
         } else {
             data = JSON.parse(this.datagrabber(mod))
-            return data
         }
+        return data
     } catch (error) {
-        data = undefined
+        //alert("Error trying to retrieve or grab data. Please revise arguments passed!")
     }
     };
 
@@ -200,13 +221,6 @@ export default class maincomponent extends HTMLElement {
         if (type === "save") {
             Local.set(name, value)
         } else if (type === "retrieve") {
-            let promise = new Promise(resolve => {
-                setTimeout(() => resolve(), 1000)})
-            
-            promise.then(() =>{
-                    return Local.get(name)
-                })
-
             return Local.get(name)
         } else if (type === "remove") {
             Local.remove(name)
@@ -317,7 +331,19 @@ export default class maincomponent extends HTMLElement {
           }
         }
         return res;
-      }
+      };
+
+      /**
+       * 
+       * @param {Int} t - how much time should the function be delayed. 
+       * @returns {Promise} resolved promise.
+       */
+
+      static delayer(t) {
+          return new Promise((resolve) => {
+              setTimeout(() => { resolve()}, t)
+          })
+      };
 
     /**
      * Data grabber for child embedded into a parent component.

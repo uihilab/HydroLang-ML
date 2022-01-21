@@ -63,7 +63,10 @@ export default class visualizemod extends HTMLElement {
         })
         //Creation of the template holding the web component.
         const template = maincomponent.template("visualizemod")
-        shadow.append(template.content.cloneNode(true))
+        // shadow.append(template.content.cloneNode(true))
+
+        var hyd = document.querySelector("hydrolang-ml").shadowRoot.querySelector("#analyze")
+        console.log(hyd)
     };
 
     /**

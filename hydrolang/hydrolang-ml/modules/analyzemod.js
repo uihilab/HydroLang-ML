@@ -59,8 +59,8 @@ export default class analyzemod extends HTMLElement {
         let shadow = this.attachShadow({
             mode: 'open'
         });
-        const template = maincomponent.template("datamod")
-        shadow.appendChild(template.content.cloneNode(true));
+        // const template = maincomponent.template("datamod")
+        // shadow.appendChild(template.content.cloneNode(true));
     }
 
     /**
@@ -78,6 +78,9 @@ export default class analyzemod extends HTMLElement {
         // } catch(error) {
         //     console.log("Check data types from HydroLang.js to see compatibility!")
         // }
+    }
+
+    disconnectedCallback(){
     }
 }
 

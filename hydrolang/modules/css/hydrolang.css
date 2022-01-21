@@ -1,3 +1,12 @@
+#hydrolang{
+    height: 400px;
+    width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+    border-style: solid;
+    font-family: monospace;
+}
+
 .maps {
     height: 400px;
     width: 800px;

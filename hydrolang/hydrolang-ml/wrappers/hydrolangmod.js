@@ -17,11 +17,19 @@ export default class hydrolangml extends HTMLElement {
         })
 
         const template = maincomponent.template("hydrolangml")
-        shadow.append(template.content.cloneNode(true))
+        shadow.appendChild(template.content.cloneNode(true))
 
-        // slot.addEventListener('slotchange', (ev) => {
-        //     const children = ev.target.assignedElements()
-        // })
+        this.element = this.shadowRoot.querySelector('div')
+        const slot = this.element.querySelector('slot')
+        this.slotNode = slot.querySelector('div')
+    }
+
+    connectedCallback(){
+        this.render()
+    };
+
+    render() {
+
     }
 }
 
