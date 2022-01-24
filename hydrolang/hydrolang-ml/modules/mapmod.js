@@ -75,6 +75,7 @@ export default class mapmod extends HTMLElement {
      * @memberof mapmod
      */
     async connectedCallback() {
+        this.setAttribute("slot", "mapmod")
         //rendering only open street maps using leaflet right now.
         var props = this.makePropertiesFromAttributes('map-mod')
         var params = maincomponent.makePropertiesFromParameters(this.children)

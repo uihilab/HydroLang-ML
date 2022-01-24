@@ -198,6 +198,8 @@ function draw({params, args, data} = {}) {
   dat[1] = dat[1].map(Number)
 }
 
+console.log(args)
+
   if (type === "chart") {
     if (dat.length == 2) {
       dat[0].unshift('Duration')

@@ -7,6 +7,10 @@
     font-family: monospace;
 }
 
+#hydrolang h1{
+    font-family: monospace
+}
+
 .maps {
     height: 400px;
     width: 800px;

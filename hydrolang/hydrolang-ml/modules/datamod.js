@@ -72,6 +72,7 @@ export default class datamod extends HTMLElement {
     };
 
     async connectedCallback() {
+        this.setAttribute("slot", "datamod")
         var props = this.makePropertiesFromAttributes('data-mod')
         var params = maincomponent.makePropertiesFromParameters(this.children)
         var data = maincomponent.datalistener(this)

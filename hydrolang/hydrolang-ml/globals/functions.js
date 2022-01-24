@@ -41,36 +41,47 @@ export default class maincomponent extends HTMLElement {
      * @returns template with slot to attach new web components
      */
     static template(mod) {
-        if (mod === "hydrolangml") {
         const template = document.createElement('template');
+        if (mod === "hydrolangml") {
         template.id = "hydrolang"
         template.innerHTML = 
         `
         <div id="hydrolang">
-            <h1> This is some content for hydrolang </h1>
-            <div id="analyze"></div>
-            <slot>
-            </slot>
-            <slot id="visualize">
-                <div id="visualize"></div>
-            </slot>
-            <slot>
-                <div id="map"></div>
-            </slot>
-            <slot>
-                <div id="data"></div>
-            </slot>
+            <h1> HydroLang Content </h1>
+            <slot name="visualizemod"></slot>
+            <slot name="analyzemod"></slot>
+            <slot name="datamod"></slot>
+            <slot name="mapmod"></slot>
         </div>
         `;
         return template
         } if (mod === "analyzemod") {
-            var hydro = document.querySelector('#analyze')
-            
+            template.id = "analyze"  
+            template.innerHTML = 
+            `
+            <div id="analyze"></div>
+            `          
         } if (mod === "visualizemod") {
+            template.id = "visualize"
+            template.innerHTML = 
+            `
+            <div id="visualize"></div>
+            `
             //var hydro = document.querySelector('hydrolang-ml').shadowRoot.querySelector("#visualize")
         } if (mod === "mapmod") {
+            template.id = "map"
+            template.innerHTML = 
+            `
+            <div id="maps"></div>
+            `
         } if (mod === "datamod") {
+            template.id = "data"
+            template.innerHTML = 
+            `
+            <div id="data"></div>
+            `
         }
+        return template
     };
 
     /**

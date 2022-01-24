@@ -63,10 +63,7 @@ export default class visualizemod extends HTMLElement {
         })
         //Creation of the template holding the web component.
         const template = maincomponent.template("visualizemod")
-        // shadow.append(template.content.cloneNode(true))
-
-        var hyd = document.querySelector("hydrolang-ml").shadowRoot.querySelector("#analyze")
-        console.log(hyd)
+        shadow.append(template.content.cloneNode(true))
     };
 
     /**
@@ -75,6 +72,15 @@ export default class visualizemod extends HTMLElement {
      * @memberof visualizemod
      */
     async connectedCallback() {
+        this.setAttribute("slot", "visualizemod")
+
+        
+        var dox = document.querySelector("visualize-mod")
+        console.log(dox.shadowRoot.children.visualize)
+        params[1].push(dox.shadowRoot.children.visualize)
+        console.log(params)
+
+
         var props = this.makePropertiesFromAttributes('visualize-mod')
         var params = maincomponent.makePropertiesFromParameters(this.children)
         var data = maincomponent.datalistener(this)

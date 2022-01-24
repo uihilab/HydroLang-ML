@@ -19,18 +19,12 @@ export default class hydrolangml extends HTMLElement {
         const template = maincomponent.template("hydrolangml")
         shadow.appendChild(template.content.cloneNode(true))
 
-        this.element = this.shadowRoot.querySelector('div')
-        const slot = this.element.querySelector('slot')
-        this.slotNode = slot.querySelector('div')
+        var dox = document.querySelector("hydrolang-ml")
+        console.log(dox.shadowRoot.children)
     }
 
     connectedCallback(){
-        this.render()
     };
-
-    render() {
-
-    }
 }
 
 maincomponent.registerElement('hydrolang-ml', hydrolangml)

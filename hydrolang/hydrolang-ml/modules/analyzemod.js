@@ -69,6 +69,7 @@ export default class analyzemod extends HTMLElement {
      * @memberof analyzemod
      */
     async connectedCallback() {
+        this.setAttribute("slot", "analyzemod")
         var props = this.makePropertiesFromAttributes('analyze-mod')
         var params = maincomponent.makePropertiesFromParameters(this.children)
         var data = maincomponent.datalistener(this)
