@@ -1,9 +1,6 @@
 #hydrolang{
-    height: 400px;
-    width: 800px;
     margin-left: auto;
     margin-right: auto;
-    border-style: solid;
     font-family: monospace;
 }
 
@@ -11,12 +8,12 @@
     font-family: monospace
 }
 
-.maps {
+#hydrolang .maps {
     height: 400px;
     width: 800px;
     margin-left: auto;
     margin-right: auto;
-    border-style: solid;
+    border-style: solid; 
     font-family: monospace;
 }
 
@@ -27,7 +24,7 @@ dataset { font-size: 0; }
     margin-right: auto;
     height: 400px;
     width: 800px;
-    font-famiy: monospace;
+    font-family: monospace;
 }
 
 .tables {

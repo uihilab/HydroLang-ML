@@ -72,18 +72,15 @@ export default class visualizemod extends HTMLElement {
      * @memberof visualizemod
      */
     async connectedCallback() {
+        //Appends the attribute slot into the web component so that it can be correctly slotted.
         this.setAttribute("slot", "visualizemod")
 
-        
-        var dox = document.querySelector("visualize-mod")
-        console.log(dox.shadowRoot.children.visualize)
-        params[1].push(dox.shadowRoot.children.visualize)
-        console.log(params)
-
-
+        //Main constructor of properties, parameters, attributes, and data
         var props = this.makePropertiesFromAttributes('visualize-mod')
         var params = maincomponent.makePropertiesFromParameters(this.children)
         var data = maincomponent.datalistener(this)
+
+        //HydroLang library caller
         maincomponent.hydro().visualize[props.method]({params: params[0], args: params[1], data: data})
 }
 }

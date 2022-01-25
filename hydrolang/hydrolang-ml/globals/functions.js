@@ -42,43 +42,53 @@ export default class maincomponent extends HTMLElement {
      */
     static template(mod) {
         const template = document.createElement('template');
+        const diver = ((name) => {
+            if (!document.querySelector(`.${name}`)){
+                var div = document.createElement('div')
+                div.className = name
+                document.getElementById('hydrolang').appendChild(div)
+            } else {
+                return
+            }
+        })
         if (mod === "hydrolangml") {
+        //Templates for web component container
         template.id = "hydrolang"
         template.innerHTML = 
         `
-        <div id="hydrolang">
-            <h1> HydroLang Content </h1>
             <slot name="visualizemod"></slot>
             <slot name="analyzemod"></slot>
             <slot name="datamod"></slot>
             <slot name="mapmod"></slot>
-        </div>
         `;
         return template
         } if (mod === "analyzemod") {
+            diver('analyze')
+            //No templating for the web components.
             template.id = "analyze"  
             template.innerHTML = 
             `
-            <div id="analyze"></div>
             `          
         } if (mod === "visualizemod") {
+            diver('visualize')
+
             template.id = "visualize"
             template.innerHTML = 
             `
-            <div id="visualize"></div>
             `
-            //var hydro = document.querySelector('hydrolang-ml').shadowRoot.querySelector("#visualize")
         } if (mod === "mapmod") {
-            template.id = "map"
+            diver('maps')
+
+            template.id = "maps"
             template.innerHTML = 
             `
-            <div id="maps"></div>
             `
         } if (mod === "datamod") {
+            diver('data')
+
             template.id = "data"
             template.innerHTML = 
             `
-            <div id="data"></div>
             `
         }
         return template

@@ -10,7 +10,7 @@
 </head>
 
 <body>
-
+    <div id="hydrolang">
     <hydrolang-ml>
 
         <!-- <data-mod method="save">
@@ -23,10 +23,10 @@
             <arguments site="USGS:02056000" format="json" startDt="2020-08-30" endDt="2020-09-02" parameterCd="00060"></arguments>
         </data-mod> -->
 
-        <data-mod method="retrieve">
+        <!-- <data-mod method="retrieve">
             <parameters source="fema" datatype="disaster-declarations" output="fema_data"></parameters>
             <arguments state="CA"></arguments>
-        </data-mod>
+        </data-mod> -->
 
         <!-- <data-mod method="retrieve">
             <parameters source="noaa" datatype="prec-15min" type="json" token="gNUkMgFHFSYVWyNoabuUfuVhCTJkRvRq" output="noaa_data"></parameters>
@@ -37,9 +37,9 @@
             <parameters type="CSV" output="myupload"></parameters>
         </data-mod> -->
 
-        <visualize-mod method="draw">
+        <!-- <visualize-mod method="draw">
             <parameters type= "json" input="all"></parameters>
-        </visualize-mod>
+        </visualize-mod> -->
 
         <!-- <data-mod method= "transform">
             <parameters input="fema_data" save="disasterdeclarationssummaries" output="cleaned_fema_data2"></parameters>
@@ -64,18 +64,19 @@
             <parameters input="cleaned_usgs_data"></parameters>
         </visualize-mod> -->
 
-        <visualize-mod method="draw">
-            <parameters type="chart" input="cleaned_usgs_data1" name="Results from USGS"></parameters>
-            <arguments charttype="column"></arguments>
-        </visualize-mod>
+        <!-- <visualize-mod method="draw">
+            <parameters type="chart" input="cleaned_usgs_data1" name="USGS"></parameters>
+            <arguments charttype="line"></arguments>
+        </visualize-mod> -->
 
         <!-- <data-mod method="download">
-            <parameters input="cleanedvar3" type="CSV"></parameters>
+            <parameters input="cleaned_usgs_data" type="CSV"></parameters>
         </data-mod> -->
 
         
 
     </hydrolang-ml>
+</div>
 
     <script type="module" src="./hydrolang-ml/main.js"></script>
 

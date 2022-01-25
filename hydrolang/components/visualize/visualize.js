@@ -1,11 +1,7 @@
-import googlecharts, {
-  isGooglechartsLoaded,
-} from "../../modules/googlecharts/googlecharts.js";
+//import googlecharts, {
+//  isGooglechartsLoaded,
+//} from "../../modules/googlecharts/googlecharts.js";
 import stats from "../analyze/core/stats.js";
-
-// Chart types of Google Charts
-var chartMap;
-var tableData;
 
 /**
  * Creates new charts depending on what the user requires. It can
@@ -20,13 +16,19 @@ var tableData;
  */
 
 function chart({params, args, data} = {}) {
-  ensureGoogleChartsIsSet().then(function () {
+  if(isdivAdded('visualize')){
+  //ensureGoogleChartsIsSet().then(function () {
+    //var g = createScript({params: {src: "https://www.gstatic.com/charts/loader.js", name: "googleloader"}})
+    var g = googlecdn()
+    g[0].addEventListener('load', () => {
+    google.charts.load('current', {packages: ['corechart', 'table', 'annotatedtimeline']}).then(() =>{
     createDiv({params: {
       id: params.divID,
       title: `Graph of ${params.divID}`,
-      className: "charts",
-      //style: "width: 1000px; height: 500px" 
+      class: "charts",
+      maindiv: document.getElementById('hydrolang').getElementsByClassName("visualize")[0]
     }})
+
 
     var container
     if(isdivAdded){
@@ -36,6 +38,9 @@ function chart({params, args, data} = {}) {
     var d = data;
     var char = params.chartType;
     var dat;
+
+    var ch = eval(g[1][char])
+    var t1 = eval(g[2]["data"])
 
     if (d[0][0] instanceof String) {
       for (var i =0; i < d.length; i++) {
@@ -52,7 +57,9 @@ function chart({params, args, data} = {}) {
           dt = d
         }
 
-        dat = googlecharts.visualization.arrayToDataTable(dt);
+        ///
+        ///dat = googlecharts.visualization.arrayToDataTable(dt);
+        dat = google.visualization.arrayToDataTable(dt);
         break;
 
       case "column":
@@ -63,7 +70,8 @@ function chart({params, args, data} = {}) {
           dt = d
         }
 
-        dat = googlecharts.visualization.arrayToDataTable(dt);
+        dat = google.visualization.arrayToDataTable(dt);
+        //dat = googlecharts.visualization.arrayToDataTable(dt);
         break;
 
 
@@ -75,11 +83,13 @@ function chart({params, args, data} = {}) {
           dt = d
         }
 
-        dat = googlecharts.visualization.arrayToDataTable(dt);
+        dat = google.visualization.arrayToDataTable(dt);
+        //dat = googlecharts.visualization.arrayToDataTable(dt);
         break;
 
       case ("line" || "timeline"):
-        dat = new tableData.data();
+        dat = new t1  
+      //dat = new g[2].data();
 
         if (typeof d[0][1] === 'string') {
           dat.addColumn("date", d[0][0]);
@@ -102,7 +112,7 @@ function chart({params, args, data} = {}) {
         break;
     }
 
-    var fig = new chartMap[char](container);
+    var fig = new ch(container);
 
     if (params.hasOwnProperty("options")) {
       var options = params.options;
@@ -113,7 +123,7 @@ function chart({params, args, data} = {}) {
 
 
     if (params.hasOwnProperty("savechart")) {
-      googlecharts.visualization.events.addListener(
+      google.visualization.events.addListener(
         fig,
         "ready",
         function () {
@@ -122,9 +132,9 @@ function chart({params, args, data} = {}) {
         }
       );
     }
-  });
+  //});
   return console.log("A chart is drawn based on given parameters");
-}
+})})}}
 
 /**
  * Generates a new table depending on the data provided by the user.
@@ -136,22 +146,35 @@ function chart({params, args, data} = {}) {
  * hydro1.visualize.table({data: x, divID: "new", dataType: ["string", "number"]});
  */
 function table({params, args, data} = {}) {
-  ensureGoogleChartsIsSet().then(function () {
+  if(isdivAdded('visualize')){
+  //ensureGoogleChartsIsSet().then(function () {
+    var g = googlecdn()
+    g[0].addEventListener('load', () => {
+    google.charts.load('current', {packages: ['table']}).then(() =>{
     createDiv({params:{
       id: params.divID,
       title: `Table of ${params.divID}`,
       className: "tables",
+      maindiv: document.getElementById('hydrolang').getElementsByClassName("visualize")[0]
     }})
 
     var container
     if (isdivAdded) {
       container = document.getElementById(params.divID)
     }
+    var t1 = eval(g[2]["data"])
+    var t2 = eval(g[2]["view"])
+    var t3 = eval(g[2]["table"])
+
 
     var d = data;
-    var types = params.dataType;
-    var dat = new tableData.data();
+    var types = params.datatype;
+    var dat = new t1
+    //var dat = new tableData.data();
     var temp = [];
+
+    console.log(params)
+    console.log(d)
 
     for (var k = 0; k < d[0].length; k++) {
       dat.addColumn(types[k], d[0][k]);
@@ -168,8 +191,8 @@ function table({params, args, data} = {}) {
 
     dat.addRows(temp);
 
-    var view = new tableData.view(dat);
-    var table = new tableData.table(container);
+    var view = new t2(dat);
+    var table = new t3(container);
 
     if (params.hasOwnProperty("options")) {
       var options = params.options;
@@ -177,9 +200,11 @@ function table({params, args, data} = {}) {
     } else {
       table.draw(view);
     }
-  });
+  //});
   return "table drawn on the given parameters.";
-}
+    })
+  })
+}}
 
 /**
  * preset styles for both charts and tables. The user can access by
@@ -194,12 +219,10 @@ function draw({params, args, data} = {}) {
   var dat = data
   var pm;
   var type = params.type;
+  console.log(params)
   if (type !== "json") {
   dat[1] = dat[1].map(Number)
 }
-
-console.log(args)
-
   if (type === "chart") {
     if (dat.length == 2) {
       dat[0].unshift('Duration')
@@ -294,11 +317,12 @@ console.log(args)
       default:
         break;
     }
-    return chart({params: pm, data: dat});
+    return chart({params: pm, args:{maindiv: args.maindiv}, data: dat});
   } else if (type === "table") {
+    //Customizable chart for two columns. Will be expanded to n columns.
     pm = {
       divID: params.name,
-      dataType: ["string", "number"],
+      datatype: ["number", "number"],
       options: {
         width: "50%",
         height: "60%",
@@ -323,18 +347,20 @@ function prettyPrint({params, args, data}) {
   //Add div for rendering JSON
 
     if (!isdivAdded("jsonrender")) {
-      createDiv({params : {id: "jsonrender", class: "jsonrender"}})
+      createDiv({params : {id: "jsonrender", class: "jsonrender",
+      maindiv: document.getElementById('hydrolang').getElementsByClassName("visualize")[0]
+    }})
 }
 
     //Using external library to render json on screen. Could be any type of json file.
     //Documentation + library found at: https://github.com/caldwell/renderjson
     var src = "https://cdn.rawgit.com/caldwell/renderjson/master/renderjson.js"
 
-    var sc = createScript({params: {src: src}})
+    var sc = createScript({params: {src: src, name: "jsonrender"}})
     sc.addEventListener('load', ()=>{
         //Change 
         renderjson.set_icons('+','-')
-        renderjson.set_show_to_level(2)
+        renderjson.set_show_to_level(1)
         if (isdivAdded("jsonrender")) {
             var name
             if (window.localStorage.length === 0) {
@@ -419,7 +445,8 @@ function createDiv({params, args, data} = {}){
   dv.title = params.title
   dv.className = params.class
   dv.style = params.style
-  document.body.appendChild(dv)
+  params.maindiv.appendChild(dv)
+  
 }
 
 /**
@@ -437,7 +464,7 @@ function createform({params, args, data} = {}) {
 }
 
 /**
- * Creates 
+ * Creates a script given a source, javascript text and name to be appended to the header.
  * @function createScript
  * @memberof visualize
  * @param {Object{}} params - parameter including the source of the script to be used. 
@@ -446,24 +473,71 @@ function createform({params, args, data} = {}) {
 
 function createScript({params, args, data} = {}) {
   //Add any external script into the DOM for external library usage.
-  if (!isScriptAdded(params.src)) {
+  if (!isScriptAdded(params.name)) {
   var sr = document.createElement("script")
   sr.type = "text/javascript"
   sr.src = params.src
+  sr.text = params.text
+  sr.setAttribute('name', params.name)
   document.head.appendChild(sr)
 //If the user wants to add functionality coming from the script, do after.
-} if (isScriptAdded(params.src)){
-  var sc = document.querySelector(`script[src="${params.src}"]`)
+} if (isScriptAdded(params.name)){
+  var sc = document.querySelector(`script[name=${params.name}]`)
   return sc
 }
 }
+
+/**
+ * Appends the google charts library to screen, returning the google object for further manipulation.
+ * @method googlecdn
+ * @member visualize
+ * @param {void} - no parameters required.
+ * @returns {Promise} - Google object loaded to screen
+ */
+
+function googlecdn({params, args, data} = {}) {
+  var g = createScript({params: {src: "https://www.gstatic.com/charts/loader.js", name: "googleloader"}})
+  var chartMap = {
+    bar: "google.visualization.BarChart",
+    pie: "google.visualization.PieChart",
+    line: "google.visualization.LineChart",
+    scatter: "google.visualization.ScatterChart",
+    histogram: "google.visualization.Histogram",
+    timeline: "google.visualization.AnnotatedTimeLine",
+    column: "google.visualization.ColumnChart",
+    combo: "google.visualization.ComboChart",
+  };
+  var tableData = {
+    data: "google.visualization.DataTable",
+    view: "google.visualization.DataView",
+    table: "google.visualization.Table",
+  };
+  return [g, chartMap, tableData]
+}
+
+/**
+ * Function for verifying if a div has already been added into the document.
+ * @method isdivAdded
+ * @memberof visualize
+ * @param {String} divid - id given to a specific div. 
+ * @returns {Promise} True of a div with the given id is found in the document.
+ */
 
 function isdivAdded(divid) {
   return Boolean(document.querySelector("."+divid))
 }
 
-function isScriptAdded(src) {
-  return Boolean(document.querySelector(`script[src="${src}"`))
+/**
+ * Function for verifying if a script has been added to the header of the webpage.
+ * @method isScriptAdded
+ * @memberof visualize
+ * @param {String} name - name of the script added, read as an attribute. 
+ * @returns {Boolean} - true if the script has been appended to the header.
+ */
+
+function isScriptAdded(name) {
+  //Select a name passed as an attribute instead of source for selection purposes.
+  return Boolean(document.querySelector(`script[name=${name}`))
 }
 
 /**********************************/

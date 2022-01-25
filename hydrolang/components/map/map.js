@@ -184,6 +184,7 @@ async function renderMap(props, params, data) {
   visualize.createDiv({params: {
     id: "map",
     class: "maps",
+    maindiv: document.getElementById('hydrolang').getElementsByClassName("maps")[0]
   }})
 
   var container

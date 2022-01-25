@@ -81,6 +81,8 @@ export default class mapmod extends HTMLElement {
         var params = maincomponent.makePropertiesFromParameters(this.children)
         var data = maincomponent.datalistener(this)
 
+        console.log(props, params, data)
+
         if(props.method === "render") {           
             maincomponent.hydro().map.renderMap(props, params, data)
             maincomponent.hydro().map.Layers({maptype: "osm", layertype: {type: "draw"}})

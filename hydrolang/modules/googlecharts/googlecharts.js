@@ -4,6 +4,7 @@
  */
 
 import "./loader.js";
+import * as visualize from "../../components/visualize/visualize.js"
 
 google.charts.load("current", {
   packages: ["corechart", "table", "annotatedtimeline"],
@@ -16,5 +17,5 @@ function googlechartsLoaded() {
   isGooglechartsLoaded = true;
 }
 
-export default google;
-export { isGooglechartsLoaded };
+//export default google;
+//export { isGooglechartsLoaded };

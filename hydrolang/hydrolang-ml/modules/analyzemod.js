@@ -59,8 +59,8 @@ export default class analyzemod extends HTMLElement {
         let shadow = this.attachShadow({
             mode: 'open'
         });
-        // const template = maincomponent.template("datamod")
-        // shadow.appendChild(template.content.cloneNode(true));
+        const template = maincomponent.template("datamod")
+        shadow.appendChild(template.content.cloneNode(true));
     }
 
     /**

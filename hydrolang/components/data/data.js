@@ -93,10 +93,10 @@ async function retrieve({params,args, data} = {}) {
  */
 
 function transform({params, args, data} = {}) {
-  if(params.save && args == undefined) {
+  if(params.save && args === undefined) {
     data = recursiveSearch({obj: data, searchkey: params.save})
     data = data[0]
-  } else if (params.save && args.keep) {
+  } if (params.save && args.keep !== undefined) {
     data = recursiveSearch({obj: data, searchkey: params.save})
     data = data[0]
     args.keep = JSON.parse(args.keep)
@@ -208,6 +208,7 @@ function upload({params, args, data} = {}) {
   //Container for the uploading area
   visualize.createDiv({params:{
     id: "drop-area",
+    maindiv: document.getElementById('hydrolang').getElementsByClassName("data")[0]
   }})
 
   //form for the uploading area
