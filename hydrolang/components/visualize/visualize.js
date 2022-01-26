@@ -122,16 +122,18 @@ function chart({params, args, data} = {}) {
     }
 
 
-    if (params.hasOwnProperty("savechart")) {
       google.visualization.events.addListener(
         fig,
         "ready",
         function () {
-          container.innerHTML = '<img src="' + fig.getImageURI() + ' ">';
-          console.log(container.innerHTML)
+          createDiv({params: {
+            id: `${params.divID}_png`,
+            maindiv: container
+        }})
+
+        document.getElementById(`${params.divID}_png`).outerHTML = `<a download="${params.divID}" href="${fig.getImageURI()}"><button>Printable version of ${params.divID}</button></a>`
         }
       );
-    }
   //});
   return console.log("A chart is drawn based on given parameters");
 })})}}
@@ -154,7 +156,7 @@ function table({params, args, data} = {}) {
     createDiv({params:{
       id: params.divID,
       title: `Table of ${params.divID}`,
-      className: "tables",
+      class: "tables",
       maindiv: document.getElementById('hydrolang').getElementsByClassName("visualize")[0]
     }})
 
@@ -173,21 +175,25 @@ function table({params, args, data} = {}) {
     //var dat = new tableData.data();
     var temp = [];
 
-    console.log(params)
-    console.log(d)
+    console.log(data)
 
-    for (var k = 0; k < d[0].length; k++) {
-      dat.addColumn(types[k], d[0][k]);
+    for (var k = 0; k < types.length; k++) {
+      dat.addColumn(types[k]);
+    }
+    console.log(dat)
+    var tr = stats.arrchange({data: d})
+
+    for (var l = 0; l < tr.length; l++) {
+      temp.push(tr[l])
     }
 
-    for (var i = 0; i < d[1].length; i++) {
-      if (typeof temp[i] == "undefined") {
-        temp[i] = [];
-      }
-      for (var l = 0; l < d[1][0].length; l++) {
-        temp[i][l] = d[1][i][l];
-      }
-    }
+    // for (var i = 0; i < tr.length; i++) {
+    //   if (typeof temp[i] == "undefined") {
+    //     temp[i] = [];
+    //   }
+    // }
+
+    console.log(temp)
 
     dat.addRows(temp);
 
@@ -319,10 +325,15 @@ function draw({params, args, data} = {}) {
     }
     return chart({params: pm, args:{maindiv: args.maindiv}, data: dat});
   } else if (type === "table") {
+    var datatype = []
+    for (var i=0; i < dat.length; i++) {
+      datatype.push(typeof dat[0][i])
+    }
+    console.log(datatype)
     //Customizable chart for two columns. Will be expanded to n columns.
     pm = {
       divID: params.name,
-      datatype: ["number", "number"],
+      datatype: datatype,
       options: {
         width: "50%",
         height: "60%",

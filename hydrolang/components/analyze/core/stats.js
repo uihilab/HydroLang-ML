@@ -695,8 +695,7 @@ export default class stats {
 
     //flatenise the data for graphing.
     var statx = this.flatenise({params: {columns: ["Metric", "Value"]}, data: statparams});
-
-    return statx;
+    return this.arrchange({data: statx});
   }
 
   /***************************/

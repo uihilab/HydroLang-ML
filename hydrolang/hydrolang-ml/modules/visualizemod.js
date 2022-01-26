@@ -80,8 +80,9 @@ export default class visualizemod extends HTMLElement {
         var params = maincomponent.makePropertiesFromParameters(this.children)
         var data = maincomponent.datalistener(this)
 
+
         //HydroLang library caller
-        maincomponent.hydro().visualize[props.method]({params: params[0], args: params[1], data: data})
+        maincomponent.hydro().visualize[props.method]({params: params[0], args: params[1], data: await data})
 }
 }
 

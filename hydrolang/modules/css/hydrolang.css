@@ -25,13 +25,19 @@ dataset { font-size: 0; }
     height: 400px;
     width: 800px;
     font-family: monospace;
+        padding: 1rem;
+        margin-bottom: 1rem;
 }
 
 .tables {
     margin-left: auto;
-    margin-right: auto;
-    height: 400px;
     width: 800px;
+    font-family: monospace;
+    padding: 1rem;
+    margin-bottom: 1rem;
+}
+
+table.google-visualization-table-table {
     font-family: monospace;
 }
 

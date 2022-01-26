@@ -71,21 +71,18 @@ export default class maincomponent extends HTMLElement {
             `          
         } if (mod === "visualizemod") {
             diver('visualize')
-
             template.id = "visualize"
             template.innerHTML = 
             `
             `
         } if (mod === "mapmod") {
             diver('maps')
-
             template.id = "maps"
             template.innerHTML = 
             `
             `
         } if (mod === "datamod") {
             diver('data')
-
             template.id = "data"
             template.innerHTML = 
             `
@@ -194,7 +191,7 @@ export default class maincomponent extends HTMLElement {
      * @param {Object} mod - Custom component to retrieve data from
      * @returns {Object} data.
      */
-    static datalistener(mod) {
+    static async datalistener(mod) {
         var data
         var params = this.makePropertiesFromParameters(mod.children)
 
@@ -205,7 +202,7 @@ export default class maincomponent extends HTMLElement {
         } else {
             data = JSON.parse(this.datagrabber(mod))
         }
-        return data
+        return await data
     } catch (error) {
         //alert("Error trying to retrieve or grab data. Please revise arguments passed!")
     }
@@ -242,7 +239,9 @@ export default class maincomponent extends HTMLElement {
         if (type === "save") {
             Local.set(name, value)
         } else if (type === "retrieve") {
-            return Local.get(name)
+            var ret = Local.get(name)
+            console.log(JSON.parse(ret))
+            return ret
         } else if (type === "remove") {
             Local.remove(name)
         } else if (type === "clear" && name === "all") {
