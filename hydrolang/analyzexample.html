@@ -6,6 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="./modules/css/hydrolang.css">
+    <script type="module" src="./hydrolang-ml/main.js"></script>
     <title>Analyze Example</title>
 </head>
 
@@ -27,28 +28,25 @@
             <arguments type= "gamma" PRF= 484></arguments>
         </analyze-mod>
 
-        <visualize-mod method="draw">
+        <!-- <visualize-mod method="draw">
             <parameters type= "json" input="basic_stats_example"></parameters>
-        </visualize-mod>
+        </visualize-mod> -->
 
         <visualize-mod method="draw">
             <parameters type= "json" input="synthetic_calc"></parameters>
         </visualize-mod>
 
         <visualize-mod method="draw">
-            <parameters type="chart" input="dim_data" name="Results from Dimensionless Hydrograph"></parameters>
+            <parameters type="chart" input="dim_data" name="Dim_Hydro"></parameters>
             <arguments charttype="column"></arguments>
         </visualize-mod>
 
-        <visualize-mod method="draw">
+        <!-- <visualize-mod method="draw">
             <parameters type="table" input="basic_stats_example" output="myan1"></parameters>
-        </visualize-mod>
+        </visualize-mod> -->
 
     </hydrolang-ml>
 </div>
-
-    <script type="module" src="./hydrolang-ml/main.js"></script>
-
 </body>
 
 </html>

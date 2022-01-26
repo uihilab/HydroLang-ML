@@ -6,21 +6,22 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="./modules/css/hydrolang.css">
+    <script type="module" src="./hydrolang-ml/main.js"></script>
     <title>Map Example</title>
 </head>
 <body>
     <div id="hydrolang">
     <hydrolang-ml>
 
-        <data-mod method="save">
+        <!-- <data-mod method="save">
             <parameters output="mygeocol"></parameters>
             <dataset>{"type": "Feature","properties": {"name": "Coors Field","amenity": "Baseball Stadium","popupContent": "This is where the Rockies play!"},"geometry": {"type": "Point","coordinates": [-104.99404, 39.75621]}}</dataset>
-        </data-mod>
+        </data-mod> -->
 
-        <data-mod method="save">
+        <!-- <data-mod method="save">
             <parameters output="mygeocol1"></parameters>
             <dataset>{"type": "Feature","properties": {"party": "Republican"},"geometry": {"type": "Polygon","coordinates": [[[-104.05, 48.99],[-97.22, 48.98],[-96.58,  45.94],[-104.03, 45.94],[-104.05, 48.99]]]}}</dataset>
-        </data-mod>
+        </data-mod> -->
 
         <map-mod method ="render">
             <parameters layer="tile" lat="41.6572" lon="-91.5414"></parameters>
@@ -53,11 +54,12 @@
             <parameters input="mygeocol1" layer="geodata" output="mypoly1" geo="Polygon"></parameters>
         </map-mod>
 
+        <visualize-mod method="draw">
+            <parameters type= "json" input="all"></parameters>
+        </visualize-mod>
+
     </hydrolang-ml>
 </div>
-
-    <script type="module" src="./hydrolang-ml/main.js"></script>
-
 </body>
 
 </html>

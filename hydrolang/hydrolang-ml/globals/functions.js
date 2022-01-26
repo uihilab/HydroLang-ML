@@ -10,11 +10,23 @@ import {
  * @class maincomponent
  */
 export default class maincomponent extends HTMLElement {
+
+    /**
+     * Observer of keys for each property of the web component.
+     * @method observedAttributes
+     * @memberof maincomponent
+     * @returns {Object[]} - array with the attributes acceptable for the component.
+     */
+
+    static observedAttributes(mod) {
+        return mod.getAttributeNames()
+    };
+
     /**
      * Used for calling the HydroLang instance from the global container.
      * @method hydro
      * @memberof maincomponent
-     * @returns HydroLang instance
+     * @returns {Promise} - HydroLang instance
      */
     static hydro() {
         return Hydro.ins()
@@ -138,18 +150,17 @@ export default class maincomponent extends HTMLElement {
      * Creates an object of properties from attributes of a component.
      * @method makePropertiesFromAttributes
      * @memberof maincomponent
-     * @param {*} elem - web component name element. 
+     * @param {Object} elem - web component name element. 
      * @returns {Object} properties of objects from allowable attributes. 
      */
-    static makePropertiesFromAttributes(elem) {
-        let ElemClass = customElements.get(elem);
-        let attr = ElemClass.observedAttributes;
+    static makePropertiesFromAttributes(mod) {
+        let attr = this.observedAttributes(mod);
         if (!attr) return null;
         var props = {}
 
         for (var i = 0; i < attr.length; i++) {
             var prop = attr[i]
-            props[prop] = this.getAttribute(attr[i])
+            props[prop] = mod.getAttribute(attr[i])
         }
         return props
     };
@@ -191,7 +202,7 @@ export default class maincomponent extends HTMLElement {
      * @param {Object} mod - Custom component to retrieve data from
      * @returns {Object} data.
      */
-    static async datalistener(mod) {
+    static datalistener(mod) {
         var data
         var params = this.makePropertiesFromParameters(mod.children)
 
@@ -202,7 +213,7 @@ export default class maincomponent extends HTMLElement {
         } else {
             data = JSON.parse(this.datagrabber(mod))
         }
-        return await data
+        return data
     } catch (error) {
         //alert("Error trying to retrieve or grab data. Please revise arguments passed!")
     }
@@ -240,7 +251,6 @@ export default class maincomponent extends HTMLElement {
             Local.set(name, value)
         } else if (type === "retrieve") {
             var ret = Local.get(name)
-            console.log(JSON.parse(ret))
             return ret
         } else if (type === "remove") {
             Local.remove(name)

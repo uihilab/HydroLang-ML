@@ -7,53 +7,6 @@ import maincomponent from '../globals/functions.js'
 export default class mapmod extends HTMLElement {
 
     /**
-     * Defines the allowable attributes in the component.
-     * @method properties
-     * @memberof mapmod
-     */
-    static get properties() {
-        return {
-            "method": {
-                type: String,
-                userDefined: true
-            },
-            "type": {
-                type: String,
-                userDefined: true
-            }
-        }
-    };
-
-    /**
-     * Observer of keys for each property of the HTML element.
-     * @method observedAttributes
-     * @memberof mapmod
-     */
-    static get observedAttributes() {
-        return Object.keys(mapmod.properties)
-    };
-
-    /**
-     * Creates properties from allowable attributes for the web component.
-     * @method makePropertiesFromAttributes
-     * @memberof mapmod
-     * @param {Object} elem - Custom element to create attributes from.
-     * @returns {Object} - Returns object with properties.
-     */
-    makePropertiesFromAttributes(elem) {
-        let ElemClass = customElements.get(elem);
-        let attr = ElemClass.observedAttributes;
-        if (!attr) return null;
-        var props = {}
-
-        for (var i = 0; i < attr.length; i++) {
-            var prop = attr[i]
-            props[prop] = this.getAttribute(attr[i])
-        }
-        return props
-    };
-
-    /**
      * Constructor to open the shadow DOM and creating a template for the component.
      * @constructor
      * @memberof mapmod
@@ -67,6 +20,9 @@ export default class mapmod extends HTMLElement {
         //Creates a template and attaches the web component to it.   
         const template = maincomponent.template("mapmod")
         shadow.appendChild(template.content.cloneNode(true))
+
+        //Appends the attribute slot into the web component so that it can be correctly slotted.
+        this.setAttribute("slot", "mapmod")
     };
 
     /**
@@ -75,13 +31,11 @@ export default class mapmod extends HTMLElement {
      * @memberof mapmod
      */
     async connectedCallback() {
-        this.setAttribute("slot", "mapmod")
+
         //rendering only open street maps using leaflet right now.
-        var props = this.makePropertiesFromAttributes('map-mod')
+        var props = maincomponent.makePropertiesFromAttributes(this)
         var params = maincomponent.makePropertiesFromParameters(this.children)
         var data = maincomponent.datalistener(this)
-
-        console.log(props, params, data)
 
         if(props.method === "render") {           
             maincomponent.hydro().map.renderMap(props, params, data)
@@ -101,5 +55,5 @@ export default class mapmod extends HTMLElement {
 }
 }
 
-//Defining the web components into the DOM
+//Registering the element on the DOM
 maincomponent.registerElement('map-mod', mapmod)

@@ -1,6 +1,3 @@
-//import googlecharts, {
-//  isGooglechartsLoaded,
-//} from "../../modules/googlecharts/googlecharts.js";
 import stats from "../analyze/core/stats.js";
 
 /**
@@ -17,8 +14,6 @@ import stats from "../analyze/core/stats.js";
 
 function chart({params, args, data} = {}) {
   if(isdivAdded('visualize')){
-  //ensureGoogleChartsIsSet().then(function () {
-    //var g = createScript({params: {src: "https://www.gstatic.com/charts/loader.js", name: "googleloader"}})
     var g = googlecdn()
     g[0].addEventListener('load', () => {
     google.charts.load('current', {packages: ['corechart', 'table', 'annotatedtimeline']}).then(() =>{
@@ -56,9 +51,6 @@ function chart({params, args, data} = {}) {
         } else {
           dt = d
         }
-
-        ///
-        ///dat = googlecharts.visualization.arrayToDataTable(dt);
         dat = google.visualization.arrayToDataTable(dt);
         break;
 
@@ -71,7 +63,6 @@ function chart({params, args, data} = {}) {
         }
 
         dat = google.visualization.arrayToDataTable(dt);
-        //dat = googlecharts.visualization.arrayToDataTable(dt);
         break;
 
 
@@ -84,12 +75,10 @@ function chart({params, args, data} = {}) {
         }
 
         dat = google.visualization.arrayToDataTable(dt);
-        //dat = googlecharts.visualization.arrayToDataTable(dt);
         break;
 
       case ("line" || "timeline"):
         dat = new t1  
-      //dat = new g[2].data();
 
         if (typeof d[0][1] === 'string') {
           dat.addColumn("date", d[0][0]);
@@ -121,7 +110,6 @@ function chart({params, args, data} = {}) {
       fig.draw(dat);
     }
 
-
       google.visualization.events.addListener(
         fig,
         "ready",
@@ -131,11 +119,11 @@ function chart({params, args, data} = {}) {
             maindiv: container
         }})
 
-        document.getElementById(`${params.divID}_png`).outerHTML = `<a download="${params.divID}" href="${fig.getImageURI()}"><button>Printable version of ${params.divID}</button></a>`
+        document.getElementById(`${params.divID}_png`).outerHTML = `<a download="${params.divID}" href="${fig.getImageURI()}"><button>Download figure ${params.divID}</button></a>`
         }
       );
   //});
-  return console.log("A chart is drawn based on given parameters");
+  return console.log(`Chart ${params.divID} is drawn based on given parameters`);
 })})}}
 
 /**
@@ -149,7 +137,6 @@ function chart({params, args, data} = {}) {
  */
 function table({params, args, data} = {}) {
   if(isdivAdded('visualize')){
-  //ensureGoogleChartsIsSet().then(function () {
     var g = googlecdn()
     g[0].addEventListener('load', () => {
     google.charts.load('current', {packages: ['table']}).then(() =>{
@@ -172,28 +159,16 @@ function table({params, args, data} = {}) {
     var d = data;
     var types = params.datatype;
     var dat = new t1
-    //var dat = new tableData.data();
     var temp = [];
-
-    console.log(data)
 
     for (var k = 0; k < types.length; k++) {
       dat.addColumn(types[k]);
     }
-    console.log(dat)
     var tr = stats.arrchange({data: d})
 
     for (var l = 0; l < tr.length; l++) {
       temp.push(tr[l])
     }
-
-    // for (var i = 0; i < tr.length; i++) {
-    //   if (typeof temp[i] == "undefined") {
-    //     temp[i] = [];
-    //   }
-    // }
-
-    console.log(temp)
 
     dat.addRows(temp);
 
@@ -207,7 +182,7 @@ function table({params, args, data} = {}) {
       table.draw(view);
     }
   //});
-  return "table drawn on the given parameters.";
+  return console.log(`Table ${params.divID} drawn on the given parameters.`);
     })
   })
 }}
@@ -225,7 +200,6 @@ function draw({params, args, data} = {}) {
   var dat = data
   var pm;
   var type = params.type;
-  console.log(params)
   if (type !== "json") {
   dat[1] = dat[1].map(Number)
 }
@@ -329,7 +303,6 @@ function draw({params, args, data} = {}) {
     for (var i=0; i < dat.length; i++) {
       datatype.push(typeof dat[0][i])
     }
-    console.log(datatype)
     //Customizable chart for two columns. Will be expanded to n columns.
     pm = {
       divID: params.name,
@@ -375,8 +348,7 @@ function prettyPrint({params, args, data}) {
         if (isdivAdded("jsonrender")) {
             var name
             if (window.localStorage.length === 0) {
-                name = document.createTextNode("There are no items stored!")
-                document.getElementById("jsonrender").appendChild(name)
+                return alert("No items stored!")
             }
             if (params.input === "all") {
                 for (var i =0; i < Object.keys(window.localStorage).length; i++) {
@@ -385,7 +357,7 @@ function prettyPrint({params, args, data}) {
                     document.getElementById("jsonrender").appendChild(renderjson(JSON.parse(window.localStorage[Object.keys(window.localStorage)[i]])))
                 }
             }
-            else {
+            if(!(params.input === "all")) {
             name = document.createTextNode(params.input)
             document.getElementById("jsonrender").appendChild(name)
             document.getElementById("jsonrender").appendChild(renderjson(data))

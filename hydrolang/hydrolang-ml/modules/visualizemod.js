@@ -7,49 +7,6 @@ import maincomponent from '../globals/functions.js'
 export default class visualizemod extends HTMLElement {
 
     /**
-     * Defines the allowable attributes in the component.
-     * @method properties
-     * @memberof visualizemod
-     */
-    static get properties() {
-        return {
-            "method": {
-                type: String,
-                userDefined: true
-            },
-        }
-    };
-
-    /**
-     * Observer of keys for each property of the HTML element.
-     * @method observedAttributes
-     * @memberof visualizemod
-     */
-    static get observedAttributes() {
-        return Object.keys(visualizemod.properties)
-    };
-
-    /**
-     * Creates properties from allowable attributes for the web component.
-     * @method makePropertiesFromAttributes
-     * @memberof visualizemod
-     * @param {Object} elem - Custom element to create attributes from.
-     * @returns {Object} - Returns object with properties.
-     */
-    makePropertiesFromAttributes(elem) {
-        let ElemClass = customElements.get(elem);
-        let attr = ElemClass.observedAttributes;
-        if (!attr) return null;
-        var props = {}
-
-        for (var i = 0; i < attr.length; i++) {
-            var prop = attr[i]
-            props[prop] = this.getAttribute(attr[i])
-        }
-        return props
-    };
-
-    /**
      * Constructor to open the shadow DOM and creating a template for the component.
      * Requires methods from the maincomponent function.
      * @constructor
@@ -64,6 +21,9 @@ export default class visualizemod extends HTMLElement {
         //Creation of the template holding the web component.
         const template = maincomponent.template("visualizemod")
         shadow.append(template.content.cloneNode(true))
+
+        //Appends the attribute slot into the web component so that it can be correctly slotted.
+        this.setAttribute("slot", "visualizemod")
     };
 
     /**
@@ -72,19 +32,16 @@ export default class visualizemod extends HTMLElement {
      * @memberof visualizemod
      */
     async connectedCallback() {
-        //Appends the attribute slot into the web component so that it can be correctly slotted.
-        this.setAttribute("slot", "visualizemod")
 
         //Main constructor of properties, parameters, attributes, and data
-        var props = this.makePropertiesFromAttributes('visualize-mod')
+        var props = maincomponent.makePropertiesFromAttributes(this)
         var params = maincomponent.makePropertiesFromParameters(this.children)
         var data = maincomponent.datalistener(this)
-
 
         //HydroLang library caller
         maincomponent.hydro().visualize[props.method]({params: params[0], args: params[1], data: await data})
 }
 }
 
-//Defining the web components into the DOM
+//Registering the element on the DOM
 maincomponent.registerElement('visualize-mod', visualizemod)

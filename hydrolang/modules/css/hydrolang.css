@@ -13,7 +13,6 @@
     width: 800px;
     margin-left: auto;
     margin-right: auto;
-    border-style: solid; 
     font-family: monospace;
 }
 
@@ -25,13 +24,26 @@ dataset { font-size: 0; }
     height: 400px;
     width: 800px;
     font-family: monospace;
-        padding: 1rem;
-        margin-bottom: 1rem;
+    padding: 1rem;
+    margin-bottom: 1rem;
+}
+
+.charts button{
+    font-family: monospace;
+    position: absolute;
 }
 
 .tables {
-    margin-left: auto;
-    width: 800px;
+    margin-left: 35%;
+    margin-right: 35%;
+    width: 30%;
+    font-family: monospace;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    text-align: center;
+}
+
+.leaflet-container{
     font-family: monospace;
     padding: 1rem;
     margin-bottom: 1rem;
@@ -39,6 +51,10 @@ dataset { font-size: 0; }
 
 table.google-visualization-table-table {
     font-family: monospace;
+    vertical-align: middle;
+    text-align: center;
+    padding: 1rem;
+    margin-bottom: 1rem;
 }
 
 .jsonrender{
@@ -46,7 +62,6 @@ table.google-visualization-table-table {
     margin-right: auto;
    position: relative;
     background-color: #eaeaea;
-        padding: 0.5em;
     color: black;
     font-family: monospace;
     font-size: 15px;
@@ -55,6 +70,8 @@ table.google-visualization-table-table {
     border-radius: 7px;
     overflow-x: scroll;
     border-style: solid;
+    padding: 1rem;
+    margin-bottom: 1rem;
  }
 
  .jsonrender #text{

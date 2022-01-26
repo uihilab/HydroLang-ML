@@ -93,10 +93,10 @@ async function retrieve({params,args, data} = {}) {
  */
 
 function transform({params, args, data} = {}) {
-  if(params.save && args === undefined) {
+  if(params.save !== undefined && args === undefined) {
     data = recursiveSearch({obj: data, searchkey: params.save})
     data = data[0]
-  } if (params.save && args.keep !== undefined) {
+  } if (params.save !== undefined && args.keep !== undefined) {
     data = recursiveSearch({obj: data, searchkey: params.save})
     data = data[0]
     args.keep = JSON.parse(args.keep)
@@ -355,13 +355,14 @@ function upload({params, args, data} = {}) {
  */
 
 function download({params, args, data} = {}) {
-  var type = params.type;
+  var type = args.type;
   var blob;
   var exportfilename = "";
 
+
   //if CSV is required to be download, call the transform function.
   if (type === "CSV") {
-    var csv = this.transform({data: data, args: params});
+    var csv = this.transform({params: params, args: args, data: data});
     blob = new Blob([csv], {
       type: "text/csv; charset = utf-8;",
     });
@@ -369,7 +370,7 @@ function download({params, args, data} = {}) {
 
   //if JSON file is required. Similar as before. 
   } else if (type === "JSON") {
-    var js = this.transform({data: data,args: params});
+    var js = this.transform({params: params, args, args, data: data});
     blob = new Blob([js], {
       type: "text/json",
     });

@@ -6,6 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="./modules/css/hydrolang.css">
+    <script type="module" src="./hydrolang-ml/main.js"></script>
     <title>Data Example</title>
 </head>
 
@@ -37,27 +38,27 @@
             <parameters type="CSV" output="myupload"></parameters>
         </data-mod> -->
 
-        <!-- <visualize-mod method="draw">
+        <visualize-mod method="draw">
             <parameters type= "json" input="all"></parameters>
-        </visualize-mod> -->
+        </visualize-mod>
 
         <!-- <data-mod method= "transform">
             <parameters input="fema_data" save="disasterdeclarationssummaries" output="cleaned_fema_data2"></parameters>
             <arguments type= "ARR" keep='["incidenttype", "fydeclared", "state"]'></arguments>
-        </data-mod>
+        </data-mod> -->
 
-        <data-mod method= "transform">
+        <!-- <data-mod method= "transform">
             <parameters input="usgs_data" save="value" output="cleaned_usgs_data1"></parameters>
             <arguments type= "ARR" keep= '["datetime", "value"]'></arguments>
         </data-mod> -->
 
-        <!-- <data-mod method= "remove">
+        <!-- <data-mod method= "clear">
             <parameters input="all"></parameters>
         </data-mod> -->
 
 
-        <!-- <visualize-mod method="view">
-            <parameters input="fema_data"></parameters>
+        <!-- <visualize-mod method="draw">
+            <parameters type="json" input="usgs_data"></parameters>
         </visualize-mod> -->
 
         <!-- <visualize-mod method="view">
@@ -70,16 +71,13 @@
         </visualize-mod>
 
         <!-- <data-mod method="download">
-            <parameters input="cleaned_usgs_data" type="CSV"></parameters>
+            <parameters input="cleaned_usgs_data1"></parameters>
+            <arguments type="JSON"></arguments>
         </data-mod> -->
 
         
-
     </hydrolang-ml>
 </div>
-
-    <script type="module" src="./hydrolang-ml/main.js"></script>
-
 </body>
 
 </html>

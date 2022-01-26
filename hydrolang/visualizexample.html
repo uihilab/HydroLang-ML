@@ -6,6 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="./modules/css/hydrolang.css">
+    <script type="module" src="./hydrolang-ml/main.js"></script>
     <title>Visualize Example</title>
 </head>
 
@@ -18,9 +19,9 @@
             <dataset>[2,4,4,5,5,4,5,4,8,10,15,10,8]</dataset>
         </analyze-mod> -->
 
-        <visualize-mod method="draw">
+        <!-- <visualize-mod method="draw">
             <parameters type="table" input="mydatatype2" name="myan1"></parameters>
-        </visualize-mod>
+        </visualize-mod> -->
 
         <visualize-mod method="draw">
             <parameters type= "json" input="all"></parameters>
@@ -32,10 +33,10 @@
             <dataset>[[0,1,2,3,4,5,6,7,8,9,10],[0.1,2,0.52,0.2,0.69,8,98,8,10,11,5]]</dataset>
         </visualize-mod>
 
-        <visualize-mod method="draw">
+        <!-- <visualize-mod method="draw">
             <parameters type="chart" name="Example3" input="dim_data"></parameters>
             <arguments charttype="column"></arguments>
-        </visualize-mod>
+        </visualize-mod> -->
 
         <!-- <visualize-mod method="draw">
             <parameters type="chart" name="Example2"></parameters>
@@ -43,16 +44,13 @@
             <dataset>[[0,1,2,3,4,5,6,7,8,9,10],[0.1,2,0.52,0.2,0.69,8,98,8,10,11,5]]</dataset>
         </visualize-mod> -->
 
-        <!-- <visualize-mod method="draw">
+        <visualize-mod method="draw">
             <parameters type="table" name="Example2"></parameters>
             <dataset>[[0,1,2,3,4,5,6,7,8,9,10],[0.1,2,0.52,0.2,0.69,8,98,8,10,11,5]]</dataset>
-        </visualize-mod> -->
+        </visualize-mod>
 
     </hydrolang-ml>
 </div>
-
-    <script type="module" src="./hydrolang-ml/main.js"></script>
-
 </body>
 
 </html>
