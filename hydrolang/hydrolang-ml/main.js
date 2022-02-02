@@ -1,5 +1,5 @@
 /**
- * Module wrapper for using in HTML.
+ * Module wrapper for using in webpage.
  * @module hydrolangml
  * @extends maincomponent
  * @extends parameters

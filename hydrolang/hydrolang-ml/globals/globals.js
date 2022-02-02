@@ -116,8 +116,25 @@ if (JSON && JSON.stringify && JSON.parse) var Local = Local || (function () {
     }
 })();
 
+/**
+ * Registeres components names
+ * @namespace components
+ */
+    var Comp = Comp || (() => {
+        window.components = window.components || []
+        return {
+            register: ((name, elem) => {
+                if (!customElements.get(name)) {
+                window.components.push(name.toUpperCase())
+                customElements.define(name, elem)
+            }
+            })
+        }
+})();
+
 export {
     Hydro,
     Cookie,
-    Local
+    Local,
+    Comp
 }

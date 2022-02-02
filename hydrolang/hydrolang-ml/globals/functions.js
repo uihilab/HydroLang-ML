@@ -1,7 +1,8 @@
 import {
     Hydro,
     Cookie,
-    Local
+    Local,
+    Comp
 } from './globals.js'
 
 /**
@@ -346,9 +347,11 @@ export default class maincomponent extends HTMLElement {
     };
 
     /**
-     * 
+     * Function used to convert the numbers as strings inside object to integers
+     * @method convertIntObj
+     * @memberof maincomponent
      * @param {Object} obj - Object JSON that  
-     * @returns 
+     * @returns {Object} obj - any number found as string is converted to numbers
      */
 
     static convertIntObj(obj) {
@@ -364,9 +367,11 @@ export default class maincomponent extends HTMLElement {
       };
 
       /**
-       * 
+       * Delays an until a time t has passed.
+       * @method delayer
+       * @memberof maincomponent
        * @param {Int} t - how much time should the function be delayed. 
-       * @returns {Promise} resolved promise.
+       * @returns {Promise} time passed promise.
        */
 
       static delayer(t) {
@@ -406,11 +411,7 @@ export default class maincomponent extends HTMLElement {
      * @returns {void} stores the element into the DOM.
      */
     static registerElement(name, elem) {
-        if (!customElements.get(name)) {
-            window.hydronames = window.hydronames || [];
-            window.hydronames.push(name.toUpperCase());
-            customElements.define(name, elem)
-        }
+        Comp.register(name, elem)
     };
 
     /**
@@ -424,8 +425,4 @@ export default class maincomponent extends HTMLElement {
 };
 
 //Register this element into the DOM
-if (!customElements.get('main-component')) {
-    window.hydronames = window.hydronames || [];
-    window.hydronames.push('MAIN-COMPONENT');
-    customElements.define('main-component', maincomponent);
-}
+Comp.register('main-component', maincomponent)
