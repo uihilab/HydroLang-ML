@@ -24,7 +24,7 @@
             <arguments site="USGS:02056000" format="json" startDt="2020-08-30" endDt="2020-09-02" parameterCd="00060"></arguments>
         </data-mod>
 
-        <!-- <data-mod method="retrieve">
+        <data-mod method="retrieve">
             <parameters source="fema" datatype="disaster-declarations" output="fema_data"></parameters>
             <arguments state="CA"></arguments>
         </data-mod>
@@ -61,14 +61,14 @@
             <parameters type="json" input="usgs_data"></parameters>
         </visualize-mod> -->
 
-        <!-- <visualize-mod method="view">
-            <parameters input="cleaned_usgs_data"></parameters>
-        </visualize-mod> -->
+        <visualize-mod method="draw">
+            <parameters type= "json" input="fema_data"></parameters>
+        </visualize-mod>
 
-        <!-- <visualize-mod method="draw">
+        <visualize-mod method="draw">
             <parameters type="chart" input="cleaned_usgs_data1" name="USGS"></parameters>
             <arguments charttype="line"></arguments>
-        </visualize-mod> -->
+        </visualize-mod>
 
         <!-- <data-mod method="download">
             <parameters input="usgs_data"></parameters>
@@ -78,6 +78,6 @@
         
     </hydrolang-ml>
 </div>
-</body>
+</body>  
 
 </html>

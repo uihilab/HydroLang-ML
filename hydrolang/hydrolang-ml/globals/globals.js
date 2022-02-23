@@ -3,6 +3,7 @@ import Hydrolang from "../../hydro.js";
 /**
  * Provides the hydro instance from HydroLang.js and other variables for usage.
  * @namespace Hydro
+ * @property {Object} hydro HydroLang instance.
  */
 var Hydro = Hydro || (function () {
     var hydro = new Hydrolang()
@@ -28,6 +29,7 @@ var Hydro = Hydro || (function () {
 /**
  * Cookie service for storing parameters and arguments used in functions.
  * @namespace Cookie
+ * @property {load} 
  */
 if (JSON && JSON.stringify && JSON.parse) var Cookie = Cookie || (function () {
     var store = load();

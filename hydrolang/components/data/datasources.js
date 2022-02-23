@@ -9,6 +9,7 @@
  * @extends aemet
  * @extends eauk
  * @extends meteoit
+ * @extends ifis
  */
 
 import usgs from "./datasources/usgs.js";
@@ -19,5 +20,6 @@ import meteostat from "./datasources/meteostat.js";
 import aemet from "./datasources/aemet.js";
 import eauk from "./datasources/eauk.js";
 import meteoit from "./datasources/meteoit.js";
+import ifis from "./datasources/ifis.js";
 
-export { usgs, fema, noaa, worldbank, meteostat, aemet, eauk, meteoit };
+export { usgs, fema, noaa, worldbank, meteostat, aemet, eauk, meteoit, ifis};

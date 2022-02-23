@@ -79,22 +79,25 @@ function chart({params, args, data} = {}) {
 
       case ("line" || "timeline"):
         dat = new t1  
+        
+        d = stats.arrchange({data: d})
 
-        if (typeof d[0][1] === 'string') {
-          dat.addColumn("date", d[0][0]);
-          dat.addColumn("number", d[1][0]);
+        var temp = [];
 
-          for (var i = 1; i < d[0].length; i++) {
-            dat.addRow([new Date(Date.parse(d[0][i])), d[1][i]]);
-          }
-        } else {
-          dat.addColumn("number", d[0][0]);
-          dat.addColumn("number", d[1][0]);
-
-          for (var i = 1; i < d[0].length; i++) {
-            dat.addRow([d[0][i], d[1][i]]);
-          }
+        var temp = [];
+        for (var k=0; k < d[0].length; k++){
+          temp.push(`Value${k}`)
         }
+        d.unshift(temp)
+
+        for (var j = 0; j < d[0].length; j++){
+          dat.addColumn(typeof d[1][j], d[0][j]); 
+        }
+
+        for (var i = 1; i < d.length; i++) {
+          dat.addRow(d[i]);
+        }
+
         break;
 
       default:

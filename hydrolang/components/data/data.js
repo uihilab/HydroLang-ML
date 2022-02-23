@@ -42,7 +42,7 @@ async function retrieve({params,args, data} = {}) {
   if (params.hasOwnProperty("proxyurl")) {
     proxy = params["proxyurl"];
   } else if (proxif == true) {
-    callback({ info: "please verify if the resource needs a proxy server." });
+    alert("info: please verify if the resource needs a proxy server.");
   }
 
   //create headers if required depending on the type supported.
@@ -55,7 +55,7 @@ async function retrieve({params,args, data} = {}) {
     if (params.hasOwnProperty(keyname)) {
       Object.assign(head, { [keyname]: params[keyname] });
     } else {
-      callback({ info: "please verify the keyname of the source." });
+      alert("info: please verify the keyname of the source.");
     }
   }
   

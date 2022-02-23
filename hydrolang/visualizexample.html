@@ -29,9 +29,14 @@
 
         <visualize-mod method="draw">
             <parameters type="chart" name="Example1"></parameters>
-            <arguments charttype="scatter"></arguments>
-            <dataset>[[0,1,2,3,4,5,6,7,8,9,10],[0.1,2,0.52,0.2,0.69,8,98,8,10,11,5]]</dataset>
+            <arguments charttype="line"></arguments>
+            <dataset>[[0,1,2,3,4,5,6,7,8,9,10],[0.1,2,0.52,0.2,0.69,8,98,8,10,11,5], [10,11,12,13,14,15,16,17,18,19,110]]</dataset>
         </visualize-mod>
+
+        <data-mod method= "transform">
+            <parameters input="usgs_data" save="value" output="cleaned_usgs_data1"></parameters>
+            <arguments type= "ARR" keep= '["datetime", "value"]'></arguments>
+        </data-mod>
 
         <!-- <visualize-mod method="draw">
             <parameters type="chart" name="Example3" input="dim_data"></parameters>
