@@ -38,7 +38,7 @@ export default class datamod extends HTMLElement {
         
         //if method is attributable solely to hydrolang-ml
         } else {
-            maincomponent.LocalStore({name: params[0].input, value: data, type: props.method})
+            maincomponent.LocalStore({name: params[0].output, value: data, type: props.method})
         }
     }
 }

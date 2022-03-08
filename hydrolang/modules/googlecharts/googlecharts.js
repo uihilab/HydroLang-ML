@@ -16,6 +16,3 @@ var isGooglechartsLoaded = false;
 function googlechartsLoaded() {
   isGooglechartsLoaded = true;
 }
-
-//export default google;
-//export { isGooglechartsLoaded };

@@ -1,3 +1,4 @@
+//Importing the functionalities of the maincomponent.
 import maincomponent from '../globals/functions.js'
 
 /**

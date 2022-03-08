@@ -37,16 +37,15 @@ export default class mapmod extends HTMLElement {
         var params = maincomponent.makePropertiesFromParameters(this.children)
         var data = maincomponent.datalistener(this)
 
-        if(props.method === "render") {           
-            maincomponent.hydro().map.renderMap(props, params, data)
-            maincomponent.hydro().map.Layers({maptype: "osm", layertype: {type: "draw"}})
+        if(props.method === "render") {
+            maincomponent.hydro().map.renderMap({args: params[0]})
         }
 
         if (props.method === "Layers") {
             try {
-            new Promise(resolve => {
+            new Promise(() => {
                 setTimeout(() => {
-                    maincomponent.hydro().map.Layers(props, params, data)
+                    maincomponent.hydro().map.Layers({args: params[0], data: data})
                 }, 1000)}); 
             } catch (error) {
                 console.log("No map found in screen! Please render map first.")

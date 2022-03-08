@@ -17,7 +17,10 @@ export default class nn {
    * @example var model = hydro1.analyze.nn.createModel(30, 11, 50)
    */
 
-  static createModel(numinputs, numneurons, numoutputs) {
+  static createModel({params, args, data} = {}) {
+    var numinputs = params.inputs
+    var numneurons = params.neurons
+    var numoutputs = params.outputs
     const model = tf.sequential();
 
     //Add input layer considering only 1 input layer for the training.
@@ -84,7 +87,9 @@ export default class nn {
    * @example var tensordata = hydro1.analyze.nn.convertToTensor([inputs], [outputs]])
    */
 
-  static convertToTensor(arr1, arr2) {
+  static convertToTensor({params, args, data} = {}) {
+    var arr1 = data[0];
+    var arr2 = data[1];
     return tf.tidy(() => {
 
       //Convert the data to tensors.
@@ -134,7 +139,17 @@ export default class nn {
    * @returns {Object} trained model. 
    */
 
-  static async trainModel(model, inputs, outputs, epochs, learningrate, batch) {
+  static async trainModel({params, args, data} = {}) {
+    //Grabbing data from the parameters 
+    var model = params.model;
+    var inputs = params.inputs;
+    var outputs = params.outputs;
+
+    //Grabbing data from the arguments
+    var epochs = args.epochs;
+    var learningrate = args.lr;
+    var batch = args.batch
+
     //temporary solution for the split method to be fixed on the tf.js backend.
     tf.env().set('WEBGL_CPU_FORWARD', false)
 
@@ -173,7 +188,12 @@ export default class nn {
    * @returns {Object} object with predictions, visually rendered too. 
    */
 
-  static prediction(model, inputs, outputMin, outputMax) {
+  static prediction({params, args, data} = {}) {
+
+    var model = params.model;
+    var inputs = params.inputs;
+    var outputMin = args.outputMin;
+    var outputMax = args.outputMax;
 
     const predictedPoints = model.predict(inputs);
 
@@ -192,7 +212,9 @@ export default class nn {
    * @returns {Object} saved model on local storage.
    */
 
-  static async savemodel(model, name) {
+  static async savemodel({params, args, data} = {}) {
+    var model = params.model;
+    var name = params.name;
     await model.save(`downloads://${name}`);
   }
 }

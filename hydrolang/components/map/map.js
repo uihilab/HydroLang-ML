@@ -4,34 +4,39 @@ import _ from "../../modules/d3/d3.js";
 import * as visualize from "../visualize/visualize.js"
 
 //Controllers, map and layers
+//Most variables are left as internal variables for control when the hydrolang instance is live.
 var osmap;
 var layercontroller;
-window.baselayers = {};
-window.overlayers = {};
 var drawings;
 var drawControl;
+
+//Global variables for library usages.
+window.baselayers = {};
+window.overlayers = {};
 
 /**
  * Calls the map type according to the user input. The renderMap function is required
  * for map visualization.
  * @function loader
  * @memberof maps
- * @param {Object} config - Object with map type and additional parameters if required.
- * @example //config = {maptype: "osm"}
- * @returns {Promise}  Libraries appended to the header of webpage.
+ * @param {Object} params - contains: maptype (google or osm[leaflet]) 
+ * @param {Object} args: contains: key (required by google)
+ * @returns {Element}  Libraries appended to the header of webpage.
+ * @example 
+ * hydro.map. = {maptype: "osm"}
  */
 
- async function loader(config) {
+ async function loader({params, args, data} = {}) {
   //For google maps API.
-  if (config.maptype == "google") {
-    const gApiKey = config.params.key;
+  if (params.maptype == "google") {
+    const gApiKey = args.key;
     //call the class  constructor.
     const gmapApi = new mapsources.googlemapsapi(gApiKey);
     await gmapApi.load();
   }
 
   //For leaflet API.
-  if (config.maptype == "osm") {
+  if (params.maptype == "osm") {
     //call the class constructor.
     const mapper = new mapsources.leafletosmapi();
     await mapper.load();
@@ -47,37 +52,39 @@ var drawControl;
  * @returns {Object} layer appended to a map div that has already been created.
  */
 
-async function Layers(props, params, data) {
-  try{
-  if(!data || data == undefined || data == null) {data = null}
-  var layertype = {
-    type: params[0].layer,
-    markertype: params[0].layer, 
-    geotype: params[0].geo,
-    data: data, 
-    name:params[0].output, 
-    coord: data,
+async function Layers({params, args, data} = {}) {
+  var layertype;
+  //The mapconfig is set to be as OSM.
+  var mapconfig = {maptype: "osm"};
+  //Creating configuration object for rendering layers.
+  //If a property is not found, is simply set to null.
+  //Setting it up as default behavior.
+// try{
+//   console.log("right here")
+var layertype = {
+  type: args.type,
+  markertype: args.type, 
+  geotype: args.geo,
+  data: data, 
+  name:args.output, 
+  coord: data,
 }
-var mapconfig = {maptype: "osm", layertype: layertype}
-} catch (error) {
-}
-  //in case the map required is google.
+
   try{
   if (mapconfig.maptype === "google") {
-    geoJSON(mapconfig);
   }
   //in case the map required is osm. 
   else if (mapconfig.maptype === "osm") {
     var layer;
-    var type = mapconfig.layertype.type;
-    var layername = mapconfig.layertype.name;
-    if (layercontroller === undefined) {
-      layercontroller = new L.control.layers();
-    } else {
-      layercontroller = layercontroller;
-    }
+    var type = layertype.type;
+    var layername = layertype.name;
+
+    if (typeof layercontroller === 'undefined') {
+      //Defining the controller for the layers.
+      layercontroller = new L.control.layers();}
 
     if (type === "tile") {
+      //Defining a new layertype
       layer = new L.TileLayer(
         tileprov[layername].url,
         tileprov[layername].options
@@ -90,28 +97,34 @@ var mapconfig = {maptype: "osm", layertype: layertype}
   }
       await osmap.whenReady(function(){
     if (type === "geodata") {
-      layer = geoJSON(mapconfig);
+      //Caller for the geoJSON data renderer.
+      layer = geoJSON({params: mapconfig, data: data});
       Object.assign(overlayers, {[layername]: layer})
       layercontroller.addOverlay(layer, layername).addTo(osmap);
       //osmap.fitBounds(layer.getBounds());
 
     } else if (type === "marker") {
-      layer = addMarker(mapconfig);
+      //Caller for the marker renderer.
+      layer = addMarker({params: mapconfig, args: layertype});
       Object.assign(overlayers, {[layername]: layer})
       layercontroller.addOverlay(layer, layername).addTo(osmap);
 
     } else if (type === "kml") {
-      layer = kml(mapconfig);
+      //Caller for the KML data renderer.
+      layer = kml({params: mapconfig, data: data});
       Object.assign(overlayers, {[layername]: layer})
       layercontroller.addOverlay(layer, layername).addTo(osmap);
       //osmap.fitBounds(layer.getBounds());
 
     } else if (type === "draw"){
+      //Caller for drawing tool renderer.
       drawings = new L.FeatureGroup();
-      draw(mapconfig);
+      draw({params: mapconfig});
       osmap.addLayer(mapdrawings);
 
     } else if (type === "removelayers") {
+      //If using HydroLang-ML, there is no need to use this functions since the layers that are not to be included in a map
+      //Are simply not added into the request as a layer.
       if (baselayers.hasOwnProperty(layername)) {
         osmap.removeLayer(baselayers[layername]);
         layercontroller.removeLayer(baselayers[layername]);
@@ -148,53 +161,47 @@ catch (error){
  * @returns {Object} Attaches the required map to a div element on the html file.
  */
 
-async function renderMap(props, params, data) {
-  if(!data || data == undefined || data == null) {data = null}
- 
-  var layertype ={
-    type:params[0].layer,
-    name: params[0].output
-  };
-
+async function renderMap({params, args, data} = {}) {
+  //Reading layer types and map configurations from the user's parameters inputs.
+  var layertype
   var mapconfig = {
-    maptype: params[0].maptype,
-    lat: params[0].lat,
-    lon: params[0].lon,
+    maptype: args.maptype,
+    lat: args.lat,
+    lon: args.lon,
     zoom: 15,
-    layertype: layertype
   }
 
-    //if (mapconfig.maptype != undefined || mapconfig.maptype != null) {
-    if(mapconfig.maptype == undefined || mapconfig.maptype == null) {
-      mapconfig = {
-        maptype: "osm",
-        lat: 41.6572,
-        lon: -91.5414,
-        zoom: 13,
-        layertype: {
-          type: "tile",
-          name: "OpenStreetMap"
-        },
-      };
-  }
+  //Defining a default scenario with zoom over at IFC.
+  if(typeof mapconfig.maptype === 'undefined' || typeof mapconfig.maptype === null || !params) {
+    layertype = {
+      type: "tile",
+      output: "OpenStreetMap"
+    }
 
-    await loader({maptype: mapconfig.maptype})
+    mapconfig = {
+      maptype: "osm",
+      lat: 41.6572,
+      lon: -91.5414,
+      zoom: 13,
+    };
+}
+  //Rendering the map into screen.
+  await loader({params: mapconfig})
 
-  //create div for element appending the map and add to data
+  //Creating internal divisors for the requested maps.
   visualize.createDiv({params: {
     id: "map",
     class: "maps",
     maindiv: document.getElementById('hydrolang').getElementsByClassName("maps")[0]
   }})
 
+  //Allocating a container object where the map should be set.
   var container
   if (visualize.isdivAdded){
     container = document.getElementById("map")
   }
-  // var container = document.createElement("div");
-  // container.id = "map";
-  // document.body.appendChild(container);
 
+  //From here onwards, the the library caller renders either Google Maps or Leaflet Maps.
   if (mapconfig.maptype === "google") {
     const options = {
       mapTypeId: "terrain",
@@ -209,29 +216,23 @@ async function renderMap(props, params, data) {
   } else if (mapconfig.maptype === "osm") {
     osmap = new L.map(container.id);
     //assign the tile type to the data object for rendering.
-    const tiletype = mapconfig.layertype.name;
+    const tiletype = layertype.output;
+    //Rendering the tile type the user has requested from the available tile types.
     if (tiletype === "tile" && !tileprov.hasOwnProperty(tiletype)) {
       console.log("No tile found!")
-      // callback({
-      //   info: "No tile found for the given specifications.",
-      // });
       return;
     }
     //import the tile options from the given data.
     osmap.setView([mapconfig.lat, mapconfig.lon], mapconfig.zoom);
-    Layers(mapconfig);
+    Layers({params: mapconfig, args: layertype});
 
+    //Allow for popups to be prompted when touching the screen.
     var popup = new L.popup();
-
     var onMapClick = (e => {
       popup.setLatLng(e.latlng).setContent(`You clicked the map at ${e.latlng.toString()}`).openOn(osmap);
     })
     osmap.on('click', onMapClick)
-//   }; return resolve();
-// } setTimeout(waitforrender, 30)})();
-//   })
 };
-      //}
     }
 
 /**
@@ -239,23 +240,22 @@ async function renderMap(props, params, data) {
  * The geotype should be of one single feature.
  * @function geoJSON
  * @memberof maps
- * @param {Object} data - data with geo information and map type.
+ * @param {Object} data - Data type must be in standardized geoJSON formats available through OGM standards.
  * @returns {Object} geoJSON rendered file.
  */
 
-function geoJSON(data) {
-  var inf = data.layertype.data;
+function geoJSON({params, args, data} = {}) {
   var geotype
-  if(inf.type === "FeatureCollection"){
-  geotype = inf.features[0].geometry.type;
-} else if (inf.type === "Feature") {
-  geotype = inf.geometry.type;
+  if(data.type === "FeatureCollection"){
+  geotype = data.features[0].geometry.type;
+} else if (data.type === "Feature") {
+  geotype = data.geometry.type;
 }
 
-  if (data.maptype === "google") {
+  if (params.maptype === "google") {
     var geogoogle = osmap.data.addGeoJson(inf);
     return geogoogle;
-  } else if (data.maptype === "osm") {
+  } else if (params.maptype === "osm") {
 
     var onEachFeature = (feature, layer) => {
       if (feature.properties && feature.properties.Name && feature.properties.Lat && feature.properties.Lon) {
@@ -271,7 +271,7 @@ function geoJSON(data) {
         opacity: 1,
         fillOpacity: 0.7
       };
-      var xo = new L.geoJSON(inf, {
+      var xo = new L.geoJSON(data, {
         pointToLayer: function (feature, latlng) {
           return new L.circleMarker(latlng, style)
         },
@@ -286,7 +286,7 @@ function geoJSON(data) {
         weight: 2,
         color: "#432"
       };
-      var xa = new L.geoJSON(inf, {
+      var xa = new L.geoJSON(data, {
         style: style,
         onEachFeature: onEachFeature
       })
@@ -310,8 +310,8 @@ function geoJSON(data) {
  * @returns {Object} appends layer to existing map.
  */
 
-function kml(data) {
-  if (data.map == "google") {
+function kml({params, args, data} = {}) {
+  if (params.maptype == "google") {
     var kmlLayer = new google.maps.KmlLayer(data.kml, {
       suppressInfoWindows: true,
       preserveViewport: false,
@@ -322,7 +322,7 @@ function kml(data) {
       var testimonial = document.getElementById("capture");
       testimonial.innerHTML = content;
     });
-  } else if (data.map == "osm") {
+  } else if (params.maptype == "osm") {
     const parser = new DOMParser();
     const kml = parser.parseFromString(data.kml, "text/xml");
     const track = new L.KML(kml);
@@ -337,33 +337,32 @@ function kml(data) {
  * @param {Object} data - configuration with maptype, 
  * @returns {Object} layer object.
  */
-function addMarker(data) {
+function addMarker({params, args, data} = {}) {
   var layer;
+  if (params.maptype === "google") {}
 
-  if (data.maptype === "google") {}
-
-  if (data.maptype === "osm") {
-    var type = data.layertype.markertype;
-    var coord = data.layertype.coord;
+  if (params.maptype === "osm") {
+    var type = args.markertype;
+    var coord = args.coord;
 
     switch (type) {
       case "rectangle":
-        layer = new L.rectangle(coord, markerstyles('osm', 'rectangle'));
+        layer = new L.rectangle(coord, markerstyles({params: {map:'osm', fig: 'rectangle'}}));
         break;
       case "circle":
-        layer = new L.circle(coord, markerstyles('osm', 'circle'));
+        layer = new L.circle(coord, markerstyles({params: {map:'osm', fig: 'circle'}}));
         break;
       case "circlemarker":
-        layer = new L.circleMarker(coord, markerstyles('osm', 'circlemarker'));
+        layer = new L.circleMarker(coord, markerstyles({params: {map:'osm', fig: 'circlemarker'}}));
         break;
       case "polyline":
-        layer = new L.polyline(coord, markerstyles('osm', 'polyline'));
+        layer = new L.polyline(coord, markerstyles({params: {map:'osm', fig: 'polyline'}}));
         break;
       case "polygon":
-        layer = new L.polygon(coord, markerstyles('osm', 'polygon'));
+        layer = new L.polygon(coord, markerstyles({params: {map:'osm', fig: 'polygon'}}));
         break;
       case "marker":
-        layer = new L.marker(coord, markerstyles('osm', 'marker'));
+        layer = new L.marker(coord, markerstyles({params: {map:'osm', fig: 'marker'}}));
         break;
       default:
         alert("no markers with that name");
@@ -381,16 +380,18 @@ function addMarker(data) {
  * @returns {Object} new styles that are used for drawing a marker.
  */
 
- function markerstyles (map, fig){
+ function markerstyles ({params, args, data} = {}){
+   var map = params.map;
+   var fig = params.fig
   var layer;
 
+  //Implementation for google markers still ongoing.
    if (map === "google") {
    }
 
+   //Full implementation of the OpenStreetMap ready for usage.
    if (map === "osm") {
-     var type = fig;
-
-     switch (type) {
+     switch (fig) {
        case "rectangle":
          layer = {
            weight: 2,
@@ -451,10 +452,12 @@ function addMarker(data) {
   * @returns {Object} toolkit added to map.
   */
 
-  function draw(config) {
-    if (config.maptype == "google") {} 
-    
-    else if (config.maptype == "osm") {
+  function draw({params, args, data} = {}) {
+
+    //Implementation of Google Maps API still ongoing.
+    if (params.maptype == "google") {} 
+    //Full implementation of OpenStreetMaps ready for usage.
+    else if (params.maptype == "osm") {
       var options = {
         position: 'topleft',
         scale: true,
@@ -505,9 +508,11 @@ function addMarker(data) {
         }
       }
 
+      //Defining a drawing control for the Leaflet library.
       drawControl = new L.Control.Draw(options);
       osmap.addControl(drawControl)
 
+      //Event triggers added to clicking inside the maps through different types of markers and styles..
       osmap.on('draw:created', function (e) {
         var type = e.layerType,
             layer = e.layer;
