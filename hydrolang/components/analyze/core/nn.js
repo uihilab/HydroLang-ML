@@ -10,24 +10,23 @@ export default class nn {
    * of problem that the user is trying to solve and should be used accordingly.
    * @method createModel
    * @memberof nn
-   * @param {number} numinputs - number of data inputs. 
-   * @param {number} numneurons - number of total neurons in the hidden layer.
-   * @param {number} numoutputs - number of neuron ouputs.
-   * @returns {Object} model created based on the specifications.
-   * @example var model = hydro1.analyze.nn.createModel(30, 11, 50)
+   * @param {Object} params - Contains: numinputs (data inputs), numneurons (total hidden layer neurons), numoutputs (neuron outputs)
+   * @returns {Object} Model created based on the specifications.
+   * @example
+   * hydro.analyze.nn.createModel({params: {numinputs: 30, numneurons: 11, numoutputs:50})
    */
 
-  static createModel({params, args, data} = {}) {
-    var numinputs = params.inputs
-    var numneurons = params.neurons
-    var numoutputs = params.outputs
+  static createModel({ params, args, data } = {}) {
+    var numinputs = params.inputs;
+    var numneurons = params.neurons;
+    var numoutputs = params.outputs;
     const model = tf.sequential();
 
     //Add input layer considering only 1 input layer for the training.
     model.add(
       tf.layers.dense({
         inputShape: [numinputs],
-        units: numinputs
+        units: numinputs,
       })
     );
 
@@ -47,9 +46,9 @@ export default class nn {
       tf.layers.dense({
         units: numneurons,
         useBias: true,
-        activation: "sigmoid"
+        activation: "sigmoid",
       })
-    )
+    );
 
     //Add average pooling layer
     /*model.add(
@@ -69,7 +68,7 @@ export default class nn {
       tf.layers.dense({
         units: numoutputs,
         useBias: true,
-        activation: "sigmoid"
+        activation: "sigmoid",
       })
     );
 
@@ -81,17 +80,16 @@ export default class nn {
    * Converts data serving as input for either training or calculations into Tensorflow tensors.
    * @method convertToTensor
    * @memberof nn
-   * @param {Object[]} arr1 - arrays that serve as inputs. 
-   * @param {Object[]} arr2 - array that serve as outputs.
-   * @returns {Object} object with minmax of data as well as the arrays converted into tensors.
-   * @example var tensordata = hydro1.analyze.nn.convertToTensor([inputs], [outputs]])
+   * @param {Object} data - Contains: 2d-JS array with inputs and outputs as [[inputs], [outputs]]
+   * @returns {Object} Object with minmax of data as well as the arrays converted into tensors.
+   * @example
+   * hydro.analyze.nn.convertToTensor({data: [[inputs],[outputs]]})
    */
 
-  static convertToTensor({params, args, data} = {}) {
+  static convertToTensor({ params, args, data } = {}) {
     var arr1 = data[0];
     var arr2 = data[1];
     return tf.tidy(() => {
-
       //Convert the data to tensors.
       /*const inputs = arr1.map((d) => d);
       const outputs = arr2.map((d) => d);*/
@@ -126,39 +124,39 @@ export default class nn {
   }
 
   /**
-   * Trains the model given inputs and ouputs of training data. Generates weights for each expected outcome. 
-   * The model can also be saved if required.
+   * Trains the model given inputs and ouputs of training data. Generates weights for each expected outcome.
+   * The model can be saved in local storage using the save model function.
+   * The compilation is donw using loss function binary Cross entropy, ADAM optimizer and MSE for evaluation metric.
    * @method trainModel
    * @memberof nn
-   * @param {Object} model - created previously. 
-   * @param {Object[]} inputs - array of inputs that are already converted into tensors. 
-   * @param {Object[]} outputs - array of outputs that are already converted into tensors.
-   * @param {number} epochs - number of repetitions the algoritm should do through the dataset.
-   * @param {number} learningrate - value between 0 - 0.2. 
-   * @param {number} batchsize - value of the training 
-   * @returns {Object} trained model. 
+   * @param {Object} params - Contains: model (from createModel function)
+   * @param {Object} args - Contains: epochs (1-1000), lr (learning rate between 0-0.2), batch (size depending on inputs/output ratio)
+   * @param {Object} data - Contains: 2d-JS array containing the normalized TF arrays for input and output as [[inputs], [outputs]]
+   * @returns {Object} Trained model.
+   * @example
+   * hydro.analyze.nn.trainModel({params:{model: model}, args: {epochs: 'someNum', lr: 'someNum', batch: 'someNum'},
+   * data: [[inputs, outputs]]})
    */
 
-  static async trainModel({params, args, data} = {}) {
-    //Grabbing data from the parameters 
+  static async trainModel({ params, args, data } = {}) {
+    //Grabbing data from the parameters
     var model = params.model;
-    var inputs = params.inputs;
-    var outputs = params.outputs;
+    var inputs = data[0];
+    var outputs = data[1];
 
     //Grabbing data from the arguments
     var epochs = args.epochs;
     var learningrate = args.lr;
-    var batch = args.batch
+    var batch = args.batch;
 
     //temporary solution for the split method to be fixed on the tf.js backend.
-    tf.env().set('WEBGL_CPU_FORWARD', false)
-
+    tf.env().set("WEBGL_CPU_FORWARD", false);
 
     model.compile({
       loss: "binaryCrossentropy",
       optimizer: "adam",
       metrics: ["mse"],
-      lr: learningrate
+      lr: learningrate,
     });
 
     const batchsize = batch;
@@ -167,12 +165,14 @@ export default class nn {
       batchsize,
       epochs: epochs,
       shuffle: true,
-      callbacks: tfvis.show.fitCallbacks({
-          name: "Training Performance"
+      callbacks: tfvis.show.fitCallbacks(
+        {
+          name: "Training Performance",
         },
-        ["loss", "mse"], {
+        ["loss", "mse"],
+        {
           height: 200,
-          callbacks: ["onEpochEnd"]
+          callbacks: ["onEpochEnd"],
         }
       ),
     });
@@ -180,39 +180,47 @@ export default class nn {
 
   /**
    * Given a trained model, uses it for calculating outputs based on raw data.
+   * The data is fed as input on the parameters and needs to be of the same size as the
+   * training data. The input data needs to be converted into a TS tensor (array) previous
+   * to be fed. The function also requires the minmax of the outputs.
    * @method prediction
    * @memberof nn
-   * @param {Object} model - pretrained model.
-   * @param {Object[]} inputData - inputdata already converted into tensors. 
-   * @param {Object} observed - minmax for both inputs and outputs.
-   * @returns {Object} object with predictions, visually rendered too. 
+   * @param {Object} params - Contains: model (pretrained)
+   * @param {Object} args - Contains: outputMin (Minimum value of observation), outputMax (Maximum value of observation)
+   * @param {Object} data - Contains: 1d-JS array with inputs for model outcome as [inputs]
+   * @returns {Object} Object with predictions as array. It also renders to screen.
+   * @example
+   * hydro.analyze.nn.prediction({params: {model: model}, args: {outputMin: 'someValue', outputMax: 'someValue'},
+   * data: [inputs]})
    */
 
-  static prediction({params, args, data} = {}) {
-
+  static prediction({ params, args, data } = {}) {
+    //Grab the data from the arguments.
     var model = params.model;
-    var inputs = params.inputs;
+    var inputs = data;
     var outputMin = args.outputMin;
     var outputMax = args.outputMax;
-
+    //Create prediction from model and inputs.
     const predictedPoints = model.predict(inputs);
-
-    const unNormPreds = predictedPoints.mul(outputMax.sub(outputMin)).add(outputMin)
-
+    //The predictions are normalized, unnormalizing step.
+    const unNormPreds = predictedPoints
+      .mul(outputMax.sub(outputMin))
+      .add(outputMin);
     return Array.from(unNormPreds.dataSync());
   }
 
   /**
    * Function for downloading a model that is already trained. It is saved in
-   * download folder of the user.
-   * @method savemodel
+   * the user's download folder.
+   * @method saveModel
    * @memberof nn
-   * @param {Object} model - pretrained model.
-   * @param {String} name - name of model to be saved.
+   * @param {Object} params - Contains: model (pretrained), name (name for the model)
    * @returns {Object} saved model on local storage.
+   * @example
+   * hydro.analyze.nn.saveModel({params: {model: model, name: 'someName'}})
    */
 
-  static async savemodel({params, args, data} = {}) {
+  static async saveModel({ params, args, data } = {}) {
     var model = params.model;
     var name = params.name;
     await model.save(`downloads://${name}`);

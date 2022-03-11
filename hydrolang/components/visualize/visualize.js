@@ -6,9 +6,9 @@ import stats from "../analyze/core/stats.js";
  * It creates a new div space for each chart generated.
  * @function chart
  * @memberof visualize
- * @param {Object} params - contains: charType, divID, drawing options (see google charts docs).
- * @param {Object} data - contains: data as JS nd-array.
- * @returns {Element} chart appended to new div in body.
+ * @param {Object} params - Contains: charType, divID, drawing options (see google charts docs).
+ * @param {Object} data - Contains: data as JS nd-array.
+ * @returns {Element} Chart appended to new div in body.
  * @example
  * hydro.visualize.chart({params: {chartType: 'column', divID: 'divID', options: {'some options'}}, data: [data1, data2,...]});
  */
@@ -156,8 +156,8 @@ function chart({ params, args, data } = {}) {
  * @function table
  * @memberof visualize
  * @param {Object} params - contanis:  divID, dataType and applicable options.
- * @param {Object} data - contains: data
- * @returns {Element} table appended to new div in body.
+ * @param {Object} data - Contains: data
+ * @returns {Element} Table appended to new div in body.
  * @example
  * hydro.visualize.table({params: {divID: "new", dataType: ["string", "number"]}, data: [data1, data2...]});
  */
@@ -230,10 +230,10 @@ function table({ params, args, data } = {}) {
  * passing parameters of data, type(chart or table).
  * @function draw
  * @memberof visualize
- * @param {Object} params - contains: type (chart, table, or json), name.
- * @param {Object} args - contains: charttype (column, scatter, line, timeline) only use if drawing charts.
- * @param {Object} data - contains: data as JS nd-array.
- * @returns {Element} chart (graph, table, or json render) appended in body.
+ * @param {Object} params - Contains: type (chart, table, or json), name.
+ * @param {Object} args - Contains: charttype (column, scatter, line, timeline) only use if drawing charts.
+ * @param {Object} data - Contains: data as JS nd-array.
+ * @returns {Element} Chart (graph, table, or json render) appended in body of HTML document.
  * @example
  * hydro.visualize.draw({params: {type: 'chart', name: 'someName'}, args: {charttype: 'column'}}, data: [data1, data2,...]});
  */
@@ -366,9 +366,9 @@ function draw({ params, args, data } = {}) {
  * Will be expanded to visualize other types of data.
  * @function prettyPrint
  * @memberof visualize
- * @param {Object} params - contains: input (single or all objects), type (currently only JSON)
- * @param {Object} data - contains: data as JS Objects.
- * @returns {Element} renders to screen the json object to render.
+ * @param {Object} params - Contains: input (single or all objects), type (currently only JSON)
+ * @param {Object} data - Contains: data as JS Objects.
+ * @returns {Element} Renders to screen the json object to render.
  * @example
  * hydro.visualize.prettyPrint({params: {input: 'all', type: 'JSON'} data: {Objects}})
  */
@@ -439,8 +439,8 @@ export { draw, createDiv, createForm, isdivAdded, isScriptAdded };
  * Creates a div space for rendering all sorts of required divisors.
  * @function createDiv
  * @memberof visualize
- * @param {Object} params - contains: id, title, class, style
- * @returns {Element} div space appended to DOM.
+ * @param {Object} params - Contains: id, title, class, style
+ * @returns {Element} Div space appended to DOM.
  * @example
  * hydro.visualize.createDiv({params: {id: 'someid', title: 'sometitle', className: 'someclass'}})
  */
@@ -458,8 +458,8 @@ function createDiv({ params, args, data } = {}) {
  * Creates a form appended to the DOM with a button attached to it.
  * @function createForm
  * @memberof visualize
- * @param {Object} params - contains: className (name of class to create for from)
- * @returns {Element} form appended to the DOM.
+ * @param {Object} params - Contains: className (name of class to create for from)
+ * @returns {Element} Form appended to the DOM.
  * @example
  * hydro.visualize.createForm({params: {className: 'some class'}})
  */
@@ -474,8 +474,8 @@ function createForm({ params, args, data } = {}) {
  * Creates a script given a source, JS text and name to be appended to the header.
  * @function createScript
  * @memberof visualize
- * @param {Object} params - contains: name (script name), src (CDN source)
- * @returns {Element} if found, returns the the script library to add listeners and handlers once loaded.
+ * @param {Object} params - Contains: name (script name), src (CDN source)
+ * @returns {Element} If found, returns the the script library to add listeners and handlers once loaded.
  * @example
  * hydro.visualize.createScript({params: {name: "someName", src: "somrCDNurl"}})
  */
@@ -539,7 +539,7 @@ function googleCdn({ params, args, data } = {}) {
  * Function for verifying if a div has already been added into the document.
  * @method isdivAdded
  * @memberof visualize
- * @param {Object} params - contains: divID (specific name for the divisor).
+ * @param {Object} params - Contains: divID (specific name for the divisor).
  * @returns {Boolean} True of a div with the given id is found in the document.
  * @example
  * hydro.visualize.isdivAdded({params: {divId: 'someDivName'}})
@@ -553,7 +553,7 @@ function isdivAdded({ params, args, data } = {}) {
  * Function for verifying if a script has been added to the header of the webpage.
  * @method isScriptAdded
  * @memberof visualize
- * @param {Object} params - contains: name (script on screen, or not)
+ * @param {Object} params - Contains: name (script on screen, or not)
  * @returns {Boolean} True if the script has been appended to the header.
  * @example
  * hydro.visualize.isScriptAdded ({params: {name: 'someName'}})
