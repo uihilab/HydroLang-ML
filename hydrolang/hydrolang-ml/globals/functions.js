@@ -206,11 +206,13 @@ export default class maincomponent extends HTMLElement {
     static datalistener(mod) {
         var data
         var params = this.makePropertiesFromParameters(mod.children)
+        console.log(params)
 
         try{
         if (params[0].input != null || params[0].input != undefined) {
-            data = JSON.parse(this.LocalStore({name: params[0].input, type: "retrieve"}))
-            //data = JSON.parse(this.getresults(params[0].input))
+            //data = JSON.parse(this.LocalStore({name: params[0].input, type: "retrieve"}))
+            data = JSON.parse(this.getresults(params[0].input))
+            console.log(data)
         } else {
             data = JSON.parse(this.datagrabber(mod))
         }

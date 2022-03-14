@@ -1,4 +1,6 @@
 import stats from "../analyze/core/stats.js";
+import * as divisors from "./divisors.js";
+import { googleCdn } from "../../modules/googlecharts/googlecharts.js";
 
 /**
  * Creates new charts depending on what the user requires. It can
@@ -15,7 +17,7 @@ import stats from "../analyze/core/stats.js";
 
 function chart({ params, args, data } = {}) {
   //Create a new div for the visualize options.
-  if (isdivAdded({ params: { divID: "visualize" } })) {
+  if (divisors.isdivAdded({ params: { divID: "visualize" } })) {
     //Google CDN stable library caller.
     var g = googleCdn();
     g[0].addEventListener("load", () => {
@@ -24,7 +26,7 @@ function chart({ params, args, data } = {}) {
           packages: ["corechart", "table", "annotatedtimeline"],
         })
         .then(() => {
-          createDiv({
+          divisors.createDiv({
             params: {
               id: params.divID,
               title: `Graph of ${params.divID}`,
@@ -36,66 +38,61 @@ function chart({ params, args, data } = {}) {
           });
           //Creating a container to append the chart to.
           var container;
-          if (isdivAdded) {
+          if (divisors.isdivAdded) {
             container = document.getElementById(params.divID);
           }
 
           //Data read from the parameters passed by the user.
-          var d = data;
           var char = params.chartType;
-          var dat;
 
           //To avoid having to load the entire library, the optional JS evaluator is used
           //to read the requirements for drawing.
           var ch = eval(g[1][char]);
           var t1 = eval(g[2]["data"]);
+          //Declaring a t1 option
+          var dat = new t1();
+          //Temporal variable holder
+          var temp = [];
 
-          if (d[0][0] instanceof String) {
-            for (var i = 0; i < d.length; i++) {
-              d[i][0].shift();
+          //Create space for column name
+          if (data[0][0] instanceof String) {
+            for (var i = 0; i < data.length; i++) {
+              data[i][0].shift();
             }
           }
+
+          //rearrange data into nxm from mxn
+          var d = stats.arrchange({data: data});
 
           //Change the way of creating charts depending on the type of chart required.
           switch (char) {
             case "scatter":
-              var dt;
-              if (d[0].length !== 2) {
-                dt = stats.arrchange({ data: d });
-              } else {
-                dt = d;
+              for (var k=0; k < d[0].length; k++){
+                temp.push(`Value${k}`)
               }
-              dat = google.visualization.arrayToDataTable(dt);
+              d.unshift(temp)
+              dat = google.visualization.arrayToDataTable(d);
               break;
 
             case "column" || "combo":
-              var dt;
-              if (d[0].length !== 2) {
-                dt = stats.arrchange({ data: d });
-              } else {
-                dt = d;
+              for (var k=0; k < d[0].length; k++){
+                temp.push(`Value${k}`)
               }
+              d.unshift(temp)
 
-              dat = google.visualization.arrayToDataTable(dt);
+              dat = google.visualization.arrayToDataTable(d);
               break;
 
             case "histogram":
-              var dt;
-              if (d[0].length !== 2) {
-                dt = stats.arrchange({ data: d });
-              } else {
-                dt = d;
+              for (var k=0; k < d[0].length; k++){
+                temp.push(`Value${k}`)
               }
+              d.unshift(temp)
 
-              dat = google.visualization.arrayToDataTable(dt);
+              dat = google.visualization.arrayToDataTable(d);
               break;
 
             case "line" || "timeline":
-              dat = new t1();
-
-              d = stats.arrchange({ data: d });
-
-              var temp = [];
               for (var k = 0; k < d[0].length; k++) {
                 temp.push(`Value${k}`);
               }
@@ -127,7 +124,7 @@ function chart({ params, args, data } = {}) {
 
           //Listener to add button for the chart to be downloaded once is ready.
           google.visualization.events.addListener(fig, "ready", function () {
-            createDiv({
+            divisors.createDiv({
               params: {
                 id: `${params.divID}_png`,
                 maindiv: container,
@@ -163,12 +160,12 @@ function chart({ params, args, data } = {}) {
  */
 function table({ params, args, data } = {}) {
   //Verify if the visualize div has already been added into screen.
-  if (isdivAdded({ params: { divID: "visualize" } })) {
+  if (divisors.isdivAdded({ params: { divID: "visualize" } })) {
     //Call the google charts CDN
     var g = googleCdn();
     g[0].addEventListener("load", () => {
       google.charts.load("current", { packages: ["table"] }).then(() => {
-        createDiv({
+        divisors.createDiv({
           params: {
             id: params.divID,
             title: `Table of ${params.divID}`,
@@ -181,7 +178,7 @@ function table({ params, args, data } = {}) {
 
         //Create container for table.
         var container;
-        if (isdivAdded) {
+        if (divisors.isdivAdded) {
           container = document.getElementById(params.divID);
         }
 
@@ -191,7 +188,6 @@ function table({ params, args, data } = {}) {
         var t3 = eval(g[2]["table"]);
 
         //Assign data into new variables for manipulation.
-        var d = data;
         var types = params.datatype;
         var dat = new t1();
         var temp = [];
@@ -199,7 +195,7 @@ function table({ params, args, data } = {}) {
         for (var k = 0; k < types.length; k++) {
           dat.addColumn(types[k]);
         }
-        var tr = stats.arrchange({ data: d });
+        var tr = stats.arrchange({ data: data });
 
         for (var l = 0; l < tr.length; l++) {
           temp.push(tr[l]);
@@ -375,8 +371,8 @@ function draw({ params, args, data } = {}) {
 
 function prettyPrint({ params, args, data } = {}) {
   //Add div for rendering JSON
-  if (!isdivAdded({ params: { divID: "jsonrender" } })) {
-    createDiv({
+  if (!divisors.isdivAdded({ params: { divID: "jsonrender" } })) {
+    divisors.createDiv({
       params: {
         id: "jsonrender",
         class: "jsonrender",
@@ -391,12 +387,12 @@ function prettyPrint({ params, args, data } = {}) {
   //Documentation + library found at: https://github.com/caldwell/renderjson
   var src = "https://cdn.rawgit.com/caldwell/renderjson/master/renderjson.js";
 
-  var sc = createScript({ params: { src: src, name: "jsonrender" } });
+  var sc = divisors.createScript({ params: { src: src, name: "jsonrender" } });
   sc.addEventListener("load", () => {
     //Change
     renderjson.set_icons("+", "-");
     renderjson.set_show_to_level(1);
-    if (isdivAdded({ params: { divID: "jsonrender" } })) {
+    if (divisors.isdivAdded({ params: { divID: "jsonrender" } })) {
       var name;
       if (window.localStorage.length === 0) {
         return alert("No items stored!");
@@ -429,141 +425,4 @@ function prettyPrint({ params, args, data } = {}) {
  * Module for visualization of charts and tables.
  * @module visualize
  */
-export { draw, createDiv, createForm, isdivAdded, isScriptAdded };
-
-/***************************/
-/*** Supporting functions **/
-/***************************/
-
-/**
- * Creates a div space for rendering all sorts of required divisors.
- * @function createDiv
- * @memberof visualize
- * @param {Object} params - Contains: id, title, class, style
- * @returns {Element} Div space appended to DOM.
- * @example
- * hydro.visualize.createDiv({params: {id: 'someid', title: 'sometitle', className: 'someclass'}})
- */
-
-function createDiv({ params, args, data } = {}) {
-  var dv = document.createElement("div");
-  dv.id = params.id;
-  dv.title = params.title;
-  dv.className = params.class;
-  dv.style = params.style;
-  params.maindiv.appendChild(dv);
-}
-
-/**
- * Creates a form appended to the DOM with a button attached to it.
- * @function createForm
- * @memberof visualize
- * @param {Object} params - Contains: className (name of class to create for from)
- * @returns {Element} Form appended to the DOM.
- * @example
- * hydro.visualize.createForm({params: {className: 'some class'}})
- */
-
-function createForm({ params, args, data } = {}) {
-  var fr = document.createElement("form");
-  fr.className = params.class;
-  document.body.appendChild(fr);
-}
-
-/**
- * Creates a script given a source, JS text and name to be appended to the header.
- * @function createScript
- * @memberof visualize
- * @param {Object} params - Contains: name (script name), src (CDN source)
- * @returns {Element} If found, returns the the script library to add listeners and handlers once loaded.
- * @example
- * hydro.visualize.createScript({params: {name: "someName", src: "somrCDNurl"}})
- */
-
-function createScript({ params, args, data } = {}) {
-  //Add any external script into the DOM for external library usage.
-  if (!isScriptAdded({ params: { name: params.name } })) {
-    var sr = document.createElement("script");
-    sr.type = "text/javascript";
-    sr.src = params.src;
-    sr.setAttribute("name", params.name);
-    document.head.appendChild(sr);
-    //If the user wants to add functionality coming from the script, do after.
-  }
-  if (isScriptAdded({ params: { name: params.name } })) {
-    var sc = document.querySelector(`script[name=${params.name}]`);
-    return sc;
-  }
-}
-
-/**
- * Appends the google charts library to header for usage on charts and tables.
- * CDN currently stable but needs to be verified and updated if required.
- * @method googlecdn
- * @member visualize
- * @param {void} - no parameters required.
- * @returns {Element} - Google object loaded to header
- * @example
- * hydro.visualize.googleCdn()
- */
-
-function googleCdn({ params, args, data } = {}) {
-  var g = createScript({
-    params: {
-      src: "https://www.gstatic.com/charts/loader.js",
-      name: "googleloader",
-    },
-  });
-  //Charts loaded from the Google Charts API
-  var chartMap = {
-    bar: "google.visualization.BarChart",
-    pie: "google.visualization.PieChart",
-    line: "google.visualization.LineChart",
-    scatter: "google.visualization.ScatterChart",
-    histogram: "google.visualization.Histogram",
-    timeline: "google.visualization.AnnotatedTimeLine",
-    column: "google.visualization.ColumnChart",
-    combo: "google.visualization.ComboChart",
-  };
-  //Table element loaded from the Google Charts API
-  var tableData = {
-    data: "google.visualization.DataTable",
-    view: "google.visualization.DataView",
-    table: "google.visualization.Table",
-  };
-  //Returning the elements as accessible array with [0] - google element, [1] - chart loader [2] - table loader
-  return [g, chartMap, tableData];
-}
-
-/**
- * Function for verifying if a div has already been added into the document.
- * @method isdivAdded
- * @memberof visualize
- * @param {Object} params - Contains: divID (specific name for the divisor).
- * @returns {Boolean} True of a div with the given id is found in the document.
- * @example
- * hydro.visualize.isdivAdded({params: {divId: 'someDivName'}})
- */
-
-function isdivAdded({ params, args, data } = {}) {
-  return Boolean(document.querySelector("." + params.divID));
-}
-
-/**
- * Function for verifying if a script has been added to the header of the webpage.
- * @method isScriptAdded
- * @memberof visualize
- * @param {Object} params - Contains: name (script on screen, or not)
- * @returns {Boolean} True if the script has been appended to the header.
- * @example
- * hydro.visualize.isScriptAdded ({params: {name: 'someName'}})
- */
-
-function isScriptAdded({ params, args, data } = {}) {
-  //Select a name passed as an attribute instead of source for selection purposes.
-  return Boolean(document.querySelector(`script[name=${params.name}`));
-}
-
-/**********************************/
-/*** End of Supporting functions **/
-/**********************************/
+export { draw };

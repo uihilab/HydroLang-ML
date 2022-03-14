@@ -741,7 +741,7 @@ export default class stats {
       params: { columns: ["Metric", "Value"] },
       data: statparams,
     });
-    return this.arrchange({ data: statx });
+    return statx
   }
 
   /***************************/

@@ -35,6 +35,7 @@ export default class analyzemod extends HTMLElement {
         var data = maincomponent.datalistener(this)
 
         var res = maincomponent.hydro().analyze[props.component][props.method]({params: params[0], args: params[1], data: data})
+        console.log(data, res)
         maincomponent.pushresults(params[0].output, await res, 'local')
     }
 }

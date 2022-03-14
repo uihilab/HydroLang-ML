@@ -1,7 +1,7 @@
 import * as mapsources from "../../modules/maps/mapsources.js";
 import tileprov from "../../modules/maps/tileprov.js";
 import _ from "../../modules/d3/d3.js";
-import * as visualize from "../visualize/visualize.js";
+import * as divisors from "../visualize/divisors.js";
 
 //Controllers, map and layers
 //Most variables are left as internal variables for control when the hydrolang instance is live.
@@ -192,7 +192,7 @@ async function renderMap({ params, args, data } = {}) {
 
   //Creating internal divisors for the requested maps. Each map call would have its own div inside the maps
   //larger div.
-  visualize.createDiv({
+  divisors.createDiv({
     params: {
       id: "map",
       class: "maps",
@@ -204,7 +204,7 @@ async function renderMap({ params, args, data } = {}) {
 
   //Allocating a container object where the map should be set.
   var container;
-  if (visualize.isdivAdded) {
+  if (divisors.isdivAdded) {
     container = document.getElementById("map");
   }
 

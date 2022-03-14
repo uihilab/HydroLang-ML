@@ -78,19 +78,18 @@ if (JSON && JSON.stringify && JSON.parse) var Cookie = Cookie || (function () {
 if (JSON && JSON.stringify && JSON.parse) var Local = Local || (function () {
 
     return {
-        set: function (key, value) {
+        set:  function (key, value) {
             // if (window.localStorage[key]) {
             //     return alert(`Item ${key} already exists! Please change name or revise data.`)
             // } else {
-                var x = value
-                x = JSON.stringify(x)
-                window.localStorage.setItem(key, x);
-                return console.log(`Item ${key} has been saved in the local storage.`)
+
+                console.log(`Item ${key} has been saved in the local storage.`)
+                return  window.localStorage.setItem(key, JSON.stringify(value))
             // }
         },
 
-        get: function (key) {
-                var value = window.localStorage.getItem(key);
+        get: async function (key) {
+                var value = await window.localStorage.getItem(key);
 
                 if (!value) {
                     return console.log(`Item ${key} has not been found.`)
