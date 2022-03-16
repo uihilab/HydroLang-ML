@@ -1,4 +1,4 @@
-import * as components from "./components/core.js";
+import * as components from "./modules/core.js";
 
 /**
  * Main framework wrapper. Creates a new instance of all modules as objects.

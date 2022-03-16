@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="./modules/css/hydrolang.css" />
+    <script type="module" src="./hydrolang-ml/main.js"></script>
+    <title>Analyze Example</title>
+  </head>
+
+  <body>
+    <div id="hydrolang">
+      <hydrolang-ml>
+        <!-- The following are examples on modular usage specifically for the analyze, visualize module and their interactions with the local storage.-->
+        <!-- To see the behavior of all the functions, remove the arrows from the each example and load the pages using a live server application.-->
+
+        <!-- Use the stats component from the analyze module to create basic statistics on data.-->
+        <analyze-mod component="stats" method="basicstats">
+          <parameters output="basic_stats_example"></parameters>
+          <dataset>[40,29,40,50,30,291]</dataset>
+        </analyze-mod>
+
+        <!-- Use the hydro component from the analyze module to create a SCS method analysis.-->
+        <analyze-mod component="hydro" method="syntheticalc">
+          <parameters type="SCS" unit="si" output="synthetic_calc"></parameters>
+          <arguments L="4000" slope="10" cn="82"></arguments>
+        </analyze-mod>
+
+        <!-- Use hydro component to create a dimensioneless unit hydrograph.-->
+        <analyze-mod component="hydro" method="dimunithydro">
+          <parameters
+            timestep="0.2"
+            numhours="5"
+            output="dim_data"
+          ></parameters>
+          <arguments type="gamma" PRF="484"></arguments>
+        </analyze-mod>
+
+        <!-- Visualize the stats example as JSON.-->
+        <visualize-mod method="draw">
+          <parameters type="json" input="basic_stats_example"></parameters>
+        </visualize-mod>
+
+        <!-- Visualize the hydro examples-->
+        <visualize-mod method="draw">
+          <parameters type="json" input="synthetic_calc"></parameters>
+        </visualize-mod>
+
+        <visualize-mod method="draw">
+          <parameters
+            type="chart"
+            input="dim_data"
+            name="Dim_Hydro"
+          ></parameters>
+          <arguments charttype="column"></arguments>
+        </visualize-mod>
+
+        <!--Visualize the stat example as a table-->
+        <visualize-mod method="draw">
+          <parameters
+            type="table"
+            input="basic_stats_example"
+            output="myan1"
+          ></parameters>
+        </visualize-mod>
+      </hydrolang-ml>
+    </div>
+  </body>
+</html>
