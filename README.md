@@ -1,6 +1,8 @@
-# Markup Language for Environmental Anlyzes (HL-ML)
-Web Components for Hydrological and Environmental Sciences
+<p align="center">
+    <img width="200" src = https://github.com/uihilab/HydroLang-ML/blob/devo/figures/logo_200x200.png>
+</p>
 
+# Markup Language for Environmental Anlyzes (HL-ML): Web Components for Hydrological and Environmental Sciences
 ## Table of Contents
 * [Introduction](https://github.com/uihilab/HydroLang-ML#Introduction)
 * [How to Use](https://github.com/uihilab/HydroLang-ML#How-to-Use)
@@ -27,7 +29,7 @@ HydroLang-ML is using the last version of the [HydroLang.js](https://github.com/
 Please download the library and run any of the provided examples, or create a new HTML file onloading the library on the header of the page as a script:
 
 ```html
-<link rel="stylesheet" href="../lib/libraries/hydrolang/external/css/hydrolang.css" />
+<link rel="stylesheet" href="../lib/libraries/hydrolang/external/css/hydrolang.css"/>
 <script type="module" src="../lib/main.js"></script>
 ```
 The library enables for the use of components as HTML tags that can access most of the functions in the framework following the parameter, argument, data ontology of the framework. They must be wrapped around a div element that encapsulates the whole library.
