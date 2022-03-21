@@ -1,5 +1,5 @@
-# HydroLang-ML
-Web Components for Hydrological Analyzes
+# Markup Language for Environmental Anlyzes (HL-ML)
+Web Components for Hydrological and Environmental Sciences
 
 ## Table of Contents
 * [Introduction](https://github.com/uihilab/HydroLang-ML#Introduction)
@@ -13,7 +13,7 @@ Web Components for Hydrological Analyzes
 * [References](#references)
 
 ## Introduction
-This project aimed to the development and implementation of web components using HydroLang.js. It enables the usage of the modules already developed within the framework using only markup language that enables the use of functions. It contains a modular component with the following scopes:
+This project aimed to the development and implementation of markup language usage for hydrological sciences using web components. It enables the usage of the modules already developed within the HydroLang.js framework using simple and semantic markup language that enables the use of complex functions. The developed library  contains modular components that enables the following:
 * **Data**: used for data retrieval, manipulation, download and upload.
 * **Analyze**: contains three different components, each aiming towards a similar purpose:
     - *hydro*: functions for precipitation analysis and rainfall-runoff lumped models.
@@ -21,10 +21,11 @@ This project aimed to the development and implementation of web components using
 * **Visualization**: used for rendering different types of charts and tables on screen using [Google Charts](https://developers.google.com/chart).
 * **Maps**: used for rendering of maps with option of adding/removing/downloading layers of different formats (geoJSON, KML) using two options on map engines [Google Maps](https://developers.google.com/maps/documentation) and [Leaflet](https://leafletjs.com/).
 
-HydroLang-ML is using the last updated version of the [HydroLang.js](https://github.com/uihilab/HydroLang) framework.
+HydroLang-ML is using the last version of the [HydroLang.js](https://github.com/uihilab/HydroLang) framework as a main engine.
 
 ## How to Use
 Please download the library and run any of the provided examples, or create a new HTML file onloading the library on the header of the page as a script:
+
 ```html
 <link rel="stylesheet" href="./modules/css/hydrolang.css" />
 <script type = "module" src= "./hydrolang-ml/main.js"></script>
@@ -40,26 +41,35 @@ The library enables for the use of components as HTML tags that can access multi
   </div>
 </body>
 ```
-Each component can be used using its corresponding tag notation. The components enable to use of Hydrolang's modular architecture to access the functions through passing properties into the components, each varying depending on the type of function needed to be accessed and must be wrapped inside the ```<hydrolang-ml></hydrolang-ml>``` tags.
 
-Summary examples for each module:
-* Function call for data module
-```javascript 
-var example: hydro1.data.function(args) 
+Each component can be used using its corresponding tag notation. The components enable the use of Hydrolang's modular architecture to access the functions through passing properties into the components, each varying depending on the type of functions needed to be accessed, wrapped inside the ```<hydrolang-ml></hydrolang-ml>``` tags.
+
+Summary of function call for a module (the "-here" separation not required):
+```html 
+<hydrolang-ml>
+    <analyze-mod method="someFunctionName">
+        <parameters-here someAtrr="Some Attribute"></parameters-here>
+        <arguments-here somArgs="someArguments"></arguments-here>
+        <dataset-here>[1,2,3,4]</dataset-here>
+    </analyze-mod>
+</hydrolang-ml>
 ```
-* Function call for any component on the analyze module
-```javascript 
-var example: hydro1.analyze.component.function(args) 
+The usage of ```<dataset></dataset>``` tags is only required whenever a user wants to pass data as an input. For example, if a user has already downloaded data from  a USGS source and is saved in the local storage and would like to transform the data into a JS array, then the following code would work:
+
+```html
+<data-mod method="transform">
+    <parameters-here input="usgs_data" save="value" output="cleaned_usgs_data1" ></parameters-here>
+    <arguments-here type="ARR" keep='["datetime", "value"]'></arguments-here>
+</data-mod>
 ```
-* Function call for visualization module
-```javascript 
-var example: hydro1.visualize.function(args) 
+The ```input``` tag is used to call data saved in the local storage. To visualize all the objects currently available in the local storage, the user would use the following components:
+
+```html
+<visualize-mod method="draw">
+    <parameters-here type="json" input="usgs_data"></parameters-here>
+</visualize-mod>
 ```
-* Function call for maps module
-```javascript 
-var example: hydro1.map.function(args) 
-```
-In order to the use, run the environment on a tool that can provide a live server, or 
+To use the library, a live server is required. If using VSCode, live server would allow for automatic refresh when putting the HTML tags into screen.
 
 ## Test Examples
 Examples on how to use the library can be found within the following files:
@@ -97,3 +107,4 @@ https://hydroinformatics.uiowa.edu/.
 ## References
 
 * Ramirez, C.E., Sermet, Y., Molkenthin, F. and Demir, I., 2021. HydroLang: An Open-Source Web-Based Programming Framework for Hydrological Sciences. https://doi.org/10.31223/X5M31D
+* More references to go here
