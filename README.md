@@ -27,10 +27,10 @@ HydroLang-ML is using the last version of the [HydroLang.js](https://github.com/
 Please download the library and run any of the provided examples, or create a new HTML file onloading the library on the header of the page as a script:
 
 ```html
-<link rel="stylesheet" href="./modules/css/hydrolang.css" />
-<script type = "module" src= "./hydrolang-ml/main.js"></script>
+<link rel="stylesheet" href="../lib/libraries/hydrolang/external/css/hydrolang.css" />
+<script type="module" src="../lib/main.js"></script>
 ```
-The library enables for the use of components as HTML tags that can access multiple types of parameters, depending on the type of function to be used. They must be wrapped around a div element that encapsulates the whole library.
+The library enables for the use of components as HTML tags that can access most of the functions in the framework following the parameter, argument, data ontology of the framework. They must be wrapped around a div element that encapsulates the whole library.
 
 ```html
 <body>
@@ -72,11 +72,11 @@ The ```input``` tag is used to call data saved in the local storage. To visualiz
 To use the library, a live server is required. If using VSCode, live server would allow for automatic refresh when putting the HTML tags into screen.
 
 ## Test Examples
-Examples on how to use the library can be found within the following files:
-* `test-analysis.html`
-* `test-data.html`
-* `test-maps.html`
-* `test-visualization.html`
+Specific examples on  each module usage as well as crosses between functionalities can be found in the following links:
+* [Analyze](https://github.com/uihilab/HydroLang-ML/blob/devo/examples/analyzexample.html)
+* [Data](https://github.com/uihilab/HydroLang-ML/blob/devo/examples/dataexample.html)
+* [Map](https://github.com/uihilab/HydroLang-ML/blob/devo/examples/mapexample.html)
+* [Visualize](https://github.com/uihilab/HydroLang-ML/blob/devo/examples/visualizexample.html)
 
 For argument examples for a specific function, please refer to the library's [documentation page](https://hydro-lang.herokuapp.com/index.html).
 
