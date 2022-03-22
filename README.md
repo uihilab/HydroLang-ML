@@ -93,10 +93,10 @@ HL-ML is part of the bigger picture created by HydroLang.js. It is a scalable, r
 Furthermore, for community building, we encourage users of HydroLang to share their models, codes, and case studies on [HydroLang-Models repository](https://github.com/uihilab/HydroLang-Models).
 
 ## Feedback
-Please feel free to send feedback to us on any issues found by filing an issue.
+Please feel free to send feedback to us on any issues found by filling an issue.
 
 ## License
-This project is licensed under the MIT License - see the [LICENSE](https://github.com/uihilab/HydroLang/blob/master/LICENSE) file for details.
+This project is licensed under the GPL License - see the [LICENSE](https://github.com/uihilab/HydroLang-ML/blob/main/LICENSE) file for details.
 
 ## Acknowledgements
 This project is developed by the University of Iowa Hydroinformatics Lab (UIHI Lab):
