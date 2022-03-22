@@ -101,7 +101,7 @@ This project is licensed under the MIT License - see the [LICENSE](https://githu
 ## Acknowledgements
 This project is developed by the University of Iowa Hydroinformatics Lab (UIHI Lab):
 
-https://hydroinformatics.uiowa.edu/.
+https://hydroinformatics.uiowa.edu/
 
 ## References
 
