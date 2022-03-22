@@ -2,14 +2,13 @@
     <img width="200" src = https://github.com/uihilab/HydroLang-ML/blob/devo/figures/logo_200x200.png>
 </p>
 
-# Markup Language for Environmental Anlyzes (HL-ML): Web Components for Hydrological and Environmental Sciences
+# Markup Language for Environmental Analyzes (HL-ML): Web Components for Hydrological and Environmental Sciences
 ## Table of Contents
 * [Introduction](https://github.com/uihilab/HydroLang-ML#Introduction)
 * [How to Use](https://github.com/uihilab/HydroLang-ML#How-to-Use)
 * [Test Examples](https://github.com/uihilab/HydroLang-ML#Test-Examples)
 * [Community](https://github.com/uihilab/HydroLang-ML#Community)
 * [Feedback](https://github.com/uihilab/HydroLang-ML#Feedback)
-* [Scalability and To Do's](https://github.com/uihilab/HydroLang-ML#Scalability-and-To-Dos)
 * [License](https://github.com/uihilab/HydroLang-ML#License)
 * [Acknowledgements](https://github.com/uihilab/HydroLang-ML#Acknowledgements)
 * [References](#references)
@@ -80,10 +79,10 @@ Specific examples on  each module usage as well as crosses between functionaliti
 * [Map](https://github.com/uihilab/HydroLang-ML/blob/devo/examples/mapexample.html)
 * [Visualize](https://github.com/uihilab/HydroLang-ML/blob/devo/examples/visualizexample.html)
 
-For argument examples for a specific function, please refer to the library's [documentation page](https://hydro-lang.herokuapp.com/index.html).
+The documentation for the steering functions, arguments, and more examples on usage can be found i nthe [documentation page](https://hydrolang-ml.herokuapp.com/). To see the function requirements needed from HydroLang's modules, please [visit the documentation](https://hydro-lang.herokuapp.com/index.html) of the framework.
 
 ## Community
-The flexibility of using a modular architecture, open-source libraries, and not requiring installation provides a unique opportunity for scalability and upgrades, thus, creating the potential for the library to grow by becoming a community-based framework with collaborations from research institutions or individuals with expertise. HydroLang can be customized and extended by interested parties to suit for specific use cases, development environments, project requirements, and data resources. We encourage everyone to help extend HydroLang by either:
+HL-ML is part of the bigger picture created by HydroLang.js. It is a scalable, reusable, and easily adaptable framework that allows for growth through community-based collaboration from research institutions and individuals with expertise. The modules contained in HL-ML were built to create hands-on experience on hydrological research and its ease of implementation allows for new modules to be added as the HydroLang modules grow. We encourage the users to create new modules for HydroLang following the guidelines established in the framework, and of course:
 * filing an issue to request certain features, functionality, and data,
 * implementing the desired capability on a fork, and submitting a pull request.
 
@@ -91,12 +90,6 @@ Furthermore, for community building, we encourage users of HydroLang to share th
 
 ## Feedback
 Please feel free to send feedback to us on any issues found by filing an issue.
-
-## Scalability and To-Do's
-The framework is not limited to the functions and modules implemented, but rather provides a boilerplate for new features to be added. Nonetheless, the following should be considered:
-
-* The hydro component contains only lumped models.
-* The map module is fully available only on Leaflet engine.
 
 ## License
 This project is licensed under the MIT License - see the [LICENSE](https://github.com/uihilab/HydroLang/blob/master/LICENSE) file for details.
