@@ -2,7 +2,7 @@
     <img width="150" src = https://github.com/uihilab/HydroLang-ML/blob/main/figures/logo_upscaled.jpg>
 </p>
 
-# Markup Language for Environmental Analyzes (HL-ML): Web Components for Hydrological and Environmental Sciences
+# HL-ML: Web Components for Hydrological and Environmental Sciences
 ## Table of Contents
 * [Introduction](https://github.com/uihilab/HydroLang-ML#Introduction)
 * [How to Use](https://github.com/uihilab/HydroLang-ML#How-to-Use)
