@@ -83,7 +83,7 @@ Specific examples on  each module usage as well as crosses between functionaliti
 The documentation for the steering functions, arguments, and more examples on usage can be found i nthe [documentation page](https://hydrolang-ml.herokuapp.com/). To see the function requirements needed from HydroLang's modules, please [visit the documentation](https://hydro-lang.herokuapp.com/index.html) of the framework.
 
 ## Demo
-![Demo](https://github.com/uihilab/HydroLang-ML/blob/devo/figures/Animation.gif)
+![Demo](https://github.com/uihilab/HydroLang-ML/blob/main/figures/Animation.gif)
 
 ## Community
 HL-ML is part of the bigger picture created by HydroLang.js. It is a scalable, reusable, and easily adaptable framework that allows for growth through community-based collaboration from research institutions and individuals with expertise. The modules contained in HL-ML were built to create hands-on experience on hydrological research and its ease of implementation allows for new modules to be added as the HydroLang modules grow. We encourage the users to create new modules for HydroLang following the guidelines established in the framework, and of course:
