@@ -106,4 +106,4 @@ https://hydroinformatics.uiowa.edu/
 ## References
 
 * Ramirez, C.E., Sermet, Y., Molkenthin, F. and Demir, I., 2021. HydroLang: An Open-Source Web-Based Programming Framework for Hydrological Sciences. https://doi.org/10.31223/X5M31D
-* More references to go here
+* Ramirez, C.E., Sermet, Y., Demir, I., 2022. HL-ML: Community-Driven Web Components for Hydrological Analyses. (in revision)
