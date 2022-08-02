@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="../lib/libraries/hydrolang/external/css/hydrolang.css" />
+    <script type="module" src="../lib/main.js"></script>
+    <title>Data Example</title>
+  </head>
+
+  <body>
+    <div id="hydrolang">
+      <!-- The following are examples on modular usage specifically for the data, visualize module and their interactions with the local storage.-->
+      <!-- To see the behavior of all the functions, remove the arrows from the each example and load the pages using a live server application.-->
+      <hydrolang-ml>
+        <!-- Save data passed by the user as arrays.-->
+        <data-mod method="save">
+          <parameters output="mydatatype2"></parameters>
+          <dataset>[[1,2,3,4],[1,2,1,1],[1,1,1,1]]</dataset>
+        </data-mod>
+
+        <!-- Retrieve data from USGS.-->
+        <data-mod method="retrieve">
+          <parameters
+            source="usgs"
+            dataType="instant-values"
+            proxyurl="https://cors-anywhere.herokuapp.com/"
+            output="usgs_data"
+          ></parameters>
+          <arguments
+            site="USGS:02056000"
+            format="json"
+            startDt="2020-08-30"
+            endDt="2020-09-02"
+            parameterCd="00060"
+          ></arguments>
+        </data-mod>
+
+        <!-- Retrieve data from FEMA-->
+        <data-mod method="retrieve">
+          <parameters
+            source="fema"
+            datatype="disaster-declarations"
+            output="fema_data"
+          ></parameters>
+          <arguments state="CA"></arguments>
+        </data-mod>
+
+        <!-- Retrieve data from NOAA-->
+        <data-mod method="retrieve">
+          <parameters
+            source="noaa"
+            datatype="prec-15min"
+            type="json"
+            token="gNUkMgFHFSYVWyNoabuUfuVhCTJkRvRq"
+            output="noaa_data"
+          ></parameters>
+          <arguments
+            stationid="COOP:018673"
+            units="metric"
+            startdate="2014-01-01"
+            enddate="2014-12-31"
+            limit="1000"
+            datatype="QGAG"
+          ></arguments>
+        </data-mod>
+
+        <!-- Uploading data from the local storage as CSV. Will be saved as an array in the local storage.-->
+        <data-mod method="upload">
+          <parameters type="CSV" output="myupload"></parameters>
+        </data-mod>
+
+        <!-- Visualize all the objects that are saved in the local storage. -->
+        <visualize-mod method="draw">
+          <parameters type="json" input="all"></parameters>
+        </visualize-mod>
+
+        <!-- From the retrieved data saved in the local storage, transform the data by cleaning and removing unnecesary metadata.-->
+        <data-mod method="transform">
+          <parameters
+            input="fema_data"
+            save="disasterdeclarationssummaries"
+            output="cleaned_fema_data2"
+          ></parameters>
+          <arguments
+            type="ARR"
+            keep='["incidenttype", "fydeclared", "state"]'
+          ></arguments>
+        </data-mod>
+
+        <data-mod method="transform">
+          <parameters
+            input="usgs_data"
+            save="value"
+            output="cleaned_usgs_data1"
+          ></parameters>
+          <arguments type="ARR" keep='["datetime", "value"]'></arguments>
+        </data-mod>
+
+        <!-- View the recently cleaned data.-->
+        <visualize-mod method="draw">
+          <parameters type="json" input="usgs_data"></parameters>
+        </visualize-mod>
+
+        <visualize-mod method="draw">
+          <parameters type="json" input="fema_data"></parameters>
+        </visualize-mod>
+
+        <!-- Clear all data saved in the local storage-->
+        <data-mod method="clear">
+          <parameters input="all"></parameters>
+        </data-mod>
+
+
+        <!-- Visualize the data from a saved object as a chart rendered in screen.-->
+        <visualize-mod method="draw">
+          <parameters
+            type="chart"
+            input="cleaned_usgs_data1"
+            name="USGS"
+          ></parameters>
+          <arguments charttype="line"></arguments>
+        </visualize-mod>
+
+        <!-- Download the data into the user's computer.-->
+        <data-mod method="download">
+          <parameters input="usgs_data"></parameters>
+          <arguments type="CSV"></arguments>
+        </data-mod>
+      </hydrolang-ml>
+    </div>
+  </body>
+</html>

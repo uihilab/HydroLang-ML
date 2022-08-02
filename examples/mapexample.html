@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="../lib/libraries/hydrolang/external/css/hydrolang.css" />
+    <script type="module" src="../lib/main.js"></script>
+    <title>Map Example</title>
+  </head>
+  <body>
+    <div id="hydrolang">
+      <hydrolang-ml>
+        <!-- The following are examples on modular usage specifically for the data, map module and their interactions with the local storage.-->
+        <!-- To see the behavior of all the functions, load the webpages using a live server application.-->
+
+        <!-- Save geoJSON objects in the local storage.-->
+        <data-mod method="save">
+          <parameters output="mygeocol"></parameters>
+          <dataset
+            >{"type": "Feature","properties": {"name": "Coors Field","amenity":
+            "Baseball Stadium","popupContent": "This is where the Rockies
+            play!"},"geometry": {"type": "Point","coordinates": [-104.99404,
+            39.75621]}}</dataset
+          >
+        </data-mod>
+
+        <data-mod method="save">
+          <parameters output="mygeocol1"></parameters>
+          <dataset
+            >{"type": "Feature","properties": {"party":
+            "Republican"},"geometry": {"type": "Polygon","coordinates":
+            [[[-104.05, 48.99],[-97.22, 48.98],[-96.58, 45.94],[-104.03,
+            45.94],[-104.05, 48.99]]]}}</dataset
+          >
+        </data-mod>
+
+        <!-- Call the map module for rendering a map.-->
+        <map-mod method="render">
+          <parameters type="tile" lat="41.6572" lon="-91.5414"></parameters>
+        </map-mod>
+
+        <!-- Load marker layers into the map as a user input.-->
+        <map-mod method="Layers">
+          <parameters type="marker" output="firstmarker"></parameters>
+          <dataset>[14.035344,-87.192993]</dataset>
+        </map-mod>
+
+        <map-mod method="Layers">
+          <parameters type="marker" output="secondmarker"></parameters>
+          <dataset>[41.6572,-91.5414]</dataset>
+        </map-mod>
+
+        <!-- Load geoJSON layer as a user input.-->
+        <map-mod method="Layers">
+          <parameters type="geodata" output="mypoints" geo="Point"></parameters>
+          <dataset
+            >{"type": "FeatureCollection","features":[{"type": "Feature",
+            "properties": {"Name":"Vancouver"},"geometry": {"type": "Point",
+            "coordinates": [-122.34374999999999, 49.32512199104001]}}]}</dataset
+          >
+        </map-mod>
+
+        <!-- Load a geoJSON layer saved in the local storage.-->
+        <map-mod method="Layers">
+          <parameters
+            input="mygeocol"
+            type="geodata"
+            output="mypoints2"
+            geo="Point"
+          ></parameters>
+        </map-mod>
+
+        <map-mod method="Layers">
+          <parameters
+            input="mygeocol1"
+            type="geodata"
+            output="mypoly1"
+            geo="Polygon"
+          ></parameters>
+        </map-mod>
+      </hydrolang-ml>
+    </div>
+  </body>
+</html>
