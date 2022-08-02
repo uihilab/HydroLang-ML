@@ -1,5 +1,5 @@
 <p align="center">
-    <img width="150" src = https://github.com/uihilab/HydroLang-ML/blob/devo/figures/logo_upscaled.jpg>
+    <img width="150" src = https://github.com/uihilab/HydroLang-ML/blob/main/figures/logo_upscaled.jpg>
 </p>
 
 # Markup Language for Environmental Analyzes (HL-ML): Web Components for Hydrological and Environmental Sciences
