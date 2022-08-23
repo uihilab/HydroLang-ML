@@ -1,11 +1,11 @@
 #hydrolang{
     margin-left: auto;
     margin-right: auto;
-    font-family: monospace;
+    font-family: Consolas;
 }
 
 #hydrolang h1{
-    font-family: monospace
+    font-family: Consolas
 }
 
 #hydrolang .maps {
@@ -13,7 +13,7 @@
     width: 800px;
     margin-left: auto;
     margin-right: auto;
-    font-family: monospace;
+    font-family: Consolas;
 }
 
 dataset { font-size: 0; }
@@ -23,13 +23,13 @@ dataset { font-size: 0; }
     margin-right: auto;
     height: 400px;
     width: 800px;
-    font-family: monospace;
+    font-family: Consolas;
     padding: 1rem;
     margin-bottom: 1rem;
 }
 
 .charts button{
-    font-family: monospace;
+    font-family: Consolas;
     position: absolute;
 }
 
@@ -37,20 +37,20 @@ dataset { font-size: 0; }
     margin-left: 35%;
     margin-right: 35%;
     width: 30%;
-    font-family: monospace;
+    font-family: Consolas;
     padding: 1rem;
     margin-bottom: 1rem;
     text-align: center;
 }
 
 .leaflet-container{
-    font-family: monospace;
+    font-family: Consolas;
     padding: 1rem;
     margin-bottom: 1rem;
 }
 
 table.google-visualization-table-table {
-    font-family: monospace;
+    font-family: Consolas;
     vertical-align: middle;
     text-align: center;
     padding: 1rem;
@@ -61,13 +61,12 @@ table.google-visualization-table-table {
     margin-left: auto;
     margin-right: auto;
    position: relative;
-    background-color: #eaeaea;
+    background-color: white;
     color: black;
-    font-family: monospace;
-    font-size: 15px;
-    height: 300px;
+    font-family: Consolas;
+    font-size: 18px;
+    height: 500px;
     width: 1000px;
-    border-radius: 7px;
     overflow-x: scroll;
     border-style: solid;
     padding: 1rem;
@@ -76,74 +75,82 @@ table.google-visualization-table-table {
 
  .jsonrender #text{
     color: black;
-    font-family: monospace
+    font-family: Consolas
  }
  
  .renderjson a {
      text-decoration: none;
      color: black;
+     padding: 0.1rem;
      overflow: auto;
-     font-size: 15px;
-     font-family: monospace;
+     font-size: 18px;
+     font-family: Consolas;
  }
  
  .renderjson .disclosure {
      color: red;
      font-weight: bold;
-     font-size: 15px;
+     padding: 0.1rem;
+     font-size: 18px;
      overflow: auto;
-     font-family: monospace;
+     font-family: Consolas;
  }
  
  .renderjson .syntax {
      color: black;
-     font-size: 15px;
+     padding: 0.1rem;
+     font-size: 18px;
      overflow: auto;
-     font-family: monospace;
+     font-family: Consolas;
  }
  
  .renderjson .string {
-     color: red;
-     font-size: 15px;
+     color: black;
+     font-size: 18px;
+     padding: 0.1rem;
      overflow: auto;
-     font-family: monospace;
+     font-family: Consolas;
  }
  
  .renderjson .number {
-     color: red;
-     font-size: 15px;
+     color: blue;
+     font-size: 18px;
      overflow: auto;
-     font-family: monospace;
+     font-family: Consolas;
  }
  
  .renderjson .boolean {
      color: black;
-     font-size: 15px;
-     font-family: monospace;
+     font-size: 18px;
+     font-family: Consolas;
  }
  
  .renderjson .key {
-     color: purple;
-     font-size: 15px;
-     font-family: monospace;
+     color: black;
+     padding: 0.1rem;
+     font-size: 18px;
+     font-family: Consolas;
  }
  
  .renderjson .keyword {
-     color: purple;
-     font-size: 15px;
-     font-family: monospace;
+     color: black;
+     font-size: 18px;
+     padding: 0.1rem;
+     font-family: Consolas;
  }
  
  .renderjson .object.syntax {
      color: black;
-     font-size: 15px;
-     font-family: monospace;
+     font-size: 18px;
+     padding: 0.1rem;
+     font-family: Consolas;
  }
  
  .renderjson .array.syntax {
      color: black;
-     font-size: 15px;
-     font-family: monospace;
+     padding: 0.1rem;
+     font-size: 18px;
+     font-family: Consolas;
  }
 
  .note {

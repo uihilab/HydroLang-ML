@@ -4,9 +4,12 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="../lib/libraries/hydrolang/external/css/hydrolang.css" />
-    <script type="module" src="../lib/main.js"></script>
-    <title>Use Case: Data integration</title>
+    <link
+      rel="stylesheet"
+      href="../../lib/libraries/hydrolang/external/css/hydrolang.css"
+    />
+    <script type="module" src="../../lib/main.js"></script>
+    <title>Use Case: Data Retrieval and Visualization</title>
   </head>
 
   <body>
@@ -24,9 +27,9 @@
           ></parameters>
           <arguments
             locationid="FIPS:19103"
-            startdate="2008-06-01"
+            startdate="2008-05-30"
             enddate="2008-06-30"
-            limit="100"
+            limit="1000"
           ></arguments>
         </data-mod>
 
@@ -35,18 +38,33 @@
           <parameters type="json" input="all"></parameters>
         </visualize-mod>
 
+        <data-mod method="retrieve">
+          <parameters
+            source="usgs"
+            datatype="instant-values"
+            output="iowacity_streamflow_halfhour"
+            proxyurl="https://cors-anywhere.herokuapp.com/"
+          ></parameters>
+          <arguments
+            site="USGS:05454500"
+            startDt="2008-04-02"
+            endDt="2008-06-30"
+            format="json"
+          ></arguments>
+        </data-mod>
+
         <!-- Download data from a specific source during the dates of the event.-->
         <data-mod method="retrieve">
           <parameters
             source="noaa"
-            datatype="prec-15min"
-            output="iowacity_station"
+            datatype="prec-hourly"
+            output="iowacity_rainfall_hourly"
             token="gNUkMgFHFSYVWyNoabuUfuVhCTJkRvRq"
           ></parameters>
           <arguments
             stationid="COOP:134101"
-            startdate="2008-06-01"
-            enddate="2008-06-30"
+            startdate="2008-04-02"
+            enddate="2008-07-30"
             limit="1000"
           ></arguments>
         </data-mod>
@@ -54,9 +72,18 @@
         <!-- Transform the object saved for the source, leaving only the data required.-->
         <data-mod method="transform">
           <parameters
-            input="iowacity_station"
+            input="iowacity_streamflow_halfhour"
+            save="value"
+            output="cleaned_iowacity_streamflow_halfhour"
+          ></parameters>
+          <arguments type="ARR" keep='["datetime", "value"]'></arguments>
+        </data-mod>
+
+        <data-mod method="transform">
+          <parameters
+            input="iowacity_rainfall_hourly"
             save="results"
-            output="cleaned_iowacity_station"
+            output="cleaned_iowacity_rainfall_hourly"
           ></parameters>
           <arguments type="ARR" keep='["date", "value"]'></arguments>
         </data-mod>
@@ -65,10 +92,64 @@
         <visualize-mod method="draw">
           <parameters
             type="chart"
-            input="cleaned_iowacity_station"
-            name="rainfall_iowacity2008"
+            input="cleaned_iowacity_rainfall_hourly"
+            name="cleaned_iowacity_rainfall_hourly_mm"
           ></parameters>
           <arguments charttype="column"></arguments>
+        </visualize-mod>
+
+        <visualize-mod method="draw">
+          <parameters
+            type="chart"
+            input="cleaned_iowacity_streamflow_halfhour"
+            name="cleaned_iowacity_streamflow_halfhour_cfs"
+          ></parameters>
+          <arguments charttype="line"></arguments>
+        </visualize-mod>
+
+        <map-mod method="render">
+          <parameters type="tile" lat="41.6572" lon="-91.5414"></parameters>
+        </map-mod>
+
+        <!-- Load marker layers into the map as a user input.-->
+        <map-mod method="Layers">
+          <parameters type="marker" output="COOP:134101"></parameters>
+          <dataset>[41.60930,-91.50510]</dataset>
+        </map-mod>
+
+        <map-mod method="Layers">
+          <parameters type="marker" output="USGS:0545500"></parameters>
+          <dataset>[41.656667,-91.540833]</dataset>
+        </map-mod>
+
+        <analyze-mod component="stats" method="basicstats">
+          <parameters
+            input="cleaned_iowacity_rainfall_hourly"
+            output="basic_stats_rainfall"
+          ></parameters>
+        </analyze-mod>
+
+        <analyze-mod component="stats" method="basicstats">
+          <parameters
+            input="cleaned_iowacity_streamflow_halfhour"
+            output="basic_stats_streamflow"
+          ></parameters>
+        </analyze-mod>
+
+        <visualize-mod method="draw">
+          <parameters
+            type="table"
+            input="basic_stats_streamflow"
+            name="table_streamflow_data"
+          ></parameters>
+        </visualize-mod>
+
+        <visualize-mod method="draw">
+          <parameters
+            type="table"
+            input="basic_stats_rainfall"
+            name="table_rainfall_data"
+          ></parameters>
         </visualize-mod>
 
         <!-- Download the retrieved data into the computer's storage (downloads folder).-->
