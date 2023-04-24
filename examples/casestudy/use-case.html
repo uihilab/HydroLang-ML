@@ -18,7 +18,7 @@
       <!-- And finally download the cleaned data to local storage. It uses the data, analyze, and visualize modules.-->
       <hydrolang-ml>
         <!-- See all stations that fall under the tempoeral resolution required for the analysis.-->
-        <data-mod method="retrieve">
+        <!-- <data-mod method="retrieve">
           <parameters
             source="noaa"
             datatype="availablestations"
@@ -31,14 +31,14 @@
             enddate="2008-06-30"
             limit="1000"
           ></arguments>
-        </data-mod>
+        </data-mod> -->
 
         <!-- View the data recently downloaded.-->
         <visualize-mod method="draw">
           <parameters type="json" input="all"></parameters>
         </visualize-mod>
 
-        <data-mod method="retrieve">
+        <!-- <data-mod method="retrieve">
           <parameters
             source="usgs"
             datatype="instant-values"
@@ -51,10 +51,10 @@
             endDt="2008-06-30"
             format="json"
           ></arguments>
-        </data-mod>
+        </data-mod> -->
 
         <!-- Download data from a specific source during the dates of the event.-->
-        <data-mod method="retrieve">
+        <!-- <data-mod method="retrieve">
           <parameters
             source="noaa"
             datatype="prec-hourly"
@@ -67,10 +67,10 @@
             enddate="2008-07-30"
             limit="1000"
           ></arguments>
-        </data-mod>
+        </data-mod> -->
 
         <!-- Transform the object saved for the source, leaving only the data required.-->
-        <data-mod method="transform">
+        <!-- <data-mod method="transform">
           <parameters
             input="iowacity_streamflow_halfhour"
             save="value"
@@ -86,14 +86,14 @@
             output="cleaned_iowacity_rainfall_hourly"
           ></parameters>
           <arguments type="ARR" keep='["date", "value"]'></arguments>
-        </data-mod>
+        </data-mod> -->
 
         <!-- Draw chart into screen using the cleaned variable.-->
         <visualize-mod method="draw">
           <parameters
             type="chart"
             input="cleaned_iowacity_rainfall_hourly"
-            name="cleaned_iowacity_rainfall_hourly_mm"
+            name="iowacity_rainfall_hourly_mm"
           ></parameters>
           <arguments charttype="column"></arguments>
         </visualize-mod>
@@ -102,7 +102,7 @@
           <parameters
             type="chart"
             input="cleaned_iowacity_streamflow_halfhour"
-            name="cleaned_iowacity_streamflow_halfhour_cfs"
+            name="IC_streamflow_halfhour_cfs"
           ></parameters>
           <arguments charttype="line"></arguments>
         </visualize-mod>
@@ -122,41 +122,41 @@
           <dataset>[41.656667,-91.540833]</dataset>
         </map-mod>
 
-        <analyze-mod component="stats" method="basicstats">
+        <!-- <analyze-mod component="stats" method="basicstats">
           <parameters
             input="cleaned_iowacity_rainfall_hourly"
             output="basic_stats_rainfall"
           ></parameters>
-        </analyze-mod>
+        </analyze-mod> -->
 
-        <analyze-mod component="stats" method="basicstats">
+        <!-- <analyze-mod component="stats" method="basicstats">
           <parameters
             input="cleaned_iowacity_streamflow_halfhour"
             output="basic_stats_streamflow"
           ></parameters>
-        </analyze-mod>
+        </analyze-mod> -->
 
-        <visualize-mod method="draw">
+        <!-- <visualize-mod method="draw">
           <parameters
             type="table"
             input="basic_stats_streamflow"
             name="table_streamflow_data"
           ></parameters>
-        </visualize-mod>
+        </visualize-mod> -->
 
-        <visualize-mod method="draw">
+        <!-- <visualize-mod method="draw">
           <parameters
             type="table"
             input="basic_stats_rainfall"
             name="table_rainfall_data"
           ></parameters>
-        </visualize-mod>
+        </visualize-mod> -->
 
         <!-- Download the retrieved data into the computer's storage (downloads folder).-->
-        <data-mod method="download">
+        <!-- <data-mod method="download">
           <parameters input="cleaned_iowacity_station"></parameters>
           <arguments type="CSV"></arguments>
-        </data-mod>
+        </data-mod> -->
       </hydrolang-ml>
     </div>
   </body>
